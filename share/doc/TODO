@@ -1,0 +1,89 @@
+== Requirements for 1.0 ==
+bug#38 - inline docs
+bug#55 - Solaris support
+bug#56 - MRTG conf importer
+
+== global ==
+documentation
+  Usage information (description of every page)
+user preferences
+  themes
+a device's type can affect the list of tests that can be performed on it
+
+
+== balleman ==
+  - ability to compile against librrd instead of using a pipe (should be able to compile for either)
+  - rrdd support?
+  - portability
+   - freebsd
+   - solaris
+
+
+== far-away features ==
+customized 'view' page
+  - on the main view page, select boxes to pick which graphs you would like to see
+    (makes it easier to compare some graphs)
+  - ability to move graphs up/down despite their original ordering (session fun)
+fast-fourier transforms for what data 'should look like'
+themes/skins for UI and graphs
+  - I'd like to see a neon theme ;) - balleman
+distributed netmrg
+  - have other netmrg installs that can report back to a master install that
+    maintains all the rrd files.
+  - how to delegate tasks: have the master keep a list of tasks for the slaves,
+    and have the slaves get them periodically?  this will require the
+    installations to be named
+  - new idea (2004.09.01) - derivation of other ideas
+    * boss/worker setup
+    * [boss] daemon figures out what needs done and puts that into a [jobs] table
+    * [worker]s clock into the [timeclock] so the [boss] can give them [jobs]
+    * if the [boss] notices that a [worker] forgot to clock out, it clocks
+      them out itself
+    * [worker]s report their [job_result]s back
+    * have the [boss] keep a schedule in a MySQL Heap table.  It can reschedule
+      items by just bumping them up in the queue
+      [worker]s can then just poll the mysql table for new tasks for it
+      If the website allows for certain devices to only be polled by certain 
+      [worker]s, then the [boss] can just assign tasks to that [worker]
+wizards
+  - /wizard dir
+  - index.php reads in other files to know name, description, etc
+  - used for generating/updating special/large devices (catalyst switches, maxtnts)
+
+
+== FOR A RELEASE ==
+version bump in:
+  configure.ac (run bootstrap)
+  share/netmrg.mysql
+  share/netmrg.spec
+  share/doc/VERSION
+  www/lib/static.php
+  www/webfiles/updater.php
+  bugs.netmrg.net
+generate new template database
+  mysqldump --skip-extended-insert netmrg > netmrg.mysql
+update docs w/ release notes
+generate new docs
+  ./bin/makedocs
+test tutorial
+test upgrade from previous version
+branch/tag SVN (ex: netmrg-0_10)
+build tarball
+  ./bin/makedist
+  - upload to devel, maybe release
+for non-devel releases, build RPM from tarball
+update docs on wiki.netmrg.net
+update demo.netmrg.net
+announce on www.netmrg.net
+announce on lists.netmrg.net
+announce on freshmeat.net
+notify other package maintainers
+
+== branching/tagging svn ==
+svn copy \
+  svn+ssh://argo.pyxos.net/home/svnroot/netmrg/trunk \
+  svn+ssh://argo.pyxos.net/home/svnroot/netmrg/branches/netmrg-0_19
+svn copy \
+  svn+ssh://argo.pyxos.net/home/svnroot/netmrg/branches/netmrg-0_19 \
+  svn+ssh://argo.pyxos.net/home/svnroot/netmrg/tags/netmrg-0_19_1
+

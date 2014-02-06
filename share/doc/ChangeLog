@@ -1,0 +1,1141 @@
+2012.01.05  v0.21cvs  silfreed
+  - adding "minimum" option to graph item descriptions
+
+2011.04.14  v0.21cvs  balleman
+  - updated wiki.netmrg.net to mediawiki 1.16.4
+
+2011.02.06  v0.21cvs  balleman
+  - updated wiki.netmrg.net to mediawiki 1.16.2
+
+2010.07.26  v0.21cvs  balleman
+  - bug#121 : SNMPv3 support - initial implementation
+
+2010.07.26  v0.21cvs  balleman
+  - bug#496 : ajax.php doesn't escape single quotes in addCreateOption() 
+
+2009.07.14  v0.21cvs  silfreed
+  - updated mediawiki to 0.15.1
+
+2009.07.08  v0.21cvs  silfreed
+  - updated mantis to 1.1.8
+
+2008.10.20  v0.21cvs  silfreed
+  - updated mantis to 1.1.4
+
+2008.10.14  v0.21cvs  silfreed
+  - updated mediawiki to 0.13.2
+  - updated mantis to 1.1.3
+
+2008.07.08  v0.20  silfreed
+  - fixing license; removing references to MIT
+  - adding license info to all files
+
+2008.04.01  v0.20cvs  balleman
+  - bug#488 : ajax monitor selection - add built-ins
+
+2008.03.26  v0.20cvs  silfreed
+  - bug#482 : fixing configure/compilation issues
+  - bug#491 : fixing gcc 4.3 errors
+
+2008.01.21  v0.20cvs  silfreed
+  - updated bugs.netmrg.net to mantis 1.1.1
+
+2007.12.19  v0.20cvs  silfreed
+  - bug#490 - fail to find net-snmp in x86_64
+    adding detection of /usr/lib64
+
+2007.05.29  v0.20cvs  silfreed
+  - adding scripts contributed by Uwe Steinmann <uwe@steinmann.cx>
+    for monitoring linux load w/o SNMP and Apple systems battery status
+    with a PMU
+  - incorporating modifications to linux26diskaccess.pl
+    (http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=412549)
+
+2007.05.14  v0.20cvs  silfreed
+  - updated wiki.netmrg.net to mediawiki 1.10.0
+
+2007.04.05  v0.20cvs  silfreed
+  - updated bugs.netmrg.net to mantis 1.0.7
+  - updated lists.netmrg.net to phpBB 2.0.22
+
+2006.11.13  v0.20cvs  silfreed
+  - bug#0000458: View page should have action items beside each graph
+    improved html structure of view page and improved CSS wrapping of graphs.
+    setup CSS hack for IE to allow the images to still center but throw the new
+      controls to the left.
+  - updated copyright to 2007
+
+2007.01.30  v0.20cvs  balleman
+  - bug#0000466: Release Checklist for 0.20 - version bumps
+
+2007.01.24  v0.20cvs  balleman
+  - updated bugs.netmrg.net to mantis 1.0.6
+  - updated wiki.netmrg.net to mediawiki 1.6.9
+
+2006.11.13  v0.20cvs  silfreed
+  - setup Auto Bot Questions for lists.netmrg.net to try to cut down 
+    on spam registrations
+    http://www.phpbb.com/phpBB/viewtopic.php?t=383305
+
+2006.11.10  v0.20cvs  balleman
+  - added watermarks in rrdtool 1.2 graphs
+
+2006.11.03  v0.20cvs  balleman
+  - bug#0000480: AJAX monitor selection: if there is only one device, no monitors can be selected
+  - bug#0000303: add ability to have 'max' lines on the weekly, monthly, yearly graphs
+  - bug#0000468: HTML codes in condition operator drop-down
+  - bug#0000419: write unknown to rrdtool when snmp agent restarts
+
+2006.11.01  v0.20cvs  balleman
+  - bug#0000471: Device Properties should be gathered infrequently
+  - bug#0000483: When the device type changes, cached properties should be discarded/translated
+
+2006.10.24  v0.20cvs  silfreed
+  - updated bugs.netmrg.net to mantis 1.0.5
+
+2006.09.24  v0.20cvs  balleman
+  - bug#0000479: fixed device properties multidelete
+
+2006.09.22  v0.20cvs  keb
+  - bug#0000460: MySQL header and library detection cleanup
+
+2006.07.02  v0.20cvs  balleman
+  - bug#0000441: Documentation on how to become daemonized
+
+2006.06.30  v0.20cvs  silfreed
+  - updated lists.netmrg.net to phpBB 2.0.21
+  - updated wiki.netmrg.net to mediawiki 1.6.7
+  - updated bugs.netmrg.net to mantis 1.0.3
+
+2006.06.25  v0.20cvs  balleman
+  - bug#0000473: basic CDP interface linkage support
+
+2006.06.24  v0.20cvs  balleman
+  - bug#0000465: infinite loop on nanosleep() - fixed uninited param
+  - bug#0000462: Device Properties - fixed memory leak
+  - bug#0000459: Cool AJAX stuff to investigate: xajax is the way to go
+  - bug#0000415: new monitor/subdev selection method
+  - bug#0000256: Added support for special sub-dev-variable "nexthop" to link interfaces
+
+2006.06.16  v0.20cvs  keb
+  - bug#0000469: Configure tweak for OS X compatibility
+
+2006.04.14  v0.20cvs  silfreed
+  - updated lists.netmrg.net to phpBB 2.0.20
+  - updated wiki.netmrg.net to mediawiki 1.6.2
+
+2006.03.24  v0.20cvs  silfreed
+  - putting backticks around "conditions" for mysql 5.0 compatibility
+
+2006.02.27  v0.20cvs  silfreed
+  - bug#0000456: Should be able to search within a view page on titles
+    that last update contained patches to view page that weren't supposed 
+    to make it up yet, sorry
+
+2006.02.26  v0.20cvs  silfreed
+  - updated bugs.netmrg.net to mantis 1.0.1
+  - updated wiki.netmrg.net to mediawiki 1.5.6
+
+2006.02.21  v0.20cvs  silfreed
+  - bug#0000461: Support for D-Link FSM726 Switch's ifAlias
+  - adding script to poll surfboard status information
+
+2006.02.19  v0.20cvs  balleman
+  - bug#0000462: Device Properties
+    Completed initial framework.
+  - bug#0000393: line number messages
+
+2006.02.13  v0.20cvs  silfreed
+  - bug#0000452: Menu Rendering problems in IE
+    added <div /> between #header and #content to clear; fix recommended
+    by Scott Gonzalez (http://www.scottsplayground.com, scott.gonzalez@gmail.com)
+  - quit using onload="" to run javascript onload functions.  Use 
+    addOnloadEvent() that does stuff through the window.onload element
+  - bug#0000457: Separator should be cleaned up a bit
+    changed the table to a div, and cleaned up the css
+
+2006.02.03  v0.20cvs  keb
+  - reordered users.php so the code is more readable
+
+2006.02.03  v0.19cvs  silfreed
+  - bug#0000392: Release Checklist for 0.19
+    * final doc changes and branching before release
+
+2006.01.30  v0.19cvs  silfreed
+  - bug#0000449: ReadAll Users should be able to goto Edit pages, but not save
+  - bug#0000392: Release Checklist for 0.19 - updated docs
+
+2006.01.10  v0.19cvs  keb
+  - bug#0000444: ReadAll users can edit sub-devices
+  - bug#0000430: permissions 'gotcha'
+
+2006.01.08  v0.19cvs  silfreed
+  - updated wiki.netmrg.net to mediawiki 1.5.5
+
+2006.01.09  v0.19cvs  balleman
+  - bug#0000433: problem with graph min/max
+  - bug#0000392: bumping versions to 0.19
+
+2006.01.08  v0.19cvs  silfreed
+  - bug#0000439: netmrg.sgml still needs maintained for the README, 
+    INSTALL, and netmrg-gatherer.1 files
+  - bug#0000442: We should get ourselves added to the rrdtool 1.2's rrdworld pages
+
+2006.01.04  v0.19cvs  silfreed
+  - bug#0000371: Grouped + Non-Grouped display in device tree is confusing
+  - bug#0000286: provide a way to check integrity of a release tarball
+
+2006.01.04  v0.19cvs  balleman
+  - bug#0000438: rewrote script tests using execve()
+
+2006.01.02  v0.19cvs  silfreed
+  - updated lists.netmrg.net to phpBB 2.0.19
+  - updated wiki.netmrg.net to mediawiki 1.5.4
+
+2005.12.18  v0.19cvs  silfreed
+  - updated bugs.netmrg.net to Mantis BT 0.19.4
+
+2005.12.16  v0.19cvs  balleman
+  - fixed problem on monitors.php that showed unknown values as 0.00
+  - bug#0000437: added snmpwalk count method
+
+2005.12.15  v0.19cvs  silfreed
+  - added killspike2 from cricket (with some modifications)
+
+2005.12.09  v0.19cvs  silfreed
+  - updated wiki.netmrg.net to mediawiki 1.5.3
+
+2005.12.08  v0.19cvs  silfreed
+  - bug#0000294: Search feature
+  - bug#0000372: RFE: Add link for current level in device path
+
+2005.11.11  v0.19cvs  balleman
+  - bufish://balleman@oak/var/www/netmrg/trunk/share/doc/ChangeLogg#0000410: updated 'Manual' URL to point to the wiki
+
+2005.11.09  v0.19cvs  balleman
+  - bug#0000406: verify against rrdtool-1.2 - revisited comments escaping
+
+2005.11.03  v0.19cvs  balleman
+  - bug#0000427: use RRDTOOL create instead of restore for zero.rrd
+  - bug#0000342: delete template view items associated with deleted subdevices
+  - bug#0000112: view edit should have move top and move bottom features
+  - added "arrow_limit" icon
+
+2005.10.31  v0.19cvs  silfreed
+  - updated wiki.netmrg.net to mediawiki 1.5.1
+  - updated lists.netmrg.net to phpBB 2.0.18
+
+2005.10.22  v0.19cvs  keb
+  - bug#0000430: permissions 'gotcha'
+    * responses.php snmp_cache_view.php conditions.php
+
+2005.10.13  v0.19cvs  balleman
+  - bug#0000429: ReadAll user can add/edit/delete devices
+
+2005.10.12  v0.19cvs  silfreed
+  - updated wiki.netmrg.net to mediawiki 1.4.11
+  - updated bugs.netmrg.net to Mantis BT 0.19.3
+
+2005.09.21  v0.19cvs  silfreed
+  - updated wiki.netmrg.net to mediawiki 1.4.10
+
+2005.09.12  v0.19cvs  balleman
+  - bug#0000287: on the monitor edit page, subdevice dropdown should not be displayed by default
+  - bug#0000403: Upper/lower graph limit problem
+    fixed both instances described; mins and maxes of 0 should now behave properly, and 'U' works again, too
+
+2005.09.10  v0.19cvs  balleman
+  - bug#0000424: rrdtool 1.2 slope feature (use by default for 1.2)
+  - bug#0000414: view edit enhancements
+
+2005.09.09  v0.19cvs  silfreed
+  - upgrade version to 0.19cvs
+  - bug#0000365: Web Interface redesign
+    made sure all *.php pages were in the menu
+  - bug#0000294: Search feature
+    created a stock search page that just shows you your query back
+
+2005.09.09  v0.18.2  silfreed
+  - bug#0000365: Web Interface redesign
+    updated header section to be all-inclusive of the nav bars 
+      (in case we want to do background images later)
+    more CSS work to make hovers work nicely
+  - bug#0000294: Search feature
+    created the search box in the page header and hide it on the login page
+    search box auto-focuses w/ the word "search" on page load
+
+2005.09.06  v0.18.2  silfreed
+  - updated wiki.netmrg.net to mediawiki 1.4.9
+  - bug#0000365: Web Interface redesign
+    removing javascript; reformatting nav layers
+
+2005.08.31  v0.18.2  balleman
+  - bug#0000422: disabled notifications act as if they are enabled
+  - bug#0000421: notifications page should display whether a notification is disabled or not
+
+2005.08.24  v0.18.2  balleman
+  - bug#0000373: contrib: Script action to count active modems on a Livingston Portmaster
+
+2005.08.24  v0.18.2  keb
+  - bug#0000420: macro variables should be configurable
+
+2005.08.17  v0.18.2  balleman
+  - bug#0000417: when a device is disabled, all of its status information should be 'unknown'
+
+2005.08.15  v0.18.2  balleman
+  - bug#0000413: apply templates page should not display subdevice dropdown by default
+  - bug#0000394: Change license to GPL, upgrade keb to developer
+
+2005.08.12  v0.18.2  balleman
+  - bug#0000398: for devices without SNMP support, don't display 'pending...'
+
+2005.07.21  v0.18.2  silfreed
+  - updated wiki.netmrg.net to mediawiki 1.4.7
+
+2005.07.18  v0.18.2  silfreed
+  - updated lists.netmrg.net to phpBB 2.0.17
+
+2005.07.15  v0.18.2  balleman
+  - use localtime_r() to avoid concurrency issues
+
+2005.07.08  v0.18.2  balleman
+  - bug#0000400: monitors.cpp does not compile on Solaris/SPARC - Solaris does not have setenv/unsetenv
+
+2005.07.06  v0.18.2  balleman
+  - bug#0000385: Graph titles, axis labels, legend labels not properly escaped
+  - bug#0000406: verify against rrdtool-1.2 (added config option for rrd version, fixed escaping)
+
+2005.06.28  v0.18.2  silfreed
+  - updated lists.netmrg.net to phpBB 2.0.15
+
+2005.06.13  v0.18.2  keb
+  - bug#0000391: remove netmrg_cron.sh
+
+2005.05.31  v0.18.2  balleman
+  - bug#0000408: lukasz_engel's graphing shell escaping patch
+
+2005.05.28  v0.18.2  balleman
+  - bug#0000409: an internal monitor (# 8) to replace win2kcpu.pl
+
+2005.05.23  v0.18.2  balleman
+  - bug#0000407: Notifications should have duplicate feature
+
+2005.05.16  v0.18.2  silfreed
+  - updated lists.netmrg.net to phpBB 2.0.15
+  - bug#0000365: fixing javascript to collapse all items before opening a new menu
+
+2005.04.20  v0.18.2  silfreed
+  - updated lists.netmrg.net to phpBB 2.0.14
+
+2005.04.01  v0.18.2  silfreed
+  - bug#0000366: testing new RSS aggregator for SVN commits
+  - bug#0000365: Web Interface redesign
+    try new idea of putting items below the main menu bar; still needs cleaned up
+  - bug#0000395: monitors table test_id can not store tests_snmp rows with id>127
+  - bug#0000401: linux26diskaccess.pl only works for IDE drives
+
+2005.03.28  v0.18.2  keb
+  - bug#0000399: nanosleep needs rt library
+
+2005.03.26  v0.18.2  keb
+  - bug#0000387: Way to apply a template graph to multiple subdevices
+
+2005.03.09  v0.18.2  silfreed
+  - updated about, contributions pages
+  - updated to 2005 in all docs
+
+2005.03.02  v0.18.2  silfreed
+  - bug#0000366: testing getting svn comments into mantis [x4]
+
+2005.02.28  v0.18.2  silfreed
+  - updated lists.netmrg.net to phpBB 2.0.13
+  - bug#0000365: Web Interface redesign
+    added 'hidden' menu items that will expand the menu list
+
+2005.02.27  v0.18.2  silfreed
+  - merging silbranch from r1104:1125
+  - bug#0000381: Update source tree items that use cvs to make things happen
+  - bug#0000379: Snapshots need to be made of the source trees
+  - bug#0000380: Documentation needs auto-generated from source tree 
+
+2005.02.22  v0.18.2  silfreed
+  - updated lists.netmrg.net to phpBB 2.0.12
+
+2005.02.15  v0.18.2  keb
+  - bug#0000388 - utils.cpp build warnings
+  - bug#0000390 - libintl linking errors
+  - bug#0000389 - build errors: WEXITSTATUS and WIFEXITED
+
+2005.01.26  v0.18.2  balleman
+  - bug#0000328 - SIGTERM/SIGINT should result in clean shutdown
+  - Avoid SNMP tests for SNMP-disabled devices
+
+2005.01.16  v0.18.2  balleman
+  - bug#0000346 - Use correct sums in advanced graph view 
+  - bug#0000382 - when applying templates, they should be added to the sub-device view
+  - bug#0000383 - if a STACK is first, change it to an AREA
+  - bug#0000347 - fractional multipliers starting with "1" are broken
+  
+2005.01.16  v0.18.2  balleman
+  - bug#0000375 - Gatherer can crash with certain versions of net-snmp against broken agents
+  - bug#0000359 - error code scripts don't really return the error code
+  - bug#0000358 - Duplicating a device does not duplicate status of "Disable SNMP Uptime Check"
+  - bug#0000368 - RFE: Pass parameters as environment variables
+  - bug#0000307 - kill stale lockfiles automatically
+  
+2004.12.20  v0.18.2  keb
+  - bug#0000369 - 'Delete' under device groups fails with no device selected
+  - bug#0000376 - devices.php: break statement missing
+
+2004.12.12  v0.18.2  keb
+  - bug#0000362 - gettext support
+
+2004.12.10  v0.18.2  keb
+  - bug#0000348 - More SVO "Access denied" issues (problems with MySQL 3.X)
+
+2004.12.09  v0.18.2  silfreed
+  - bug#0000281 - Support for a config_site.php in addition to config.php
+  - bug#0000364 - PHP Library Restructure
+
+2004.11.23  v0.18.2  keb
+  - bug#0000352 - Escaping issues in graphing.php
+  - bug#0000348 - More SVO "Access denied" issues
+
+2004.11.19  v0.18.2  keb
+  - bug#0000341 - Root group should always be returned from the Get*Groups functions
+
+2004.11.16  v0.18.2  keb
+  - bug#0000345 - get_graph.php needs cleaned up
+
+2004.11.08  v0.18.1  silfreed
+  - bug#0000325 - Access denied to custom graphs attached to subdevice and group
+  - bug#0000316 - NETMRG_DEFAULT_MAP should not be allowed to edit prefs
+
+2004.11.06  v0.18.1  keb
+  - bug#0000271 - checkbox options should have a standard layout
+
+2004.11.05  v0.18.1  balleman
+  - bug#0000335 - disabled quickprint option so mandrake should work
+  - bug#0000331 - snmp failure internal test doesn't work
+  - bug#0000321 - don't use ifName if it is not unique in the cache
+
+2004.11.04  v0.18.1  silfreed
+  - bug#0000329 - escaping problems in snmp_cache_view.php
+
+2004.10.24  v0.17  keb
+  - bug#0000318 - CVS build fails due to unknown function llround
+
+2004.10.23  v0.17  silfreed
+  - bug#0000302 - Updater should support updating from any version
+
+2004.10.23  v0.17  balleman
+  - bug#0000317 - Function name conflict for stripnl on FreeBSD
+
+2004.10.22  v0.17  keb
+  - bug#0000308 - color should be reset when gatherer exits
+
+2004.10.19  v0.17  balleman
+  - bug#0000313 - internal test for snmp availability
+  - bug#0000293 - SQL timeouts
+  - bug#0000247 - simple parsing of snmp values
+
+2004.10.16  v0.17  keb
+  - bug#0000315 - netmrg build should have cleaner output
+  - add more control over the install files in www/
+
+2004.10.14  v0.17  silfreed
+  - bug#0000314 - zero.rrd needs to be built at 'make install' time
+
+2004.10.13  v0.17  silfreed
+  - bug#0000312 - Default external auth user should be added, but disabled
+  - bug#0000310 - need more graphics
+
+2004.10.12  v0.17  keb
+  - bug#0000292 - checkbox delete gives errors in responses.php
+
+2004.10.08  v0.17  silfreed
+  - bug#0000310 - need more graphics; started
+
+2004.10.07  v0.17  silfreed
+  - bug#0000240 - default permissions for external auth users
+  - bug#0000291 - adding new group always returns user to root group view
+
+2004.10.05  v0.17  balleman
+  - bug#0000282 - SNMP uptime should be displayed in a nice format
+
+2004.10.04  v0.17  balleman
+  - bug#0000283 - docs on notifications.php are wrong
+  - bug#0000290 - negative (inverted) values not working
+
+2004.09.21  v0.17  balleman
+  - bug#0000288 - escape colons in graph item titles
+  - bug#0000300 - graph sums don't take multipliers into account
+
+2004.09.21  v0.17  silfreed
+  - bug#0000299 - IE users can't submit forms
+
+2004.09.19  v0.17  silfreed
+  - bug#0000295 - db_escape_string can't be conditional
+
+2004.09.13  v0.17cvs  silfreed
+  - updated bugs.netmrg.net to mantis 0.19.0, enabled sponsorships
+  - bug#0000280 - Using checkbox delete in conditions.php gives errors when nothing is checked
+  - bug#0000279 - new groups are always added with the Root parent
+  - fixed 'disabled user check' to take into account if we were 0.17 or not
+    (so updates can proceed)
+
+2004.09.13  v0.17cvs  keb
+  - bug#0000271 - checkbox options should have a standard layout
+
+2004.09.12  v0.17cvs  balleman
+  - bug#0000109 - tests_script.php checkboxes
+  - bug#0000111 - tests_snmp.php checkboxes
+  - bug#0000110 - tests_sql.php checkboxes
+  - bug#0000103 - events.php checkboxes
+  - bug#0000104 - responses.php checkboxes
+  - bug#0000105 - conditions.php checkboxes
+
+2004.09.11  v0.17cvs  silfreed
+  - bug#0000200 - Need a tutorial on how to create custom/template graphs
+  - bug#0000259 - It should be noted that RRDs and variables aren't usable
+    until after the gatherer runs
+  - bug#0000275 - Tutorial on our Interface cache and Disk Cache
+  - bug#0000276 - Document how variable substitution works
+  - bug#0000273 - Move monitors to a new subdevice
+
+2004.09.10  v0.17cvs  silfreed
+  - bug#0000272 - Move subdevices to different device
+
+2004.09.08  v0.17cvs  keb
+  - bug#0000266 - apply templates should return to proper location
+
+2004.09.07  v0.17cvs  balleman
+  - bug#0000213 - tests documentation
+  - bug#0000108 - view.php checkboxes
+  - bug#0000101 - subdevices.php checkboxes
+
+2004.09.07  v0.17cvs  silfreed
+  - bug#0000267 - Device Group can't be reassigned to a new Parent
+
+2004.09.03  v0.17cvs  balleman
+  - bug#0000102 - monitors.php checkboxes
+
+2004.09.03  v0.17cvs  silfreed
+  - bug#0000229 - NavBar mods on snmp_cache_view
+
+2004.09.01  v0.17cvs  keb
+  - bug#0000117 - an 'apply templates' page should be added
+  - add graph count to graphs.php
+
+2004.09.01  v0.17cvs  balleman
+  - bug#0000265 - column size for tests_internal.name not large enough
+  - bug#0000107 - graph_items.php should have checkbox support
+  - cleanup of graph_items.php / refactor graph item move
+  - gradient feature on graph_items.php
+
+2004.08.31  v0.17cvs  balleman
+  - bug#0000263 - internal test for reading a value from a file
+
+2004.08.31  v0.17cvs  silfreed
+  - bug#0000248 - notifications.php has escaping issues
+  - bug#0000261 - breadcrumbs break when you traverse multiple groups
+  - bug#0000099, bug#0000100 - checkboxes on grpnav_list, devices, groups
+
+2004.08.30  v0.17cvs  keb
+  - use global permit values for disabled users and the PERMIT_TYPES array
+
+2004.08.29  v0.17cvs  silfreed
+  - bug#0000244 - global define for permit values
+  - bug#0000248 - notifications.php has escaping issues
+
+2004.08.29  v0.17cvs  keb
+  - ability to duplicate multiple graphs at once
+
+2004.08.28  v0.17cvs  keb
+  - bug#0000106 - checkboxes to delete graphs for graphs.php
+
+2004.08.24  v0.17cvs  balleman
+  - bug#0000258 - "Previous Value" should be available when processing conditions
+  - bug#0000232 - correctly order cisco names on snmp interface cache page
+  - bug#0000231 - make subdevice page sorting aware of cisco names
+
+2004.08.24  v0.17cvs  silfreed
+  - bug#0000257 - doing a delayed insert for dynamic variables lowers mysql overhead
+
+2004.08.21  v0.17cvs  balleman
+  - bug#0000241 - setting for syslog facility
+  - bug#0000250 - internal ucd user+system monitor should return U's when necessary
+  - added the rest of the included internal tests to tests_internal in the default database
+  - bug#0000236 - escaping fields displayed by rrdtool
+  - bug#0000158 - "advanced" monitor graphs, broken by timeframe changes, now fixed
+
+2004.08.20  v0.17cvs  balleman
+  - bug#0000243 - gatherer man-page updates
+  - bug#0000252 - status line, quick implementation
+  - bug#0000251 - disable buttons on save
+  - bug#0000245 - abstract graph duplication, add graph item duplication
+
+2004.08.20  v0.17cvs  silfreed
+  - bug#0000253 - security: SQL injection to bypass auth
+  - sub_dev_param.php: fixed escaping issues
+  - bug#0000254 - Link to GNU Tar page is incorrect
+
+2004.07.27  v0.17cvs  balleman
+  - bug#0000246 - improved monitor sorting on monitors.php and monitors dropdown
+
+2004.07.20  v0.17cvs  keb
+  - bug#0000221 - ability to disable users
+
+2004.07.18  v0.17cvs  silfreed
+  - bug#0000114 - checkboxes to delete users on users.php
+  - bug#0000201 - summary of each section in netmrg
+
+2004.06.30  v0.17cvs  balleman
+  - bug#0000239 - variable substitution for notifications
+  - bug#0000238 - thread timestamps
+
+2004.06.30  v0.17cvs  dwarner
+  - bug#0000235 - fixed SVO users viewing custom graphs in devices
+
+2004.06.17  v0.17cvs  keb
+  - NetMRG now builds on Debian 3.0 (woody)
+
+2004.06.15  v0.17cvs  balleman
+  - bug#0000211 - colorized gatherer output
+  - bug#0000234 - change time frame for a view
+
+2004.06.14  v0.17cvs  balleman
+  - version bump to 0.17cvs
+  - bug#0000233 - 'disable snmp uptime check' should default to off
+  - bug#0000230 - should be able to duplicate monitors
+
+2004.06.06  v0.16cvs  silfreed
+  - bug#0000227 - problem w/ SVO users viewing a primary group
+
+2004.06.04  v0.16cvs  keb
+  - bug#0000219 - build problems.  Merged configure.ac and src/configure.ac
+
+2004.06.04  v0.16cvs  silfreed
+  - bug#0000224 - rrdedit uses @RRDTOOL@ and /bin/sh
+
+2004.06.01  v0.16cvs  balleman
+  - bug#0000177 - graph scaling options
+  - bug#0000223 - docs links
+
+2004.05.31  v0.16cvs  balleman
+  - bug#0000214 - syslog support
+  - bug#0000157 - become a daemon
+
+2004.05.27  v0.16cvs  keb
+  - cleanup subst perl script and make it stop using the .in files
+  - bug#0000147 - fix warnings caused by autoconf PACKAGE_* defines
+
+2004.05.27  v0.16cvs  silfreed
+  - bug#0000209 - docs should be a little prettier
+  - bug#0000063 - all items on device tree have edit link
+  - bug#0000217 - db driven news items
+  - bug#0000218 - easier to maintain public website
+  - bug#0000209 - easier to browse docs
+  - bug#0000182 - FAQ system
+  - bug#0000207 - disable password fields when external auth is in use
+  - bug#0000210 - use cron.d for netmrg RPM installations
+
+2004.05.26  v0.16cvs  silfreed
+  - bug#0000215 - fix view.php edit template/custom graph selection
+  - bug#0000206 - make edit_rrd.pl as shell script and auto-confisize it
+  - SVO users can view items in views attached to a subgroup
+  - bug#0000063 - get into edit mode from device tree
+
+2004.05.25  v0.16cvs  balleman
+  - bug#0000208 - when adding a group, remember your parent
+  - bug#0000202 - ignore snmp uptime option
+  - bug#0000187 - Nth subitem of an OID
+
+2004.05.24  v0.16cvs  silfreed
+  - bug#0000197 - SVO users can't see custom graphs
+  - bug#0000204 - SVO users can't see devices in subgroups when they're
+    granted permissions for the parent group
+
+2004.05.21  v0.16cvs  silfreed
+  - bug#0000203 - when submitting a group 0 (root) on users.php, there was a notice
+  - default error reporting should be warnings and errors
+  - version bump to 0.16cvs
+
+2004.05.20  v0.15cvs  balleman
+  - doc updates for grpdev_list
+
+2004.05.19  v0.15cvs  silfreed
+  - bug#0000196 - access denied graphic not displaying
+  - bug#0000197 - SVO user can't see custom graphs
+  - arbitrary user can't delete/duplicate subdevices
+  - added titles to checkbox thingies
+  - bug#0000159 - adding select box to choose your template for interface cache
+  - fixed bug where you couldn't delete items on the view page w/ % signs
+
+2004.05.18  v0.15cvs  balleman
+  - bug#0000195 - notifications.php errors
+
+2004.05.15  v0.15cvs  balleman
+  - bug#0000192 - override default mysql socket
+  - bug#0000193 - delete group generates warnings
+
+2004.05.08  v0.15cvs  silfreed
+  - bug#0000186 - default view add custom graph db error
+  - bug#0000181 - undefined index dev_type in test_script.php
+  - bug#0000175 - in_array() can't take an array as needle in PHP < 4.2.0
+  - bug#0000174 - srand() needs seeded in php < 4.2.0
+  - bug#0000167 - don't allow non-SVO users to be chroot'd
+  - bug#0000170 - don't allow devices in root group
+
+2004.05.06  v0.15cvs  balleman
+  - bug#0000188 - Select All/None/Invert for checkboxes
+  - bug#0000190 - Intelligent Subdev Defaults
+  - bug#0000183 - escaping for ifAlias, ifDescr in gatherer
+  - bug#0000189 - when applying a template, never duplicate a monitor
+  - bug#0000172 - pthread_cond_wait() instead of busy-wait for thread counter
+
+2004.04.08  v0.15cvs  dwarner
+  - added some quoting to lib/graphing.php to prevent db errors
+
+2004.04.07  v0.15cvs  balleman
+  - bug#0000184 - Solaris doesn't check for NULL in sprintf
+
+2004.03.29  v0.15cvs  keb
+  - bug#0000176 - OpenBSD needs des library to link libsnmp
+
+2004.03.26  v0.15cvs  keb
+  - bug#0000179 - specify rrdtool location to configure
+
+2004.03.17  v0.15cvs  dwarner
+  - fixed tripid bug in snmp_cache_view for 'Monitor/Graph All Checked'
+
+2004.03.17  v0.14  dwarner
+  - version bump to 0.15cvs
+
+2004.03.10  v0.14cvs  dwarner
+  - bug#0000169 - stat.php interface operstatus doesn't match IF-MIB
+  - bug#0000168 - duplicate users are allowed
+
+2004.03.10  v0.14cvs  keb
+  - bug#0000165 - let single-view only users view/change preferences
+  - bug#0000166 - fix bug where user can't modify preferences
+
+2004.03.08  v0.14cvs  silfreed
+  - bug#0000164 - fix breadcrumbs
+  - bug#0000160 - fix device duplication
+
+2004.03.07  v0.14cvs  keb
+  - bug#0000147 - fix thread warnings
+
+2004.02.28  v0.14cvs  balleman
+  - bug#0000158 - support 'advanced' features on monitor graphs
+  - bug#0000139 - monitor mins/maxes should be templated
+
+2004.02.24  v0.14cvs  silfreed
+  - bug#0000161 - space in front of sub groups on device tree page
+
+2004.02.24  v0.13  silfreed
+  - bug#0000046 & bug#0000047 - new group/device navigation w/ updated history bar
+  - started on bug#0000160 - broken device duplication
+  - version bump to 0.14cvs
+
+2004.02.23  v0.13  silfreed
+  - bug#0000150 - prerequisite matching (php safe mode + others)
+
+2004.02.22  v0.13  silfreed
+  - bug#0000046 - better group/device navigation
+
+2004.02.14  v0.13  balleman
+  - bug#0000155 - subdevice name escaping in snmp_cache_view.php
+  - bug#0000154 - add navbar to conditions.php
+
+2004.01.25  v0.13  balleman
+  - bug#0000151 - fixed value field too short on graph_items.php
+  - bug#0000142 - warning/error log (support added in gatherer and database)
+  - bug#0000153 - possible name collision with Solaris mutex_* functions
+
+2004.01.10  v0.13  balleman
+  - bug#0000149 - recache.php security issues
+
+2004.01.08  v0.13  silfreed
+  - bug#0000143 - started deletion dependancy checking
+
+2004.01.04  v0.13  balleman
+  - bug#0000058 - get logos in the docbook manual
+  - copyright year bump
+  - bug#0000140 - interface cache sometimes is left empty
+
+2003.12.30  v0.13  silfreed
+  - bug#0000146 - reparent unparented child groups
+  - bug#0000124 - cleanup groups.php
+
+2003.12.29  v0.13  balleman
+  - bug#0000145 - wrong link on graph_items.php
+  - bug#0000144 - clicking on a view link on the snmp interface cache page results in an error
+  - bug#0000126 - advanced graph view should parse dates like 'workday highlighting' does
+
+2003.12.28  v0.13  balleman
+  - enhance "test not present" checking.
+
+2003.12.19  v0.13  balleman
+  - parameter substitution in sql tests
+  - escaping issue in dereferencing templated monitors
+
+2003.12.19  v0.12  silfreed
+  - bug#0000131 - dynamic 'resume slide show' link
+
+2003.12.18  v0.12  balleman
+  - bug#0000130 - descendants slideshow should sort groups by name
+  - bug#0000132 - there should be a "previous slide" link during slideshow
+  - bug#0000134 - "sums" column should be numerically formatted like the others
+  - bug#0000136 - error on view.php page when trying to edit items
+  - added lots of missing auth checks to view.php
+  - bug#0000135 - read-only users can reorder graph items
+  - bug#0000133 - for tests_sql, long queries should be truncated and an elipsis should be appended
+
+2003.12.15  v0.12  balleman
+  - bug#0000129 - uninitialized snmp session pointer can cause segfault
+
+2003.12.14  v0.10  silfreed
+  - bug#0000128 - add slideshow icon
+
+2003.12.13  v0.10  balleman
+  - bug#0000127 - unauthorized users can view/edit on test_*.php pages
+
+2003.12.05  v0.10  balleman
+  - rework slideshow/view.php to implement many enhancements
+
+2003.11.26  v0.10  keb
+  - bug#0000122 - configure enhancements for solaris
+  - bug#0000123 - fixed several compile-time warnings
+
+2003.11.26  v0.10  balleman
+  - bug#0000120 - gatherer should check db version
+  - bug#0000118 - total of sums should work
+  - bug#0000119 - version bump checklist - not complete
+  - broke [sub]devices.php into functions
+  - bug#0000095 - device duplication
+  - subdevice duplication
+
+2003.11.24  v0.10  silfreed
+  - bug#0000115 - add checkbox support to disks on snmp_cache_view.php
+  - bug#0000088 - added slide show pref to user_prefs.php, use pref in view.php,
+      and set all user prefs to true for users by default
+
+2003.11.22  v0.10  silfreed
+  - favicon
+
+2003.11.20  v0.10  balleman
+  - bug#0000116 - graph_items.php move up / move down icons
+
+2003.11.20  v0.10  silfreed
+  - bug#0000057 - added checkbox support to snmp_cache_view.php to
+      make interfaces
+  - start of user prefs (created table and function to return prefs)
+
+2003.11.17  v0.10  balleman
+  - add debug messages for thread locking
+
+2003.11.17  v0.10  silfreed
+  - bug#0000092 - test_* pages should redirect after saves
+  - bug#0000093 - download page needs 'binary release' support and
+      'prettied up'
+  - bug#0000094 - screenshots needs ordered by most recent release first
+  - bug#0000082 - make netmrg_cron.sh use /bin/sh
+  - bug#0000086 - view.php should display the custom name, not the dbrow name
+  - bug#0000087 - session+external auth 'invalid' bug
+  - bug#0000098 - be more specific in Makefile.am so CVS doesn't cause problems
+  - new arrow images; used on view.php to reorder items
+
+2003.11.16  v0.10  balleman
+  - bug#0000091 - monitor parameter escaping issues
+  - bug#0000074 - escaping issues editing sql tests
+  - handle similar escaping issues for snmp and script tests
+
+2003.10.25  v0.10  balleman
+  - bug#0000083 - indent nested groups on device tree
+  - bug#0000084 - reset sums when a total graph item is used
+  - bug#0000075 - debugging enhancements
+  - trivial rrdtool syntax highlighting
+
+2003.10.24  v0.10  silfreed
+  - updated viewgraph-off.png to be more apparent that there's nothing in it
+    (made it gray instead of black)
+
+2003.10.23  v0.10  balleman
+  - bug#0000081 - applied patch for popen concurrency issue (rojer)
+
+2003.10.21  v0.10  balleman
+  - updated device page docs with new SNMP options
+  - parse out SNMPv2 'bad oid' msgs
+
+2003.10.18  v0.10  silfreed
+  - bug#0000077 - deleting a device from a group deleted that device completely
+
+2003.10.14  v0.10  balleman
+  - bug#0000064 - SNMPv2c support
+  - bug#0000066 - specify SNMP port support
+  - bug#0000068 - specify SNMP timeout support
+
+2003.10.12  v0.10  keb
+  - always check /usr/local/include for libraries in FreeBSD
+  - fix typo in src/configure when detecting xml2 libraries
+
+2003.10.12  v0.10  balleman
+  - bug#0000073 - nav error in sub_dev_params
+  - bug#0000076 - show template name when applying
+
+2003.10.10  v0.10  silfreed
+  - CSS just for separator on view page
+
+2003.10.06  v0.10pre2  silfreed
+  - version bump to 0.10
+  - more doc updates; add custom dsl
+  - add doc directories
+  - updated spec file
+
+2003.10.06  v0.10pre2  balleman
+  - bug#0000072: db error on slide show if no active, viewable devices
+  - doc updates
+
+2003.10.04  v0.10pre2  balleman
+  - bug#0000071: rate of change support in conditions
+
+2003.09.29  v0.10pre2  silfreed
+  - documentation updates
+
+2003.09.27  v0.10pre2  silfreed
+  - bug#0000059: sqaushed by adding grp nav to snmp_cache_view.php
+  - make the device tree have it's 'view' images next to the device it
+    represents
+  - bug#0000070: header redirect on devices.php after db updates
+  - bug#0000067: fixed notifications.php's docs a bit to make them more
+    uniform
+
+2003.09.24  v0.10pre2  balleman
+  - bug#0000060: yesterday's highlight should be displayed on daily graphs
+  - bug#0000069: infinite graph items shouldn't be included in "totals"
+  - bug#0000061: document workday highlight feature
+  - Add <part> tags to the manual for organization
+
+2003.09.23  v0.10pre2  balleman
+  - bug#0000054: program crash on problem with runtime file
+  - bug#0000065: can't change graph width/height
+  - Set height/width for monitor graphs to default for custom graphs
+
+2003.09.13  v0.10pre1  silfreed
+  - bug#0000026: hiding advanced options on graph items edit page
+  - bug#0000049: moved everything from DBChangeLog to netmrg.mysql and
+      added names to template graphs
+  - added 'advanced' hiding on graphs.php
+  - bug#0000050: updater to go from version to version
+  - move external auth to config file
+  - version bump to 0.10pre2
+
+2003.09.13  v0.10pre1  balleman
+  - bug#0000042: --base support on graphs
+  - bug#0000043: support logarithmic display (-o)
+  - support legend hiding (-g)
+  - bug#0000048: duplication problems
+  - bug#0000020: polling interval configuration
+  - bug#0000039: disk graph automagic, finalize
+
+2003.09.12  v0.10pre1  silfreed
+  - bug#0000041: add navigational history to the top of pages underneath 'Groups'
+
+2003.09.11  v0.10pre1  balleman
+  - bug#0000045: modularize SNMP further so that sessions aren't created on
+      each SNMP query
+  - bug#0000044: rojer's patches - error handling, windows disk mappings,
+      and a series of new 'internal' tests.
+
+2003.09.08  v0.10pre1  silfreed
+  - bug#0000031: added a 'user_prefs.php' page as well as a whole new system
+      of writing frontend pages
+
+2003.08.31  v0.10pre1  silfreed
+  - bug#0000024: the 'next' link shouldn't always work now
+  - bug#0000027: when adding a monitor, it won't select the first item in the
+      database - it should just select the first item
+  - bug#0000035: deleting a group wasn't deleting devices because of the
+      dev_parents change.
+  - bug#0000034: wrapper script complains about more errors
+
+2003.08.27  v0.10pre1 balleman
+  - kill feature#28 graph dissection ("show children") feature restored
+
+2003.08.25  v0.10pre1 balleman
+  - kill bug#25 - log device names
+
+2003.08.02  v0.10pre1 balleman
+  - kill bug#0000008 - hide password on command line
+  - add password prompting capability
+
+2003.07.28  v0.8  silfreed
+  - lots of doc upgrades
+  - makedoctree addition to make docs for the website
+  - xml config for web interface
+  - version bump to 0.10pre1
+
+2003.07.28  v0.8  balleman
+  - bug#0000018 - SubDevParam page doesn't have a working delete
+  - documentation
+  - xml config for gatherer
+
+2003.07.17  v0.8  silfreed
+  - fixing directory paths
+  - bug#0000014: fixed static paths for lockfile and runtime netmrg.cpp
+
+2003.07.16  v0.8  silfreed
+  - restructured cvs tree
+  - added kevin's latest autoconf patch
+
+2003.07.14  v0.8  silfreed
+  - posted beta.netmrg.net to be live at www.netmrg.net
+  - added makecvssnap to create cvs snapshots
+
+2003.07.07  v0.8  silfreed
+  - bug#0000005: where id != '$grp_id' should do the trick
+  - bug#0000006: spiffy javascript to prevent min >= max in monitors.php
+  - bug#0000007: spiffy javascript to write a 'U' in the min/max column in monitors.php
+  - bug#0000004: can't figure out how to speed things up
+  - added a 'makedist' script that will make a tarball out of the latest cvs
+
+2003.07.06  v0.8  silfreed
+  - enclose_graph checks for auth now
+  - added an 'ACCESS DENIED' png for get_graph auth
+  - get_graph now auths
+  - external auth now works
+
+2003.07.06  v0.8  balleman
+  - bug#0000001: chrooting code had multiple issues with respect to device tree
+  - break netmrg.cpp into more managable chunks (devices, monitors, mappings)
+  - add settings management to gatherer
+  - allow for override of some settings by command line
+  - more verbose/graceful error handling in gatherer during startup/database failures
+
+2003.07.05  v0.8  silfreed
+  - bug#0000002: updated logos on beta website
+  - bug#0000003: code to detect if type was passed in didn't take account for
+    already existing type
+  - modified view_check_auth() so that it works again on the view page
+
+2003.07.02  v0.8  silfreed
+  - new bugtracker using mantisbt (http://mantisbt.sourceforge.net)
+
+2003.05.26  v0.8  silfreed
+  - bug#7 : status images not vertically centered
+  - bug#8 : monitors.php: no script options for new monitor
+  - viewgraph now implemented on device_tree.php w/ different
+    images for items w/ associated items or not
+
+2003.05.15  v0.8  balleman
+  - enclose_graph.php reworked
+    - capability for 'zooming' on both axes
+  - ability to apply arbitrary templates
+
+2003.05.08  v0.8  balleman
+  - abstract all mysql_* calls to db_* calls
+  - db_escape_string deployed where seemingly useful
+
+2003.05.06  v0.8  balleman
+  - "Make Graph" functionality restored for interfaces
+  - graph duplication fixed (custom and template)
+
+2003.04.21  v0.8  balleman
+  - graph templating exists (and works!)
+
+2003.04.21  v0.8  silfreed
+  - bug#2 : can't fix ifName/IfDescr <Graph Traffic> link
+  - bug#3 : fixed javascript bug w/ slashes
+  - bug#4 : device_tree.php expand/collapse bug
+
+2003.04.17  v0.8  silfreed
+  - format.php:
+    * cleanup/documentation
+    * reworking make_display_table() and make_display_item() to get
+      rid of $custom_add_link and make the code easier to read/use
+  - www/*.php: modifying all pages that use above functions to use new way
+
+2003.04.15  v0.8  balleman
+  - reworking 'views' in preparation of graph templating
+
+2003.04.01  v0.8  silfreed
+  - making subpages CSS happy; still need to alternate list items
+
+2003.03.31  v0.8  balleman
+  - killed remainder of "mon_" files and tables
+
+2003.03.24  v0.8  silfreed
+  - more graphics (svg is good)
+  - mostly got image specfiles working
+
+2003.03.11  v0.8  balleman
+  - change how graphs and graph items work
+  - notifications and responses now work
+
+2003.03.07  v0.8  silfreed
+  - public website has a good majority of it finished. almost ready to post
+
+2003.02.03  v0.8  balleman
+  - event log working
+  - bug in move up/down fixed (used to break after an item was deleted)
+
+2003.01.25  v0.8  balleman
+  - C++ program performs disk and interface caching
+  - web interface has been updated to accept this
+
+2003.01.19  v0.8  silfreed
+  - created http://lists.netmrg.net using phpBB
+
+2003.01.18  v0.8  silfreed
+  - created http://bugs.netmrg.net and crossed one more thing off my TODO
+  - changing my public email for netmrg to be 'silfred@netmrg.net'
+
+2003.01.15  v0.8  silfreed
+  - implemented external http auth support (untested)
+
+2003.01.13  v0.8  silfreed
+  - updated copyright info on every .php page to refer to doc/LICENSE
+  - new versioning/changelog scheme
+
+2003.01.12  v0.8  silfreed
+  - wrote device_tree.php (based on last_status.php)
+  - auth code much more complete
+    * will logout a user if they've been logged in too long
+    * will logout a user if they're from a new IP
+    * implemented on every page
+  - menu.php updated to use static array (in stat.php)
+    * includes support for displaying links based on auth levels
+
+
+== versions before 2002.11.19 didn't have a date assocated with them ==
+0.79.3a
+  - CVS-ification
+  - continue rewrite of C++ code
+  - extensive use of CSS
+  - update of all web pages to work with 'register_globals' off
+    * this requires PHP 4.1+
+  - use php long start tags instead of short ones
+  - C++ code supports net-snmp library
+
+0.79.2a
+  - reconstruction of C++ code
+
+0.79.1a
+  - sub-devices and database restructuring.
+  - menu and title bar redesign
+
+0.79.0a
+  - First version with a change log.
+  - alternating table row colors
+  - numeric sorting of if_index in snmp_cache
+  - working multiple simultaneous pthreads
+  - tiered deletion (facilitating orphan prevention)
+  - make color selections static
+  - allow for nested groups
+  - removed cookie expiration for device tree
+  - fixed some major inefficiencies in the device tree
+  - popup color chooser
+  - javascript-based delete confirmation
+

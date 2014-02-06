@@ -1,0 +1,31 @@
+
+                          Chapter 6. Upgrade Procedure
+
+   After doing a 'make install' as described in the chapter on Installing
+   NetMRG, the next step is to run the web-based updater. This is
+   accomplished by logging into NetMRG with administrator privileges, and
+   following the prompts. NetMRG's web interface will not operate normally
+   and the gatherer will not run until the web-based upgrade is performed.
+   Non-administrator users will only receive a message directing them to
+   contact their NetMRG administrator.
+
+   If you need to perform an upgrade, the updater will prompt you to apply
+   all updates. Clicking this link will perform all necessary updates for
+   this release.
+
+   If for some reason an update fails, or you would like to re-apply an
+   update for any reason, you can goto the updater and goto View all
+   available updates. This will present you a list of the updates that are
+   available and their status (applied, not applied, or error). If you have
+   problems updating from one version to the next, you can force individual
+   updates that fail so that they're considered 'applied'. Once all updates
+   are applied for a particular version, the database will be automatically
+   updated to the latest version that has all updates applied.
+
+References
+
+   Visible links
+   . file:///home/silfreed/src/netmrg/share/doc/txt/index.html
+   . file:///home/silfreed/src/netmrg/share/doc/txt/installation.html
+   . file:///home/silfreed/src/netmrg/share/doc/txt/install.html
+   . file:///home/silfreed/src/netmrg/share/doc/txt/reference.html

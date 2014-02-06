@@ -1,0 +1,8 @@
+Alias /netmrg "@localstatedir@/www/netmrg/webfiles"
+<Directory "@localstatedir@/www/netmrg/webfiles">
+    Options Indexes
+    AllowOverride None
+    Order allow,deny
+    Allow from all
+</Directory>
+

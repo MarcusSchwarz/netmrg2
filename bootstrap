@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -x
+
+aclocal -I m4 --install
+
+autoheader
+
+automake --foreign --add-missing --copy \
+	Makefile \
+	etc/Makefile \
+	m4/Makefile \
+	src/Makefile \
+	var/Makefile \
+	var/lib/Makefile \
+	var/lib/rrd/Makefile \
+	www/Makefile
+
+autoconf

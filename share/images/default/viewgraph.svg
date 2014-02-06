@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
+<svg
+   version="1"
+   x="0"
+   y="0"
+   width="250pt"
+   height="250pt"
+   id="svg101"
+   sodipodi:version="0.31.1"
+   sodipodi:docname="/home/silfreed/cvs/netmrg/images/default/viewgraph2.svg"
+   sodipodi:docbase="/home/silfreed/cvs/netmrg/images/default/"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink">
+  <sodipodi:namedview
+     id="base" />
+  <defs
+     id="defs103" />
+  <path
+     d="M 32.5 251.25 C 32.5 251.25 156.25 201.25 156.25 201.25 C 156.25 201.25 250 237.5 250 237.5 C 250 237.5 342.5 156.25 342.5 156.25 C 342.5 156.25 341.25 341.25 341.25 341.25 C 341.25 341.25 33.75 342.5 33.75 342.5 C 33.75 342.5 33.75 255 32.5 251.25 z "
+     style="font-size:12;fill-rule:evenodd;stroke:#e67f00;stroke-width:1.25;fill:#e67f00;fill-opacity:1;stroke-opacity:1;stroke-dasharray:none;"
+     id="path120"
+     transform="translate(-31.25,-31.25)" />
+  <path
+     style="font-size:12;fill-rule:evenodd;stroke-width:1pt;"
+     d="M 31.25 31.25 L 31.25 343.75 L 343.75 343.75 L 343.75 31.25 L 31.25 31.25 z M 37.5 37.5 L 37.5 337.5 L 337.5 337.5 L 337.5 37.5 L 37.5 37.5 z "
+     id="path133"
+     transform="translate(-31.25,-31.25)" />
+</svg>

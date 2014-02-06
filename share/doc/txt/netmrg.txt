@@ -1,0 +1,931 @@
+The NetMRG Reference
+
+Brady Alleman
+
+Douglas E. Warner
+
+   Copyright © 2003-2007 Brady Alleman and Douglas E. Warner
+     __________________________________________________________
+
+   Table of Contents
+   I. Overview
+
+        1. Introduction
+        2. Revision History
+
+   II. Installation
+
+        3. Software Requirements
+        4. Satisfying Requirements
+        5. Installation Procedure
+        6. Upgrade Procedure
+
+   III. Reference
+
+        I. Manual Pages
+
+              netmrg-gatherer -- Gathers data from devices.
+
+   7. Contact Information
+   A. GNU General Public License
+
+        Preamble
+        TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND
+                MODIFICATION
+
+              Section 0
+              Section 1
+              Section 2
+              Section 3
+              Section 4
+              Section 5
+              Section 6
+              Section 7
+              Section 8
+              Section 9
+              Section 10
+              NO WARRANTY Section 11
+              Section 12
+
+        How to Apply These Terms to Your New Programs
+
+I. Overview
+
+   Table of Contents
+   1. Introduction
+   2. Revision History
+     __________________________________________________________
+
+Chapter 1. Introduction
+
+   Welcome to NetMRG! NetMRG is a database-driven network
+   monitoring and graphing tool for use on Linux systems. It
+   offers an intuitive web-based configuration, customized
+   monitoring capabilities for unusual situations, a fast
+   multi-threaded polling application, and brilliant graphs
+   rendered by RRDTOOL.
+
+   This document aims to guide you swiftly through the
+   installation and configuration of NetMRG, as well as act as a
+   reference for those with existing installations.
+     __________________________________________________________
+
+Chapter 2. Revision History
+
+     * 0.20
+       2008.04.11
+       Major feature enhancements and bug fixes; Fixed compilation
+       under GCC 4.3; restructuring of view pages to show graph
+       titles (for easier in-page searching) and icons for graph
+       actions; fixed mysql 5 compatibility; added device
+       properties (keeps track of things like model #, serial #,
+       etc); added ability to chain interfaces to travel between
+       them; added ajax monitor selection on graphs.
+     * 0.19
+       2006.02.03
+       Major Feature Enhancements and Bug Fixes; Major Web
+       Interface redesign to give more room for graphs and ease
+       overall use. Security enhancements behind the scenes to
+       ensure correct permissions checking. Added a search
+       interface that will search groups, devices, sub devies, and
+       sub device parameters. RRDtool 1.2 support (including graph
+       smoothing); Depricated use of netmrg_cron.sh in favor of
+       using netmrg-gatherer; migrated bulk of docs to wiki;
+       numerous other bugfixes and enhancements.
+     * 0.18.2
+       2004.11.09
+       Minor Bug Fixes; Fixed some escaping problems on the
+       interface cache page, disabled the 'quickprint' Net-SNMP
+       option for better compatibility, fixed the snmp-failure
+       test, fixed an SVO-user view issue, and added failover for
+       duplicate ifNames when adding interfaces.
+     * 0.18.1
+       2004.11.01
+       Minor Bug Fixes; Fixed a small bug where the gatherer would
+       not register negative values.
+     * 0.18
+       2004.10.25
+       Major Bug Fixes; Fixed an issue preventing form submissions
+       on some browsers, fixed PHP string escaping problems, fixed
+       inability to create inverted stacked graphs, and fixed
+       parameter substituion and documentation regarding
+       notifications and responses. Added better support on
+       FreeBSDs (4.8-5.2) and x86-64 architectures (Linux and
+       FreeBSD), the ability to multiply summed values, MySQL
+       timeouts, simple value parsing (to get the numeric content
+       out of quoted numbers, etc), graphic icons for most
+       actions, support for a default external auth user (with
+       regards to permissions), and cleaned up the gatherer build
+       process output.
+     * 0.17
+       2004.09.13
+       Minor Feature Enhancements; Added colorized gatherer
+       output, checkbox support on multiple pages, the ability to
+       disable users, fixed a potential SQL-injection bug, updated
+       navigation on group pages, updated tutorials.
+     * 0.16
+       2004.06.10
+       Minor Bugfixes and Feature Enhancements; fixed a user
+       management bug and several bugs related to 'single view
+       only' users not being able to see graphs, added the ability
+       to ignore SNMP uptime checks for devices (permitting the
+       monitoring of broken devices), added the ability to do an
+       SNMP walk of an OID (useful for the Windows SNMP agent),
+       enhanced group/device management, cleaned up autoconf (now
+       supports FC2), and added experimental syslog and daemon
+       support in the gatherer.
+     * 0.15
+       2004.05.20
+       Minor Bugfixes and Feature Enhancements; fixes for various
+       db errors (including the infamous one on
+       snmp_cache_view.php), better cross-platform compilation,
+       select all/none/invert checkbox support, support for
+       choosing what graph to apply to an interface, better
+       support for php < 4.2.0, and some security fixes for
+       single-view-only users.
+     * 0.14
+       2004.03.10
+       Minor Bugfixes and Feature Enhancements; escaping issues in
+       template dereferencing, broken links on various pages,
+       security issues regarding manual SNMP recaching, broken
+       duplication on non-cutting-edge MySQL, more parameter
+       substitution in SQL tests, better date parsing for advanced
+       graph view, nav-bar and group navigation enhancements,
+       advanced view capability for monitor-only graphs.
+     * 0.13
+       2003.12.19
+       Minor Bugfixes and Feature Enhancements; slide show
+       ordering, previous slide, resume slide show, better
+       formatting of 'sums', errors on view editing, fixes to
+       permissions checking, and an occassional segfault in the
+       gatherer was fixed.
+     * 0.12
+       2003.12.15
+       Major Feature Enhancents and Bugfixes; added SNMPv2
+       support, fixed a bug that would cause a device to be
+       deleted from all groups, fixed session timeout when using
+       external auth, added checkbox support to interface/disk
+       cache pages, slide show enhancements, fixed permission
+       issue where unauthorized users could view/edit test_* pages
+     * 0.10
+       2003.10.05
+       Major bug fix; fixes a db error when trying to view
+       monitors, a bug that would always set the width and height
+       to zero when creating graphs, and makes conditions with
+       'rate of change' work. Many documentation upgrades.
+     * 0.10pre2
+       2003.09.15
+       This release focuses on adding new features and sqaushing
+       bugs. In addition, there is now an 'updater.php' that is
+       required to be run between versions. A minor change needs
+       to be made to everyone's 'netmrg.xml' to add an
+       'externalauth' field inside the 'website' section.
+     * 0.10pre1
+       2003.07.28
+       Initial publication
+
+II. Installation
+
+   Table of Contents
+   3. Software Requirements
+   4. Satisfying Requirements
+   5. Installation Procedure
+   6. Upgrade Procedure
+     __________________________________________________________
+
+Chapter 3. Software Requirements
+
+   NetMRG Requires the following packages for compilation.
+
+     * PHP, Version >= 4.1
+     * MySQL, Version >= 3.23
+     * RRDTOOL, Version >= 1.0.28
+     * Libxml2, Version >= 2.30
+     * Libstdc++, Version >= 3.2
+       Versions earlier than this may compile just fine, but may
+       experience runtime issues. Specifically, we experienced
+       software crashes on an SMP machine running version 2.96
+       that were resolved by upgrading to 3.2.
+     * NET/UCD-SNMP, Version >= 4.2.2
+     __________________________________________________________
+
+Chapter 4. Satisfying Requirements
+
+   Specific instructions to satisfy dependencies for certain
+   platforms are presented below. They should be used more as
+   suggestions, not necessarily step-by-step instructions. You may
+   need to do more than what is listed, or much less, depending on
+   the options you selected when installing your operating system.
+
+     * Red Hat Linux
+          + In order to satisfy the libstdc++ requirement, Redhat
+            8.0 or above is required. NetMRG may not be stable on
+            older versions of libstdc++.
+          + Install the following RPMs from your Red Hat
+            installation media:
+               o httpd
+               o php
+               o php-mysql
+               o mysql
+               o mysql-server
+               o mysql-devel
+               o libxml2
+               o libxml2-devel
+               o net-snmp
+               o net-snmp-devel
+               o net-snmp-utils
+          + Installing RRDTOOL
+               o Download an RRDTOOL RPM from
+                 http://www.freshrpms.net/
+               o OR Download the RRDTOOL source from
+                 http://www.rrdtool.org/ and compile it.
+          + Installing precompiled NetMRG RPM
+            Download the latest NetMRG RPM and install it as
+            follows:
+$ rpm -Uvh netmrg-0.10.rpm
+            You will still have to perform the following tasks
+            listed in the Install Instructions:
+               o Setup the Database
+               o Configure Apache
+               o Configure the Installation
+               o Setup Crontab
+     * FreeBSD (4.8)
+          + Install the following ports:
+               o www/apache13
+               o rrdtool
+               o net-snmp
+               o libxml2
+               o mod_php4 (specify MySQL support)
+               o lang/gcc32
+          + Run configure, specifying gcc32:
+./configure 'LDFLAGS=-L/usr/local/gcc3/lib' 'CPPFLAGS=-I/usr/local/gcc3
+/include' 'CXX=g++32'
+     __________________________________________________________
+
+Chapter 5. Installation Procedure
+
+    1. Untar to some directory like /tmp/ (it will untar into a
+       'netmrg' directory)
+cd /tmp
+wget http://www.netmrg.net/download/release/netmrg.tar.gz
+tar xzvf netmrg.tar.gz
+    2. Now we need to compile and install the source. cd into the
+       directory made by your tar command and type the following:
+./configure
+make
+make install
+
+     Note: If configure fails to locate the needed libraries they
+     can be manually specified. Run ./configure --help for
+     details on the necessary options.
+    3. Setup the database
+       Now we need to setup the database. Please change at least
+       the password (netmrgpass below).
+mysqladmin create netmrg
+mysql -u root -p netmrg < share/netmrg.mysql
+mysql -u root -p
+> grant all on netmrg.* to netmrguser@localhost identified by 'netmrgpa
+ss';
+    4. You need to modify your apache config in order to make your
+       NetMRG installation live (commonly in
+       /etc/httpd/conf/httpd.conf).
+       The first is to alias /netmrg to the installed web
+       directory (commonly /usr/local/var/www/netmrg/webfiles).
+Alias /netmrg "/usr/local/var/www/netmrg/webfiles"
+       The easier way (if you're running Apache >= 1.3) is to just
+       Include the conf file we've created anywhere in your file
+       (near the bottom is fine).
+Include /usr/local/etc/netmrg.conf
+       You will need to restart your Apache after making config
+       changes. Telling it to reload its config should be good
+       enough
+killall -HUP httpd
+    5. Configure the Installation
+       All of NetMRG's common configuration options are controlled
+       by an XML file, normally located at
+       /usr/local/etc/netmrg.xml. You should edit this file to
+       make any necessary changes before continuing with
+       installation.
+       For most installations, you will at least need to edit
+       netmrg.xml to reflect your database username and password.
+    6. Setup Permissions
+       NetMRG does not need superuser permissions to run,
+       therefore we will setup a user for it.
+# useradd netmrg
+# chown netmrg:netmrg /usr/local/var/log/netmrg
+# chown netmrg:netmrg /usr/local/var/lib/netmrg/rrd
+    7. Setup crontab
+       You can setup the crontab entries in two places: either
+       edit /etc/crontab, or run crontab -e as the netmrg user.
+       For 'crontab -e', use an entry similar to this:
+*/5 * * * * bash -c "if [ -f /usr/local/var/lock/subsys/netmrg ]; then
+/usr/local/bin/netmrg-gatherer; fi"
+       To edit the master crontab, edit /etc/crontab and add a
+       line similar to this:
+*/5 * * * * netmrg bash -c "if [ -f /usr/local/var/lock/subsys/netmrg ]
+; then /usr/local/bin/netmrg-gatherer; fi"
+    8. Point your web browser at your install, and start graphing
+       things! The default login is admin and the default password
+       is nimda. Point your web browser at the host you built this
+       on (something similar to http://yourhost.com/netmrg/) and
+       please change your password!
+     __________________________________________________________
+
+Chapter 6. Upgrade Procedure
+
+   After doing a 'make install' as described in the chapter on
+   Installing NetMRG, the next step is to run the web-based
+   updater. This is accomplished by logging into NetMRG with
+   administrator privileges, and following the prompts. NetMRG's
+   web interface will not operate normally and the gatherer will
+   not run until the web-based upgrade is performed.
+   Non-administrator users will only receive a message directing
+   them to contact their NetMRG administrator.
+
+   If you need to perform an upgrade, the updater will prompt you
+   to apply all updates. Clicking this link will perform all
+   necessary updates for this release.
+
+   If for some reason an update fails, or you would like to
+   re-apply an update for any reason, you can goto the updater and
+   goto View all available updates. This will present you a list
+   of the updates that are available and their status (applied,
+   not applied, or error). If you have problems updating from one
+   version to the next, you can force individual updates that fail
+   so that they're considered 'applied'. Once all updates are
+   applied for a particular version, the database will be
+   automatically updated to the latest version that has all
+   updates applied.
+
+III. Reference
+
+   Table of Contents
+   I. Manual Pages
+
+I. Manual Pages
+
+   Table of Contents
+   netmrg-gatherer -- Gathers data from devices.
+
+netmrg-gatherer
+
+Name
+
+   netmrg-gatherer -- Gathers data from devices.
+
+Synopsis
+
+   netmrg-gatherer [OPTIONS]
+
+Description
+
+   netmrg-gatherer performs tests on all enabled hosts in NetMRG.
+   It will store results in RRD files using RRDTOOL(1) and perform
+   actions in response to events.
+
+Global Options
+
+   -h
+
+          Displays usage information and exits.
+
+   -v
+
+          Displays software version and exits.
+
+Operating Options
+
+   -t num threads
+
+          Run no more than the specified number of threads
+          simultaneously.
+
+   -X
+
+          Become a daemon.
+
+   -M mode
+
+          Mode of operation. This option controls the manner in
+          which the gatherer operates. The modes currently
+          supported are "once" (the default, best used manually or
+          via cron) which runs all tests once then exits, and
+          "wait" (best used when daemonized) which will run all
+          tests, wait for the gatherer interval to expire, and
+          then repeat.
+
+     Note: To run netmrg-gatherer daemonized, the recommended set
+     of options at this point is "-X -S -M wait" which will
+     daemonize, repeat the gather cycle on each interval, and
+     write output to syslog.
+
+Logging, Debugging and Verbosity Options
+
+   -S
+
+          Syslog. Logs messages to syslog instead of stdout.
+
+   -b
+
+          Bland. Disables color output. By default,
+          netmrg-gatherer will display color output when connected
+          to a terminal, but will use bland output when its output
+          is written to a file. This option should only be needed
+          when the detection mechanism has failed, or the user
+          doesn't want to see colors when running the program by
+          hand.
+
+   -a
+
+          All. Displays all log messages.
+
+   -m
+
+          Most. Displays more messages than default.
+
+   -q
+
+          Quiet. Silences all output.
+
+   -l level mask
+
+          Only outputs messages that match the specified level
+          mask.
+
+   -c component mask
+
+          Only outputs messages that match the specified component
+          mask.
+
+   -s
+
+          Safe. Tries to keep sensitive information out of the
+          displayed messages.
+
+Configuration File Options
+
+   -C config file
+
+          Uses the specified XML configuration file.
+
+   -K config file
+
+          Parses the specified XML configuration file and exits.
+
+Database Options
+
+   -H host
+
+          Uses the specified host name for connecting to the
+          database.
+
+   -D database
+
+          Uses the specified database name.
+
+   -u user name
+
+          Uses the specified user name for connecting to the
+          database.
+
+   -p [password]
+
+          Uses the specified password for connecting to the
+          database. If no password is specified, the user is
+          prompted to enter one.
+
+Recaching Options
+
+   -i device id
+
+          Performs an interface recache on the specified device.
+
+   -d device id
+
+          Performs a disk recache on the specified device.
+
+     Note: Recaching options are intended for use by the web
+     interface. These options should not be generally used by end
+     users.
+     __________________________________________________________
+
+Chapter 7. Contact Information
+
+   We have great aspirations for what NetMRG could become, but as
+   with all open-source software, such aspriations can only be
+   achieved with the active participation of the open-source
+   community. Please do your part and support software that you
+   use by helping to answer support questions on forums and report
+   bugs to developers. Thanks!
+
+     * Main Website - http://www.netmrg.net/
+     * Online Docs- http://wiki.netmrg.net/
+     * Support Forum - http://lists.netmrg.net/
+     * Bug Reporting and Tracking - http://bugs.netmrg.net/
+     __________________________________________________________
+
+Appendix A. GNU General Public License
+
+Preamble
+
+   The licenses for most software are designed to take away your
+   freedom to share and change it. By contrast, the GNU General
+   Public License is intended to guarantee your freedom to share
+   and change free software - to make sure the software is free
+   for all its users. This General Public License applies to most
+   of the Free Software Foundationʼs software and to any other
+   program whose authors commit to using it. (Some other Free
+   Software Foundation software is covered by the GNU Library
+   General Public License instead.) You can apply it to your
+   programs, too.
+
+   When we speak of free software, we are referring to freedom,
+   not price. Our General Public Licenses are designed to make
+   sure that you have the freedom to distribute copies of free
+   software (and charge for this service if you wish), that you
+   receive source code or can get it if you want it, that you can
+   change the software or use pieces of it in new free programs;
+   and that you know you can do these things.
+
+   To protect your rights, we need to make restrictions that
+   forbid anyone to deny you these rights or to ask you to
+   surrender the rights. These restrictions translate to certain
+   responsibilities for you if you distribute copies of the
+   software, or if you modify it.
+
+   For example, if you distribute copies of such a program,
+   whether gratis or for a fee, you must give the recipients all
+   the rights that you have. You must make sure that they, too,
+   receive or can get the source code. And you must show them
+   these terms so they know their rights.
+
+   We protect your rights with two steps:
+
+    1. copyright the software, and
+    2. offer you this license which gives you legal permission to
+       copy, distribute and/or modify the software.
+
+   Also, for each authorʼs protection and ours, we want to make
+   certain that everyone understands that there is no warranty for
+   this free software. If the software is modified by someone else
+   and passed on, we want its recipients to know that what they
+   have is not the original, so that any problems introduced by
+   others will not reflect on the original authorsʼ reputations.
+
+   Finally, any free program is threatened constantly by software
+   patents. We wish to avoid the danger that redistributors of a
+   free program will individually obtain patent licenses, in
+   effect making the program proprietary. To prevent this, we have
+   made it clear that any patent must be licensed for everyoneʼs
+   free use or not licensed at all.
+
+   The precise terms and conditions for copying, distribution and
+   modification follow.
+     __________________________________________________________
+
+TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+
+Section 0
+
+   This License applies to any program or other work which
+   contains a notice placed by the copyright holder saying it may
+   be distributed under the terms of this General Public License.
+   The "Program", below, refers to any such program or work, and a
+   "work based on the Program" means either the Program or any
+   derivative work under copyright law: that is to say, a work
+   containing the Program or a portion of it, either verbatim or
+   with modifications and/or translated into another language.
+   (Hereinafter, translation is included without limitation in the
+   term "modification".) Each licensee is addressed as "you".
+
+   Activities other than copying, distribution and modification
+   are not covered by this License; they are outside its scope.
+   The act of running the Program is not restricted, and the
+   output from the Program is covered only if its contents
+   constitute a work based on the Program (independent of having
+   been made by running the Program). Whether that is true depends
+   on what the Program does.
+     __________________________________________________________
+
+Section 1
+
+   You may copy and distribute verbatim copies of the Programʼs
+   source code as you receive it, in any medium, provided that you
+   conspicuously and appropriately publish on each copy an
+   appropriate copyright notice and disclaimer of warranty; keep
+   intact all the notices that refer to this License and to the
+   absence of any warranty; and give any other recipients of the
+   Program a copy of this License along with the Program.
+
+   You may charge a fee for the physical act of transferring a
+   copy, and you may at your option offer warranty protection in
+   exchange for a fee.
+     __________________________________________________________
+
+Section 2
+
+   You may modify your copy or copies of the Program or any
+   portion of it, thus forming a work based on the Program, and
+   copy and distribute such modifications or work under the terms
+   of Section 1 above, provided that you also meet all of these
+   conditions:
+
+    a. You must cause the modified files to carry prominent
+       notices stating that you changed the files and the date of
+       any change.
+    b. You must cause any work that you distribute or publish,
+       that in whole or in part contains or is derived from the
+       Program or any part thereof, to be licensed as a whole at
+       no charge to all third parties under the terms of this
+       License.
+    c. If the modified program normally reads commands
+       interactively when run, you must cause it, when started
+       running for such interactive use in the most ordinary way,
+       to print or display an announcement including an
+       appropriate copyright notice and a notice that there is no
+       warranty (or else, saying that you provide a warranty) and
+       that users may redistribute the program under these
+       conditions, and telling the user how to view a copy of this
+       License. (Exception: If the Program itself is interactive
+       but does not normally print such an announcement, your work
+       based on the Program is not required to print an
+       announcement.)
+
+   These requirements apply to the modified work as a whole. If
+   identifiable sections of that work are not derived from the
+   Program, and can be reasonably considered independent and
+   separate works in themselves, then this License, and its terms,
+   do not apply to those sections when you distribute them as
+   separate works. But when you distribute the same sections as
+   part of a whole which is a work based on the Program, the
+   distribution of the whole must be on the terms of this License,
+   whose permissions for other licensees extend to the entire
+   whole, and thus to each and every part regardless of who wrote
+   it.
+
+   Thus, it is not the intent of this section to claim rights or
+   contest your rights to work written entirely by you; rather,
+   the intent is to exercise the right to control the distribution
+   of derivative or collective works based on the Program.
+
+   In addition, mere aggregation of another work not based on the
+   Program with the Program (or with a work based on the Program)
+   on a volume of a storage or distribution medium does not bring
+   the other work under the scope of this License.
+     __________________________________________________________
+
+Section 3
+
+   You may copy and distribute the Program (or a work based on it,
+   under Section 2 in object code or executable form under the
+   terms of Sections 1 and 2 above provided that you also do one
+   of the following:
+
+    a. Accompany it with the complete corresponding
+       machine-readable source code, which must be distributed
+       under the terms of Sections 1 and 2 above on a medium
+       customarily used for software interchange; or,
+    b. Accompany it with a written offer, valid for at least three
+       years, to give any third party, for a charge no more than
+       your cost of physically performing source distribution, a
+       complete machine-readable copy of the corresponding source
+       code, to be distributed under the terms of Sections 1 and 2
+       above on a medium customarily used for software
+       interchange; or,
+    c. Accompany it with the information you received as to the
+       offer to distribute corresponding source code. (This
+       alternative is allowed only for noncommercial distribution
+       and only if you received the program in object code or
+       executable form with such an offer, in accord with
+       Subsection b above.)
+
+   The source code for a work means the preferred form of the work
+   for making modifications to it. For an executable work,
+   complete source code means all the source code for all modules
+   it contains, plus any associated interface definition files,
+   plus the scripts used to control compilation and installation
+   of the executable. However, as a special exception, the source
+   code distributed need not include anything that is normally
+   distributed (in either source or binary form) with the major
+   components (compiler, kernel, and so on) of the operating
+   system on which the executable runs, unless that component
+   itself accompanies the executable.
+
+   If distribution of executable or object code is made by
+   offering access to copy from a designated place, then offering
+   equivalent access to copy the source code from the same place
+   counts as distribution of the source code, even though third
+   parties are not compelled to copy the source along with the
+   object code.
+     __________________________________________________________
+
+Section 4
+
+   You may not copy, modify, sublicense, or distribute the Program
+   except as expressly provided under this License. Any attempt
+   otherwise to copy, modify, sublicense or distribute the Program
+   is void, and will automatically terminate your rights under
+   this License. However, parties who have received copies, or
+   rights, from you under this License will not have their
+   licenses terminated so long as such parties remain in full
+   compliance.
+     __________________________________________________________
+
+Section 5
+
+   You are not required to accept this License, since you have not
+   signed it. However, nothing else grants you permission to
+   modify or distribute the Program or its derivative works. These
+   actions are prohibited by law if you do not accept this
+   License. Therefore, by modifying or distributing the Program
+   (or any work based on the Program), you indicate your
+   acceptance of this License to do so, and all its terms and
+   conditions for copying, distributing or modifying the Program
+   or works based on it.
+     __________________________________________________________
+
+Section 6
+
+   Each time you redistribute the Program (or any work based on
+   the Program), the recipient automatically receives a license
+   from the original licensor to copy, distribute or modify the
+   Program subject to these terms and conditions. You may not
+   impose any further restrictions on the recipientsʼ exercise of
+   the rights granted herein. You are not responsible for
+   enforcing compliance by third parties to this License.
+     __________________________________________________________
+
+Section 7
+
+   If, as a consequence of a court judgment or allegation of
+   patent infringement or for any other reason (not limited to
+   patent issues), conditions are imposed on you (whether by court
+   order, agreement or otherwise) that contradict the conditions
+   of this License, they do not excuse you from the conditions of
+   this License. If you cannot distribute so as to satisfy
+   simultaneously your obligations under this License and any
+   other pertinent obligations, then as a consequence you may not
+   distribute the Program at all. For example, if a patent license
+   would not permit royalty-free redistribution of the Program by
+   all those who receive copies directly or indirectly through
+   you, then the only way you could satisfy both it and this
+   License would be to refrain entirely from distribution of the
+   Program.
+
+   If any portion of this section is held invalid or unenforceable
+   under any particular circumstance, the balance of the section
+   is intended to apply and the section as a whole is intended to
+   apply in other circumstances.
+
+   It is not the purpose of this section to induce you to infringe
+   any patents or other property right claims or to contest
+   validity of any such claims; this section has the sole purpose
+   of protecting the integrity of the free software distribution
+   system, which is implemented by public license practices. Many
+   people have made generous contributions to the wide range of
+   software distributed through that system in reliance on
+   consistent application of that system; it is up to the
+   author/donor to decide if he or she is willing to distribute
+   software through any other system and a licensee cannot impose
+   that choice.
+
+   This section is intended to make thoroughly clear what is
+   believed to be a consequence of the rest of this License.
+     __________________________________________________________
+
+Section 8
+
+   If the distribution and/or use of the Program is restricted in
+   certain countries either by patents or by copyrighted
+   interfaces, the original copyright holder who places the
+   Program under this License may add an explicit geographical
+   distribution limitation excluding those countries, so that
+   distribution is permitted only in or among countries not thus
+   excluded. In such case, this License incorporates the
+   limitation as if written in the body of this License.
+     __________________________________________________________
+
+Section 9
+
+   The Free Software Foundation may publish revised and/or new
+   versions of the General Public License from time to time. Such
+   new versions will be similar in spirit to the present version,
+   but may differ in detail to address new problems or concerns.
+
+   Each version is given a distinguishing version number. If the
+   Program specifies a version number of this License which
+   applies to it and "any later version", you have the option of
+   following the terms and conditions either of that version or of
+   any later version published by the Free Software Foundation. If
+   the Program does not specify a version number of this License,
+   you may choose any version ever published by the Free Software
+   Foundation.
+     __________________________________________________________
+
+Section 10
+
+   If you wish to incorporate parts of the Program into other free
+   programs whose distribution conditions are different, write to
+   the author to ask for permission. For software which is
+   copyrighted by the Free Software Foundation, write to the Free
+   Software Foundation; we sometimes make exceptions for this. Our
+   decision will be guided by the two goals of preserving the free
+   status of all derivatives of our free software and of promoting
+   the sharing and reuse of software generally.
+     __________________________________________________________
+
+NO WARRANTY Section 11
+
+   BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO
+   WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE
+   LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT
+   HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM "AS IS"
+   WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED,
+   INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+   MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
+   ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS
+   WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE
+   COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+     __________________________________________________________
+
+Section 12
+
+   IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN
+   WRITING WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY
+   MODIFY AND/OR REDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE
+   LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL,
+   INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR
+   INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS
+   OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED
+   BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE
+   WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY
+   HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+   END OF TERMS AND CONDITIONS
+     __________________________________________________________
+
+How to Apply These Terms to Your New Programs
+
+   If you develop a new program, and you want it to be of the
+   greatest possible use to the public, the best way to achieve
+   this is to make it free software which everyone can
+   redistribute and change under these terms.
+
+   To do so, attach the following notices to the program. It is
+   safest to attach them to the start of each source file to most
+   effectively convey the exclusion of warranty; and each file
+   should have at least the "copyright" line and a pointer to
+   where the full notice is found.
+
+   <one line to give the programʼs name and a brief idea of what
+   it does.> Copyright (C) <year> <name of author>
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License as
+   published by the Free Software Foundation; either version 2 of
+   the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public
+   License along with this program; if not, write to the Free
+   Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+   Boston, MA 02110-1301 USA
+
+   Also add information on how to contact you by electronic and
+   paper mail.
+
+   If the program is interactive, make it output a short notice
+   like this when it starts in an interactive mode:
+
+   Gnomovision version 69, Copyright (C) year name of author
+   Gnomovision comes with ABSOLUTELY NO WARRANTY; for details type
+   "show w". This is free software, and you are welcome to
+   redistribute it under certain conditions; type "show c" for
+   details.
+
+   The hypothetical commands "show w" and "show c" should show the
+   appropriate parts of the General Public License. Of course, the
+   commands you use may be called something other than "show w"
+   and "show c"; they could even be mouse-clicks or menu
+   items--whatever suits your program.
+
+   You should also get your employer (if you work as a programmer)
+   or your school, if any, to sign a "copyright disclaimer" for
+   the program, if necessary. Here is a sample; alter the names:
+
+   Yoyodyne, Inc., hereby disclaims all copyright interest in the
+   program "Gnomovision" (which makes passes at compilers) written
+   by James Hacker.
+
+   <signature of Ty Coon>, 1 April 1989 Ty Coon, President of Vice
+
+   This General Public License does not permit incorporating your
+   program into proprietary programs. If your program is a
+   subroutine library, you may consider it more useful to permit
+   linking proprietary applications with the library. If this is
+   what you want to do, use the GNU Library General Public License
+   instead of this License.

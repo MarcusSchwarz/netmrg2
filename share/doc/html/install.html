@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta name="generator" content=
+  "HTML Tidy for Linux (vers 14 June 2007), see www.w3.org" />
+
+  <title>Installation Procedure</title>
+  <meta name="GENERATOR" content=
+  "Modular DocBook HTML Stylesheet Version 1.79" />
+  <link rel="HOME" title="The NetMRG Reference" href=
+  "index.html" />
+  <link rel="UP" title="Installation" href="installation.html" />
+  <link rel="PREVIOUS" title="Satisfying Requirements" href=
+  "satisfyreq.html" />
+  <link rel="NEXT" title="Upgrade Procedure" href="upgrade.html" />
+  <link rel="STYLESHEET" type="text/css" href="netmrgdoc.css" />
+</head>
+
+<body class="CHAPTER" bgcolor="#FFFFFF" text="#000000" link=
+"#0000FF" vlink="#840084" alink="#0000FF">
+  <div class="NAVHEADER">
+    <table summary="Header navigation table" width="100%" border=
+    "0" cellpadding="0" cellspacing="0">
+      <tr>
+        <th colspan="3" align="center">The NetMRG Reference</th>
+      </tr>
+
+      <tr>
+        <td width="10%" align="left" valign="bottom"><a href=
+        "satisfyreq.html" accesskey="P">Prev</a></td>
+
+        <td width="80%" align="center" valign="bottom"></td>
+
+        <td width="10%" align="right" valign="bottom"><a href=
+        "upgrade.html" accesskey="N">Next</a></td>
+      </tr>
+    </table>
+    <hr align="left" width="100%" />
+  </div>
+
+  <div class="CHAPTER">
+    <h1><a name="INSTALL" id="INSTALL"></a>Chapter 5. Installation
+    Procedure</h1>
+
+    <ol type="1">
+      <li>
+        <p>Untar to some directory like /tmp/ (it will untar into a
+        'netmrg' directory)</p>
+        <pre class="SCREEN">
+<kbd class="USERINPUT">cd /tmp
+wget http://www.netmrg.net/download/release/netmrg.tar.gz
+tar xzvf netmrg.tar.gz</kbd>
+</pre>
+      </li>
+
+      <li>
+        <p>Now we need to compile and install the source. <b class=
+        "COMMAND">cd</b> into the directory made by your <b class=
+        "COMMAND">tar</b> command and type the following:</p>
+        <pre class="PROGRAMLISTING">
+./configure
+make
+make install
+</pre>
+
+        <div class="NOTE">
+          <blockquote class="NOTE">
+            <p><b>Note:</b> If <b class="COMMAND">configure</b>
+            fails to locate the needed libraries they can be
+            manually specified. Run <b class="COMMAND">./configure
+            --help</b> for details on the necessary options.</p>
+          </blockquote>
+        </div>
+      </li>
+
+      <li>
+        <p>Setup the database</p>
+
+        <p>Now we need to setup the database. Please change at
+        least the password (<samp class=
+        "COMPUTEROUTPUT">netmrgpass</samp> below).</p>
+        <pre class="PROGRAMLISTING">
+mysqladmin create netmrg
+mysql -u root -p netmrg &lt; share/netmrg.mysql
+mysql -u root -p
+&gt; grant all on netmrg.* to netmrguser@localhost identified by 'netmrgpass';
+</pre>
+      </li>
+
+      <li>
+        <p>You need to modify your apache config in order to make
+        your NetMRG installation live (commonly in <samp class=
+        "COMPUTEROUTPUT">/etc/httpd/conf/httpd.conf</samp>).</p>
+
+        <p>The first is to alias /netmrg to the installed web
+        directory (commonly <samp class=
+        "COMPUTEROUTPUT">/usr/local/var/www/netmrg/webfiles</samp>).</p>
+        <pre class="PROGRAMLISTING">
+Alias /netmrg "/usr/local/var/www/netmrg/webfiles"
+</pre>
+
+        <p>The easier way (if you're running Apache &gt;= 1.3) is
+        to just Include the conf file we've created anywhere in
+        your file (near the bottom is fine).</p>
+        <pre class="PROGRAMLISTING">
+Include /usr/local/etc/netmrg.conf
+</pre>
+
+        <p>You will need to restart your Apache after making config
+        changes. Telling it to reload its config should be good
+        enough</p>
+        <pre class="PROGRAMLISTING">
+killall -HUP httpd
+</pre>
+      </li>
+
+      <li>
+        <p>Configure the Installation</p>
+
+        <p>All of NetMRG's common configuration options are
+        controlled by an XML file, normally located at <tt class=
+        "FILENAME">/usr/local/etc/netmrg.xml</tt>. You should edit
+        this file to make any necessary changes before continuing
+        with installation.</p>
+
+        <p>For most installations, you will at least need to edit
+        <tt class="FILENAME">netmrg.xml</tt> to reflect your
+        database username and password.</p>
+      </li>
+
+      <li>
+        <p>Setup Permissions</p>
+
+        <p>NetMRG does not need superuser permissions to run,
+        therefore we will setup a user for it.</p>
+        <pre class="PROGRAMLISTING">
+# useradd netmrg
+# chown netmrg:netmrg /usr/local/var/log/netmrg
+# chown netmrg:netmrg /usr/local/var/lib/netmrg/rrd
+</pre>
+      </li>
+
+      <li>
+        <p>Setup crontab</p>
+
+        <p>You can setup the crontab entries in two places: either
+        edit <tt class="FILENAME">/etc/crontab</tt>, or run
+        <b class="COMMAND">crontab -e</b> as the netmrg user. For
+        'crontab -e', use an entry similar to this:</p>
+        <pre class="PROGRAMLISTING">
+*/5 * * * * bash -c "if [ -f /usr/local/var/lock/subsys/netmrg ]; then /usr/local/bin/netmrg-gatherer; fi"
+</pre>
+
+        <p>To edit the master crontab, edit <tt class=
+        "FILENAME">/etc/crontab</tt> and add a line similar to
+        this:</p>
+        <pre class="PROGRAMLISTING">
+*/5 * * * * netmrg bash -c "if [ -f /usr/local/var/lock/subsys/netmrg ]; then /usr/local/bin/netmrg-gatherer; fi"
+</pre>
+      </li>
+
+      <li>
+        <p>Point your web browser at your install, and start
+        graphing things! The default login is <kbd class=
+        "USERINPUT">admin</kbd> and the default password is
+        <kbd class="USERINPUT">nimda</kbd>. Point your web browser
+        at the host you built this on (something similar to
+        <samp class=
+        "COMPUTEROUTPUT">http://yourhost.com/netmrg/</samp>) and
+        please change your password!</p>
+      </li>
+    </ol>
+  </div>
+
+  <div class="NAVFOOTER">
+    <hr align="left" width="100%" />
+
+    <table summary="Footer navigation table" width="100%" border=
+    "0" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left" valign="top"><a href=
+        "satisfyreq.html" accesskey="P">Prev</a></td>
+
+        <td width="34%" align="center" valign="top"><a href=
+        "index.html" accesskey="H">Home</a></td>
+
+        <td width="33%" align="right" valign="top"><a href=
+        "upgrade.html" accesskey="N">Next</a></td>
+      </tr>
+
+      <tr>
+        <td width="33%" align="left" valign="top">Satisfying
+        Requirements</td>
+
+        <td width="34%" align="center" valign="top"><a href=
+        "installation.html" accesskey="U">Up</a></td>
+
+        <td width="33%" align="right" valign="top">Upgrade
+        Procedure</td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>

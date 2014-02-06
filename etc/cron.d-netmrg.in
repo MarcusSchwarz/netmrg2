@@ -1,0 +1,3 @@
+# run NetMRG every 5 minutes if enabled
+*/5 * * * * netmrg bash -c "if [ -f @localstatedir@/lock/subsys/netmrg ]; then @bindir@/netmrg-gatherer; fi"
+

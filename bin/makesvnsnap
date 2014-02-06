@@ -1,0 +1,21 @@
+#!/bin/sh
+#
+# makecvssnap
+#
+# gets the latest cvs tree and tars it up as $date
+#
+
+progname="netmrg"
+version=`date +'%Y.%m.%d'`
+this="$progname-$version"
+tmpdir="/tmp"
+pkgdir="/tmp"
+
+rm -rf $tmpdir/$this
+rm -f $this.tar.gz
+
+svn export -q http://svn.$progname.net/trunk $tmpdir/$this
+tar -C $tmpdir -czf $pkgdir/$this.tar.gz $this
+
+rm -rf $tmpdir/$this
+

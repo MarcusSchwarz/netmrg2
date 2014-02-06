@@ -1,0 +1,40 @@
+<netmrg>
+	<database>
+		<host>localhost</host>
+		<user>netmrguser</user>
+		<password>netmrgpass</password>
+		<db>netmrg</db>
+		<socket></socket>
+		<port></port>
+		<timeout>10</timeout>
+	</database>
+	<paths>
+		<rrdtool>@RRDTOOL@</rrdtool>
+		<lockfile>@localstatedir@/log/netmrg/lockfile</lockfile>
+		<runtimefile>@localstatedir@/log/netmrg/runtime</runtimefile>
+		<libexec>@libexecdir@/netmrg</libexec>
+		<rrds>@localstatedir@/lib/netmrg/rrd</rrds>
+		<webfileroot>@localstatedir@/www/netmrg</webfileroot>
+		<locale>@datarootdir@/netmrg/locale</locale>
+	</paths>
+	<threads>
+		<count>5</count>
+	</threads>
+	<website>
+		<company>Generic Company</company>
+		<companylink>http://www.netmrg.net</companylink>
+		<webhost>http://localhost</webhost>
+		<webroot>/netmrg</webroot>
+		<externalauth>false</externalauth>
+	</website>
+	<polling>
+		<interval>300</interval>
+	</polling>
+	<logging>
+		<max_device_entries>500</max_device_entries>
+		<syslog_facility>LOG_DAEMON</syslog_facility>
+	</logging>
+	<rrdtool>
+		<version>1.0</version>
+	</rrdtool>
+</netmrg>

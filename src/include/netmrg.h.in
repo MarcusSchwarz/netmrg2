@@ -1,0 +1,68 @@
+/********************************************
+* NetMRG Integrator
+*
+* config.h
+* Gatherer Configuration Header File
+*
+* Copyright (C) 2001-2008
+*   Brady Alleman <brady@thtech.net>
+*   Douglas E. Warner <silfreed@silfreed.net>
+*   Kevin Bonner <keb@nivek.ws>
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program; if not, write to the Free Software Foundation, Inc.,
+* 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*
+********************************************/
+
+#ifndef NETMRG_CONFIG
+#define NETMRG_CONFIG
+
+#ifdef __linux__
+#define _PTHREADS
+#define _P __P
+#endif
+
+#define NETMRG_VERSION      "@PACKAGE_VERSION@"
+
+// The remaining options are the default values 
+// used if not overridden on the command line or config file.
+
+
+// Paths
+#define DEF_CONFIG_FILE     "@sysconfdir@/netmrg.xml"
+#define DEF_LOCKFILE        "@localstatedir@/log/netmrg/lockfile"
+#define DEF_RUNTIME_FILE    "@localstatedir@/log/netmrg/runtime"
+#define DEF_RRDTOOL         "@RRDTOOL@"
+#define DEF_RRDS            "@localstatedir@/lib/netmrg/rrd"
+#define DEF_LIBEXEC         "@libexecdir@/netmrg/"
+#define DEF_LOCALE          "@datarootdir@/netmrg/locale"
+
+// Threading
+#define DEF_THREAD_COUNT    5						// number of simultaneous threads
+
+// Database Credentials
+#define DEF_DB_HOST         "localhost"
+#define DEF_DB_USER         "netmrgwrite"
+#define DEF_DB_PASS         "netmrgwrite"
+#define DEF_DB_DB           "netmrg"
+#define DEF_DB_SOCK         ""
+#define DEF_DB_PORT         0
+#define DEF_DB_TIMEOUT      10
+
+// Other
+#define DEF_POLL_INTERVAL   300
+#define DEF_MAX_DEV_LOG     500
+#define DEF_SYSLOG_FACILITY "LOG_DAEMON"
+
+#endif              

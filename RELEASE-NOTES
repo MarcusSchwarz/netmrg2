@@ -1,0 +1,154 @@
+
+                          Chapter 2. Revision History
+
+     * 0.20
+
+       2008.04.11
+
+       Major feature enhancements and bug fixes; Fixed compilation under GCC
+       4.3; restructuring of view pages to show graph titles (for easier
+       in-page searching) and icons for graph actions; fixed mysql 5
+       compatibility; added device properties (keeps track of things like
+       model #, serial #, etc); added ability to chain interfaces to travel
+       between them; added ajax monitor selection on graphs.
+
+     * 0.19
+
+       2006.02.03
+
+       Major Feature Enhancements and Bug Fixes; Major Web Interface redesign
+       to give more room for graphs and ease overall use. Security
+       enhancements behind the scenes to ensure correct permissions checking.
+       Added a search interface that will search groups, devices, sub devies,
+       and sub device parameters. RRDtool 1.2 support (including graph
+       smoothing); Depricated use of netmrg_cron.sh in favor of using
+       netmrg-gatherer; migrated bulk of docs to wiki; numerous other
+       bugfixes and enhancements.
+
+     * 0.18.2
+
+       2004.11.09
+
+       Minor Bug Fixes; Fixed some escaping problems on the interface cache
+       page, disabled the 'quickprint' Net-SNMP option for better
+       compatibility, fixed the snmp-failure test, fixed an SVO-user view
+       issue, and added failover for duplicate ifNames when adding
+       interfaces.
+
+     * 0.18.1
+
+       2004.11.01
+
+       Minor Bug Fixes; Fixed a small bug where the gatherer would not
+       register negative values.
+
+     * 0.18
+
+       2004.10.25
+
+       Major Bug Fixes; Fixed an issue preventing form submissions on some
+       browsers, fixed PHP string escaping problems, fixed inability to
+       create inverted stacked graphs, and fixed parameter substituion and
+       documentation regarding notifications and responses. Added better
+       support on FreeBSDs (4.8-5.2) and x86-64 architectures (Linux and
+       FreeBSD), the ability to multiply summed values, MySQL timeouts,
+       simple value parsing (to get the numeric content out of quoted
+       numbers, etc), graphic icons for most actions, support for a default
+       external auth user (with regards to permissions), and cleaned up the
+       gatherer build process output.
+
+     * 0.17
+
+       2004.09.13
+
+       Minor Feature Enhancements; Added colorized gatherer output, checkbox
+       support on multiple pages, the ability to disable users, fixed a
+       potential SQL-injection bug, updated navigation on group pages,
+       updated tutorials.
+
+     * 0.16
+
+       2004.06.10
+
+       Minor Bugfixes and Feature Enhancements; fixed a user management bug
+       and several bugs related to 'single view only' users not being able to
+       see graphs, added the ability to ignore SNMP uptime checks for devices
+       (permitting the monitoring of broken devices), added the ability to do
+       an SNMP walk of an OID (useful for the Windows SNMP agent), enhanced
+       group/device management, cleaned up autoconf (now supports FC2), and
+       added experimental syslog and daemon support in the gatherer.
+
+     * 0.15
+
+       2004.05.20
+
+       Minor Bugfixes and Feature Enhancements; fixes for various db errors
+       (including the infamous one on snmp_cache_view.php), better
+       cross-platform compilation, select all/none/invert checkbox support,
+       support for choosing what graph to apply to an interface, better
+       support for php < 4.2.0, and some security fixes for single-view-only
+       users.
+
+     * 0.14
+
+       2004.03.10
+
+       Minor Bugfixes and Feature Enhancements; escaping issues in template
+       dereferencing, broken links on various pages, security issues
+       regarding manual SNMP recaching, broken duplication on
+       non-cutting-edge MySQL, more parameter substitution in SQL tests,
+       better date parsing for advanced graph view, nav-bar and group
+       navigation enhancements, advanced view capability for monitor-only
+       graphs.
+
+     * 0.13
+
+       2003.12.19
+
+       Minor Bugfixes and Feature Enhancements; slide show ordering, previous
+       slide, resume slide show, better formatting of 'sums', errors on view
+       editing, fixes to permissions checking, and an occassional segfault in
+       the gatherer was fixed.
+
+     * 0.12
+
+       2003.12.15
+
+       Major Feature Enhancents and Bugfixes; added SNMPv2 support, fixed a
+       bug that would cause a device to be deleted from all groups, fixed
+       session timeout when using external auth, added checkbox support to
+       interface/disk cache pages, slide show enhancements, fixed permission
+       issue where unauthorized users could view/edit test_* pages
+
+     * 0.10
+
+       2003.10.05
+
+       Major bug fix; fixes a db error when trying to view monitors, a bug
+       that would always set the width and height to zero when creating
+       graphs, and makes conditions with 'rate of change' work. Many
+       documentation upgrades.
+
+     * 0.10pre2
+
+       2003.09.15
+
+       This release focuses on adding new features and sqaushing bugs. In
+       addition, there is now an 'updater.php' that is required to be run
+       between versions. A minor change needs to be made to everyone's
+       'netmrg.xml' to add an 'externalauth' field inside the 'website'
+       section.
+
+     * 0.10pre1
+
+       2003.07.28
+
+       Initial publication
+
+References
+
+   Visible links
+   . file:///home/silfreed/src/netmrg/share/doc/txt/index.html
+   . file:///home/silfreed/src/netmrg/share/doc/txt/overview.html
+   . file:///home/silfreed/src/netmrg/share/doc/txt/intro.html
+   . file:///home/silfreed/src/netmrg/share/doc/txt/installation.html

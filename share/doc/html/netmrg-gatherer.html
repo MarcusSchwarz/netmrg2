@@ -1,0 +1,381 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta name="generator" content=
+  "HTML Tidy for Linux (vers 14 June 2007), see www.w3.org" />
+
+  <title>netmrg-gatherer</title>
+  <meta name="GENERATOR" content=
+  "Modular DocBook HTML Stylesheet Version 1.79" />
+  <link rel="HOME" title="The NetMRG Reference" href=
+  "index.html" />
+  <link rel="UP" title="Manual Pages" href="manpage.html" />
+  <link rel="PREVIOUS" title="Manual Pages" href="manpage.html" />
+  <link rel="NEXT" title="Contact Information" href=
+  "contact.html" />
+  <link rel="STYLESHEET" type="text/css" href="netmrgdoc.css" />
+</head>
+
+<body class="REFENTRY" bgcolor="#FFFFFF" text="#000000" link=
+"#0000FF" vlink="#840084" alink="#0000FF">
+  <div class="NAVHEADER">
+    <table summary="Header navigation table" width="100%" border=
+    "0" cellpadding="0" cellspacing="0">
+      <tr>
+        <th colspan="3" align="center">The NetMRG Reference</th>
+      </tr>
+
+      <tr>
+        <td width="10%" align="left" valign="bottom"><a href=
+        "manpage.html" accesskey="P">Prev</a></td>
+
+        <td width="80%" align="center" valign="bottom"></td>
+
+        <td width="10%" align="right" valign="bottom"><a href=
+        "contact.html" accesskey="N">Next</a></td>
+      </tr>
+    </table>
+    <hr align="left" width="100%" />
+  </div>
+
+  <h1><a name="NETMRG-GATHERER" id=
+  "NETMRG-GATHERER"></a>netmrg-gatherer</h1>
+
+  <div class="REFNAMEDIV">
+    <a name="AEN290" id="AEN290"></a>
+
+    <h2>Name</h2>netmrg-gatherer&nbsp;--&nbsp;Gathers data from
+    devices.
+  </div>
+
+  <div class="REFSYNOPSISDIV">
+    <a name="AEN293" id="AEN293"></a>
+
+    <h2>Synopsis</h2>
+
+    <p><b class="COMMAND">netmrg-gatherer</b> [OPTIONS]</p>
+  </div>
+
+  <div class="REFSECT1">
+    <a name="AEN297" id="AEN297"></a>
+
+    <h2>Description</h2>
+
+    <p><b class="COMMAND">netmrg-gatherer</b> performs tests on all
+    enabled hosts in NetMRG. It will store results in RRD files
+    using RRDTOOL(1) and perform actions in response to events.</p>
+
+    <div class="REFSECT2">
+      <a name="AEN301" id="AEN301"></a>
+
+      <h3>Global Options</h3>
+
+      <div class="VARIABLELIST">
+        <dl>
+          <dt><br />
+          <code class="OPTION">-h</code><br />
+          <br /></dt>
+
+          <dd>
+            <p>Displays usage information and exits.</p>
+          </dd>
+
+          <dt><br />
+          <code class="OPTION">-v</code><br />
+          <br /></dt>
+
+          <dd>
+            <p>Displays software version and exits.</p>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="REFSECT2">
+      <a name="AEN318" id="AEN318"></a>
+
+      <h3>Operating Options</h3>
+
+      <div class="VARIABLELIST">
+        <dl>
+          <dt><br />
+          <code class="OPTION">-t</code> <tt class=
+          "REPLACEABLE"><i>num threads</i></tt><br />
+          <br /></dt>
+
+          <dd>
+            <p>Run no more than the specified number of threads
+            simultaneously.</p>
+          </dd>
+
+          <dt><br />
+          <code class="OPTION">-X</code><br />
+          <br /></dt>
+
+          <dd>
+            <p>Become a daemon.</p>
+          </dd>
+
+          <dt><br />
+          <code class="OPTION">-M</code> <tt class=
+          "REPLACEABLE"><i>mode</i></tt><br />
+          <br /></dt>
+
+          <dd>
+            <p>Mode of operation. This option controls the manner
+            in which the gatherer operates. The modes currently
+            supported are "once" (the default, best used manually
+            or via cron) which runs all tests once then exits, and
+            "wait" (best used when daemonized) which will run all
+            tests, wait for the gatherer interval to expire, and
+            then repeat.</p>
+          </dd>
+        </dl>
+      </div>
+
+      <div class="NOTE">
+        <blockquote class="NOTE">
+          <p><b>Note:</b> To run <span class=
+          "APPLICATION">netmrg-gatherer</span> daemonized, the
+          recommended set of options at this point is "-X -S -M
+          wait" which will daemonize, repeat the gather cycle on
+          each interval, and write output to syslog.</p>
+        </blockquote>
+      </div>
+    </div>
+
+    <div class="REFSECT2">
+      <a name="AEN347" id="AEN347"></a>
+
+      <h3>Logging, Debugging and Verbosity Options</h3>
+
+      <div class="VARIABLELIST">
+        <dl>
+          <dt><br />
+          <code class="OPTION">-S</code><br />
+          <br /></dt>
+
+          <dd>
+            <p>Syslog. Logs messages to syslog instead of
+            stdout.</p>
+          </dd>
+
+          <dt><br />
+          <code class="OPTION">-b</code><br />
+          <br /></dt>
+
+          <dd>
+            <p>Bland. Disables color output. By default,
+            <span class="APPLICATION">netmrg-gatherer</span> will
+            display color output when connected to a terminal, but
+            will use bland output when its output is written to a
+            file. This option should only be needed when the
+            detection mechanism has failed, or the user doesn't
+            want to see colors when running the program by
+            hand.</p>
+          </dd>
+
+          <dt><br />
+          <code class="OPTION">-a</code><br />
+          <br /></dt>
+
+          <dd>
+            <p>All. Displays all log messages.</p>
+          </dd>
+
+          <dt><br />
+          <code class="OPTION">-m</code><br />
+          <br /></dt>
+
+          <dd>
+            <p>Most. Displays more messages than default.</p>
+          </dd>
+
+          <dt><br />
+          <code class="OPTION">-q</code><br />
+          <br /></dt>
+
+          <dd>
+            <p>Quiet. Silences all output.</p>
+          </dd>
+
+          <dt><br />
+          <code class="OPTION">-l</code> <tt class=
+          "REPLACEABLE"><i>level mask</i></tt><br />
+          <br /></dt>
+
+          <dd>
+            <p>Only outputs messages that match the specified level
+            mask.</p>
+          </dd>
+
+          <dt><br />
+          <code class="OPTION">-c</code> <tt class=
+          "REPLACEABLE"><i>component mask</i></tt><br />
+          <br /></dt>
+
+          <dd>
+            <p>Only outputs messages that match the specified
+            component mask.</p>
+          </dd>
+
+          <dt><br />
+          <code class="OPTION">-s</code><br />
+          <br /></dt>
+
+          <dd>
+            <p>Safe. Tries to keep sensitive information out of the
+            displayed messages.</p>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="REFSECT2">
+      <a name="AEN409" id="AEN409"></a>
+
+      <h3>Configuration File Options</h3>
+
+      <div class="VARIABLELIST">
+        <dl>
+          <dt><br />
+          <code class="OPTION">-C</code> <tt class=
+          "REPLACEABLE"><i>config file</i></tt><br />
+          <br /></dt>
+
+          <dd>
+            <p>Uses the specified XML configuration file.</p>
+          </dd>
+
+          <dt><br />
+          <code class="OPTION">-K</code> <tt class=
+          "REPLACEABLE"><i>config file</i></tt><br />
+          <br /></dt>
+
+          <dd>
+            <p>Parses the specified XML configuration file and
+            exits.</p>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="REFSECT2">
+      <a name="AEN428" id="AEN428"></a>
+
+      <h3>Database Options</h3>
+
+      <div class="VARIABLELIST">
+        <dl>
+          <dt><br />
+          <code class="OPTION">-H</code> <tt class=
+          "REPLACEABLE"><i>host</i></tt><br />
+          <br /></dt>
+
+          <dd>
+            <p>Uses the specified host name for connecting to the
+            database.</p>
+          </dd>
+
+          <dt><br />
+          <code class="OPTION">-D</code> <tt class=
+          "REPLACEABLE"><i>database</i></tt><br />
+          <br /></dt>
+
+          <dd>
+            <p>Uses the specified database name.</p>
+          </dd>
+
+          <dt><br />
+          <code class="OPTION">-u</code> <tt class=
+          "REPLACEABLE"><i>user name</i></tt><br />
+          <br /></dt>
+
+          <dd>
+            <p>Uses the specified user name for connecting to the
+            database.</p>
+          </dd>
+
+          <dt><br />
+          <code class="OPTION">-p</code> [<tt class=
+          "REPLACEABLE"><i>password</i></tt>]<br />
+          <br /></dt>
+
+          <dd>
+            <p>Uses the specified password for connecting to the
+            database. If no password is specified, the user is
+            prompted to enter one.</p>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="REFSECT2">
+      <a name="AEN464" id="AEN464"></a>
+
+      <h3>Recaching Options</h3>
+
+      <div class="VARIABLELIST">
+        <dl>
+          <dt><br />
+          <code class="OPTION">-i</code> <tt class=
+          "REPLACEABLE"><i>device id</i></tt><br />
+          <br /></dt>
+
+          <dd>
+            <p>Performs an interface recache on the specified
+            device.</p>
+          </dd>
+
+          <dt><br />
+          <code class="OPTION">-d</code> <tt class=
+          "REPLACEABLE"><i>device id</i></tt><br />
+          <br /></dt>
+
+          <dd>
+            <p>Performs a disk recache on the specified device.</p>
+          </dd>
+        </dl>
+      </div>
+
+      <div class="NOTE">
+        <blockquote class="NOTE">
+          <p><b>Note:</b> Recaching options are intended for use by
+          the web interface. These options should not be generally
+          used by end users.</p>
+        </blockquote>
+      </div>
+    </div>
+  </div>
+
+  <div class="NAVFOOTER">
+    <hr align="left" width="100%" />
+
+    <table summary="Footer navigation table" width="100%" border=
+    "0" cellpadding="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left" valign="top"><a href=
+        "manpage.html" accesskey="P">Prev</a></td>
+
+        <td width="34%" align="center" valign="top"><a href=
+        "index.html" accesskey="H">Home</a></td>
+
+        <td width="33%" align="right" valign="top"><a href=
+        "contact.html" accesskey="N">Next</a></td>
+      </tr>
+
+      <tr>
+        <td width="33%" align="left" valign="top">Manual Pages</td>
+
+        <td width="34%" align="center" valign="top"><a href=
+        "manpage.html" accesskey="U">Up</a></td>
+
+        <td width="33%" align="right" valign="top">Contact
+        Information</td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>
