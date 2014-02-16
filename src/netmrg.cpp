@@ -462,8 +462,9 @@ void daemonize()
 int main(int argc, char **argv)
 {
 	int option_char;
+	bool settings_loaded;
+	settings_loaded = false;
 	load_settings_default();
-	load_settings_file(DEF_CONFIG_FILE);
 	string temppass;
 	
 	if (vt100_compatible())
@@ -562,7 +563,8 @@ int main(int argc, char **argv)
 						break;
 			case 't':	set_setting(setThreadCount, optarg);
 						break;
-			case 'C':	load_settings_file(optarg);
+			case 'C':	settings_loaded = true;
+			            load_settings_file(optarg);
 						break;
 			case 'K':	set_debug_level(LEVEL_DEBUG);
 						set_debug_components(DEBUG_GLOBAL);
@@ -573,7 +575,11 @@ int main(int argc, char **argv)
 						print_settings();
 						exit(0);
 						break;
-
 		}
+
+    if (!settings_loaded) {
+	    load_settings_file(DEF_CONFIG_FILE);
+    }
+
 	run_netmrg();
 }
