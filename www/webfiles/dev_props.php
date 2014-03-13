@@ -168,7 +168,6 @@ function edit()
 	// if we're adding a property
 	else
 	{
-		$id = 0;
 		$row["test_id"] = 1;
 		if (!empty($_REQUEST["type"]))
 		{
@@ -184,7 +183,7 @@ function edit()
 	
 	make_edit_group("General Parameters");
 	make_edit_text("Name:", "name", "25", "200", $row['name']);
-	make_edit_select_test($row['test_type'], $row['test_id'], $row['test_params']);	
+	make_edit_select_test($row['test_type'], $row['test_id'], $row['test_params']);
 	
 	make_edit_hidden("action", "doedit");
 	make_edit_hidden("prop_id", $_REQUEST["prop_id"]);
@@ -227,5 +226,3 @@ function do_edit()
 	redirect();
 	
 } // end do_edit()
-
-?>

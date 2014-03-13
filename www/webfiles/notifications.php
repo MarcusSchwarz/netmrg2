@@ -80,8 +80,6 @@ function duplicate()
 
 function do_addedit()
 {
-	if (!isset($disabled)) { $disabled = 0; }
-
 	if ($_REQUEST["id"] == 0)
 	{
 		$db_cmd = "INSERT INTO";
@@ -175,4 +173,3 @@ function addedit()
 	
 	end_page();
 }
-?>

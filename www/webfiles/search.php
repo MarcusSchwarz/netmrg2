@@ -184,7 +184,6 @@ function perform_search($query)
 	{
 		while (list($key, $sitem) = each($s_result))
 		{
-			$allowed_to_view = false;
 			switch ($obj_type)
 			{
 				case "group" :
@@ -247,5 +246,3 @@ function perform_search($query)
 	reset($result);
 	return $result;
 } // end perform_search();
-
-?>

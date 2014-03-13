@@ -64,5 +64,3 @@ else
 	</div>
 <?php
 	end_page();
-
-?>

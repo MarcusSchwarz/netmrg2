@@ -29,5 +29,3 @@
 
 require_once("../include/config.php");
 header("Location: login.php");
-
-?>

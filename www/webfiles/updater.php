@@ -484,7 +484,7 @@ function PrepUpdater($dbupdates)
 		
 		foreach ($dbupdates as $dbupver => $dbqueries)
 		{
-			foreach ($dbqueries as $dbkey => $dbquery)
+			foreach ($dbqueries as $dbquery)
 			{
 				// we'll assume updates lower than $dbver are applied
 				if ($GLOBALS["netmrg"]["verhist"][$dbupver] <= $GLOBALS["netmrg"]["verhist"][$dbver])
@@ -528,6 +528,3 @@ function CheckUpdate($update_version, $name)
 	
 	return false;
 } // end CheckUpdate();
-
-
-?>

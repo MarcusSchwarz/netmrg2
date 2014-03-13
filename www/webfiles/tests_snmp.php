@@ -159,6 +159,3 @@ if (($action == "edit") || ($action == "add"))
 	end_page();
 
 } // End editing screen
-
-
-?>

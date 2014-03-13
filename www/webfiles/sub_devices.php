@@ -244,6 +244,3 @@ function displayedit()
 	end_page();
 
 } // end displayedit();
-
-
-?>

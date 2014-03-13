@@ -150,6 +150,3 @@ function redraw_monitor($type, $id, $rp = null)
 }
 
 $xajax->processRequests();
-
-
-?>

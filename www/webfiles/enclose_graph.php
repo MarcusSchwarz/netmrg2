@@ -154,5 +154,3 @@ function show_advanced()
 }
 
 end_page();
-
-?>

@@ -64,5 +64,3 @@ Other licensing arrangements may be available upon request.  Please contact lice
 <?php
 
 end_page();
-
-?>

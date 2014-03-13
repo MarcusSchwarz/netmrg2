@@ -246,5 +246,3 @@ function display()
 	
 	end_page();
 } // end display();
-
-?>

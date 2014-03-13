@@ -257,7 +257,6 @@ function edit()
 	// if we're adding a monitor
 	else
 	{
-		$mon_id = 0;
 		$mon_row["data_type"] = 1;
 		$mon_row["test_id"] = 1;
 		$mon_row["min_val"] = "U";
@@ -381,5 +380,3 @@ function do_edit()
 		tuned=0 $db_end");
 	
 } // end do_edit()
-
-?>

@@ -302,6 +302,3 @@ function display()
 	header("Location: grpdev_list.php?parent_id={$_REQUEST['grp_id']}&tripid={$_REQUEST['tripid']}");
 	exit();
 } // end display();
-
-?>
-

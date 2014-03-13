@@ -110,5 +110,3 @@ else
 {
 	passthru($command);
 }
-
-?>

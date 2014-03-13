@@ -295,7 +295,6 @@ $editgroup.
 			while ($dev_row = db_fetch_array($dev_results))
 			{
 				$device_id = $dev_row["id"];
-				$device_action = "";
 				$editdevice = ($_SESSION["netmrgsess"]["permit"] > 0) ? '<a class="editfield'.($rowcount%2).'" href="sub_devices.php?dev_id='.$device_id.'">'.
 				'<img src="'.get_image_by_name("edit").'" width="15" height="15" border="0" alt="edit" title="edit" align="middle" />'.
 				'</a>'."\n" : "";
@@ -369,7 +368,6 @@ $editdevice.
 					while ($subdev_row = db_fetch_array($subdev_results))
 					{
 						$subdev_id = $subdev_row["id"];
-						$subdev_action = "";
 						$editsubdevice = ($_SESSION["netmrgsess"]["permit"] > 0) ? '<a class="editfield'.($rowcount%2).'" href="monitors.php?sub_dev_id='.$subdev_id.'">'.
 						'<img src="'.get_image_by_name("edit").'" width="15" height="15" border="0" alt="edit" title="edit" align="middle" />'.
 						'</a>'."\n" : "";
@@ -443,7 +441,6 @@ $editsubdevice.
 							while ($mon_row = db_fetch_array($mon_results))
 							{
 								$mon_id = $mon_row["id"];
-								$monitor_action = "";
 								$editmonitor = ($_SESSION["netmrgsess"]["permit"] > 0) ? '<a class="editfield'.($rowcount%2).'" href="events.php?mon_id='.$mon_id.'">'.
 								'<img src="'.get_image_by_name("edit").'" width="15" height="15" border="0" alt="edit" title="edit" align="middle" />'.
 								'</a>'."\n" : "";
@@ -490,7 +487,6 @@ $editmonitor.
 									for ($event_count = 1; $event_count <= $event_total; ++$event_count)
 									{
 										$event_row = db_fetch_array($event_results);
-										$event_id = $event_row["id"];
 										$color = get_color_from_situation($event_row["situation"]);
 										
 										if ($event_row["last_status"] == 1)
@@ -533,4 +529,3 @@ $editmonitor.
 	} // end while each group
 	
 } // end draw_group()
-?>

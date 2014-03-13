@@ -35,7 +35,6 @@
 function db_connect()
 {
 	$GLOBALS['querycount'] = 0;
-	$dbhost = "";
 	if ($GLOBALS["netmrg"]["dbsock"] != "")
 	{
 		$dbhost = $GLOBALS["netmrg"]["dbhost"] . ":" . $GLOBALS["netmrg"]["dbsock"];
@@ -118,8 +117,6 @@ function db_insert_id()
  */
 function db_quote($value)
 {
-	$return_val = '';
-	
 	// strip slashes if magic quotes is on
 	if (get_magic_quotes_gpc())
 	{
@@ -154,7 +151,6 @@ function db_quote($value)
 */
 function db_fetch_cell($sql)
 {
-	$row = array();
 	$res = db_query($sql);
 	
 	if ($res)
@@ -181,7 +177,6 @@ function db_fetch_cell($sql)
 */
 function db_fetch_row($sql)
 {
-	$row = array();
 	$res = db_query($sql);
 	
 	if ($query)
@@ -248,5 +243,3 @@ function db_data_seek($q_handle, $rownum)
 		} // end else present a nice error code
 	} // end if the seek failed
 } // end db_data_seek();
-
-?>

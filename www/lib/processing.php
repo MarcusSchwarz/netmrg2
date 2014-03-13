@@ -38,7 +38,6 @@ function format_time_elapsed($num_secs)
 	if ($days > 10000)
 	{
 		return "Never";
-		exit;
 	}
 	$num_secs = $new_secs;
 	$new_secs = $num_secs % 3600;
@@ -139,7 +138,7 @@ function align_right_split($string, $length)
 // manipulates a string by applying the appropriate padding method
 function do_align($string, $length, $method)
 {
-	if ($string == "") return "";	
+	if ($string == "") return "";
 
 	switch ($method)
 	{
@@ -1452,4 +1451,3 @@ function PrereqsMet()
 	
 	return $errors;
 } // end PrereqsMet();
-?>

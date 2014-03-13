@@ -32,5 +32,3 @@ require_once("../include/config.php");
 
 ResetAuth();
 header("Location: {$GLOBALS['netmrg']['webroot']}/login.php");
-
-?>

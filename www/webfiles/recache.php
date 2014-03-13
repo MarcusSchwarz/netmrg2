@@ -58,6 +58,3 @@ function do_properties_recache($dev_id)
 	system($GLOBALS['netmrg']['binary'] . " -qP $dev_id");
 	header("Location: grpdev_list.php?parent_id={$_REQUEST['parent_id']}&tripid={$_REQUEST['tripid']}");
 }
-
-
-?>

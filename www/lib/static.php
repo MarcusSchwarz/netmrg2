@@ -541,6 +541,3 @@ function get_color_by_name($color_name)
 	
 	return $color;
 } // end get_color_by_name
-
-
-?>

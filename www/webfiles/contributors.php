@@ -61,5 +61,3 @@ The staff of <a href="http://www.ctinetworks.com/">CTI Networks, Inc.</a> was
 <?php
 
 end_page();
-
-?>

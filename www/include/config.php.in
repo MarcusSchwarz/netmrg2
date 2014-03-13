@@ -120,5 +120,3 @@ if (!get_magic_quotes_gpc())
 	$_SERVER = array_map('addslashes_deep', $_SERVER);
 	$_COOKIE = array_map('addslashes_deep', $_COOKIE);
 } // end if no magic quotes gpc, do it ourselves
-
-?>

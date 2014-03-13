@@ -223,5 +223,3 @@ function display_page()
 	<?php
 	end_page();
 }
-
-?>

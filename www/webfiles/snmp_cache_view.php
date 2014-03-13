@@ -366,4 +366,3 @@ function view_interface_cache()
 	echo "</form>\n";
 	end_page();
 }
-?>

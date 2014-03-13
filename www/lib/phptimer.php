@@ -90,5 +90,3 @@ class PHP_timer {
     // end function debug()
 }
 // end class PHP_timer
-
-?>

@@ -432,5 +432,3 @@ function edit()
 	make_edit_end();
 
 } // End editing screen
-
-?>

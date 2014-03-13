@@ -164,6 +164,3 @@ function update($uid)
 
 	end_page();
 } // end update();
-
-
-?>

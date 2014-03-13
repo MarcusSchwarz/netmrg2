@@ -125,5 +125,3 @@ if (!empty($_REQUEST["action"]) && ($_REQUEST["action"] == "edit" || $_REQUEST["
 } // End editing screen
 
 end_page();
-
-?>

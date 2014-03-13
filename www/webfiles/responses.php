@@ -170,5 +170,3 @@ function do_delete()
 	}
 	header("Location: {$_SERVER['PHP_SELF']}?event_id={$_REQUEST['event_id']}&tripid={$_REQUEST['tripid']}");
 }
-
-?>

@@ -91,5 +91,3 @@ else
 } // end else no more rows left
 
 end_page();
-
-?>

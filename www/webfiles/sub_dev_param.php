@@ -58,7 +58,9 @@ if (empty($_REQUEST["action"]))
 		); // end make_display_item();
 	}
 
-	?></table><br><br><?php
+	?>
+    </table><br><br>
+    <?php
 
 	$results = db_query("SELECT name, value FROM sub_dev_variables WHERE type='dynamic' AND sub_dev_id={$_REQUEST['sub_dev_id']}");
 
@@ -77,7 +79,9 @@ if (empty($_REQUEST["action"]))
 		); // end make_display_item();
 	}
 
-	?></table><?php
+	?>
+    </table>
+    <?php
 
 	end_page();
 }
@@ -144,5 +148,3 @@ elseif ($_REQUEST["action"] == "dodelete")
 	db_update("DELETE FROM sub_dev_variables WHERE sub_dev_id={$_REQUEST['sub_dev_id']} AND name='{$_REQUEST['name']}' AND type='static'");
 	header("Location: " . $_SERVER["PHP_SELF"] . "?sub_dev_id={$_REQUEST['sub_dev_id']}&tripid={$_REQUEST['tripid']}");
 }
-
-?>

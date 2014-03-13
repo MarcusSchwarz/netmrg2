@@ -132,4 +132,3 @@ function printa($obj) {
   }
   else print implode(" ",$__level_deep)." = $obj\n";
 }
-?>

@@ -126,4 +126,3 @@ if (!empty($login_error))
 
 <?php
 end_page();
-?>

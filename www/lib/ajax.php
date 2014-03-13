@@ -50,5 +50,3 @@ class netmrgXajaxResponse extends xajaxResponse
 		$this->addScript("clearSelect('".$sSelectId."');");
 	}
 }
-
-?>

@@ -696,5 +696,3 @@ function get_view_name()
 	
 	return $return_val;
 } // end function get_view_name()
-
-?>

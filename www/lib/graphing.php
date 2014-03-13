@@ -150,7 +150,6 @@ function tiny_monitor_graph_command($id, $timeframe)
 
 function custom_graph_command($id, $timeframe, $templated, $single_ds)
 {
-	$options = "";
 
 	if ($single_ds)
 	{
@@ -182,11 +181,11 @@ function custom_graph_command($id, $timeframe, $templated, $single_ds)
 	# escapeshellarg() won't enclose an empty string in quotes, so
 	# fix that up if necessary
 	if ($graph_row['title'] == '')
-		$graph_row['title'] = "''";	
+		$graph_row['title'] = "''";
 	if ($graph_row['vert_label'] == '')
-		$graph_row['vert_label'] = "''";	
+		$graph_row['vert_label'] = "''";
 	if ($graph_row['comment'] == '')
-		$graph_row['comment'] = "''";	
+		$graph_row['comment'] = "''";
 	
 	if (isset($_REQUEST['start']))
 	{
@@ -508,5 +507,3 @@ function custom_graph_command($id, $timeframe, $templated, $single_ds)
 
 	return($command);
 }
-
-?>

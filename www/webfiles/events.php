@@ -181,4 +181,3 @@ function do_delete()
 	}
 	header("Location: {$_SERVER['PHP_SELF']}?mon_id={$_REQUEST['mon_id']}&tripid={$_REQUEST['tripid']}");
 }
-?>

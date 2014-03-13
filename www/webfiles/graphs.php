@@ -405,5 +405,3 @@ function edit()
 	make_edit_end();
 
 } // end edit()
-
-?>

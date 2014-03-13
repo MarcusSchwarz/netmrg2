@@ -78,6 +78,3 @@ function rgb_to_htmlcolor($r, $g, $b)
 {
 	return sprintf("#%02x%02x%02x", $r, $g, $b);
 }
-
-
-?>

@@ -36,7 +36,6 @@
 */
 function check_user($user)
 {
-	$auth_valid = false;
 	$auth_select = "SELECT 1 FROM user WHERE user='$user'";
 	$auth_result = db_query($auth_select);
 	if (db_num_rows($auth_result) > 0)
@@ -61,7 +60,6 @@ function check_user($user)
 */
 function check_user_pass($user, $pass)
 {
-	$auth_valid = false;
 	$auth_select = "SELECT 1 FROM user WHERE user='$user' AND pass=MD5('$pass')";
 	$auth_result = db_query($auth_select);
 	if (db_num_rows($auth_result) > 0)
@@ -389,5 +387,3 @@ function view_redirect()
 		exit(0);
 	} // end if we don't have a redir page or we do
 } // end view_redirect()
-
-?>
