@@ -110,7 +110,24 @@ require_once($GLOBALS["netmrg"]["imagebasedir"]."/imagespec.php");
 
 
 /***** STARTUP *****/
+
+if ($GLOBALS["netmrg"]["dbsock"] != "") {
+    $dbhost = $GLOBALS["netmrg"]["dbhost"] . ":" . $GLOBALS["netmrg"]["dbsock"];
+}
+elseif ($GLOBALS["netmrg"]["dbport"] > 0) {
+    $dbhost = $GLOBALS["netmrg"]["dbhost"] . ":" . $GLOBALS["netmrg"]["dbport"];
+}
+else {
+    $dbhost = $GLOBALS["netmrg"]["dbhost"];
+}
+
+$dsn = 'mysql:dbname='.$GLOBALS["netmrg"]["dbname"].';host='.$dbhost;
+$user = $GLOBALS["netmrg"]["dbuser"];
+$password = $GLOBALS["netmrg"]["dbpass"];
+
+// temporarily maintain 2 db connections until the migration is finished
 $GLOBALS["netmrg"]["dbconn"]    = db_connect();
+$GLOBALS["netmrg"]["pdoconn"]   = new PDO($dsn, $user, $password);
 $GLOBALS["netmrg"]["dbversion"] = GetDBVersion();
 
 // magic_quotes_gpc workaround

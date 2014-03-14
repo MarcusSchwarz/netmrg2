@@ -1325,13 +1325,9 @@ function SetUserPref($uid, $module, $pref, $value)
 *
 * returns the version the database thinks we are
 */
-function GetDBVersion()
-{
-	$sql = "SELECT version FROM versioninfo WHERE module='Main'";
-	$handle = db_query($sql);
-	$row = db_fetch_array($handle);
-	return $row["version"];
-} // end GetDBVersion();
+function GetDBVersion() {
+    return $GLOBALS["netmrg"]["pdoconn"]->query('SELECT version FROM versioninfo WHERE module = "Main"', PDO::FETCH_COLUMN, 0);
+}
 
 
 /**
