@@ -22,6 +22,9 @@
 *.out
 *.app
 
+#project specific
+*config.php
+
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode
 
 ## Directory-based project format
