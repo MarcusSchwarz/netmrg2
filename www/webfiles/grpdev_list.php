@@ -145,7 +145,7 @@ function display()
 	array_push($menu_items, array("text" => checkbox_toolbar("dev")));
 	array_push($menu_items, array("text" => "Name"));
 	array_push($menu_items, array("text" => "Availability"));
-	while ($row = mysql_fetch_array($column_results))
+	while ($row = mysqli_fetch_array($column_results))
 	{
 		array_push($custom_columns, $row['name']);
 		array_push($menu_items, array("text" => $row['name']));

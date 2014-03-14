@@ -48,9 +48,9 @@ function db_connect()
 		$dbhost = $GLOBALS["netmrg"]["dbhost"];
 	}
 
-	$conn = mysql_connect($dbhost, $GLOBALS["netmrg"]["dbuser"], $GLOBALS["netmrg"]["dbpass"]) or
+	$conn = mysqli_connect($dbhost, $GLOBALS["netmrg"]["dbuser"], $GLOBALS["netmrg"]["dbpass"]) or
 		die("<b>DB_ERROR:</b>: Cannot connect to the database server.");
-	mysql_select_db($GLOBALS["netmrg"]["dbname"], $conn) or
+	mysqli_select_db($GLOBALS["netmrg"]["dbname"], $conn) or
 		die("<b>DB_ERROR:</b> Cannot connect to the database.");
 	return $conn;
 } // end db_connect();
@@ -60,13 +60,13 @@ function db_connect()
 function db_query($query_string, $unsafe = false)
 {
 	$GLOBALS['querycount']++;
-	$query_result = mysql_query($query_string, $GLOBALS["netmrg"]["dbconn"]);
+	$query_result = mysqli_query($query_string, $GLOBALS["netmrg"]["dbconn"]);
 	// if there was an error, handle it
-	if (mysql_errno($GLOBALS["netmrg"]["dbconn"]) && !$unsafe)
+	if (mysqli_errno($GLOBALS["netmrg"]["dbconn"]) && !$unsafe)
 	{
 		if ($GLOBALS["netmrg"]["dbdebug"])
 		{ 	 
-			die("<b>DB_ERROR:</b> Couldn't execute query:<br>\n<pre>$query_string</pre><br>\n<pre>".mysql_error()."</pre><br>\n\n"); 	 
+			die("<b>DB_ERROR:</b> Couldn't execute query:<br>\n<pre>$query_string</pre><br>\n<pre>".mysqli_error($GLOBALS["netmrg"]["dbconn"])."</pre><br>\n\n");
 		} // end if we're debuging things 	 
 		else 	 
 		{ 	 
@@ -87,25 +87,25 @@ function db_update($query_string)
 // fetch data from a query
 function db_fetch_array($q_handle)
 {
-	return mysql_fetch_array($q_handle);
+	return mysqli_fetch_array($q_handle);
 } // end db_fetch_array()
 
 // number of rows returned in a query
 function db_num_rows($q_handle)
 {
-	return mysql_num_rows($q_handle);
+	return mysqli_num_rows($q_handle);
 } // end db_num_rows()
 
 // escape data in query
 function db_escape_string($string)
 {
-	return mysql_escape_string($string);
+	return mysqli_escape_string($GLOBALS["netmrg"]["dbconn"], $string);
 } // end db_escape()
 
 // last insert id
 function db_insert_id()
 {
-	return mysql_insert_id($GLOBALS["netmrg"]["dbconn"]);
+	return mysqli_insert_id($GLOBALS["netmrg"]["dbconn"]);
 } // end db_insert_id()
 
 
@@ -126,13 +126,13 @@ function db_quote($value)
 	// quote if not a number or a numeric string
 	if (!is_array($value))
 	{
-		$return_val = '\'' . mysql_real_escape_string($value) . '\'';
+		$return_val = '\'' . mysqli_real_escape_string($GLOBALS["netmrg"]["dbconn"], $value) . '\'';
 	} // end if value not an array
 	else
 	{
 		foreach ($value as $key => $local_value)
 		{
-			$value[$key] = '\'' . mysql_real_escape_string($local_value) . '\'';
+			$value[$key] = '\'' . mysqli_real_escape_string($GLOBALS["netmrg"]["dbconn"], $local_value) . '\'';
 		} // end foreach array value
 		$return_val = implode(',', $value);
 	} // end if value is an array
@@ -140,6 +140,11 @@ function db_quote($value)
 	return $return_val;
 } // end function db_quote()
 
+function mysqli_result($res, $row, $field = 0) {
+    $res->data_seek($row);
+    $datarow = $res->fetch_array();
+    return $datarow[$field];
+}
 
 /**
 * db_fetch_cell($sql)
@@ -155,43 +160,16 @@ function db_fetch_cell($sql)
 	
 	if ($res)
 	{
-		$rows = mysql_numrows($res);
+		$rows = mysqli_num_rows($res);
 		
 		if ($rows > 0)
 		{
-			return(mysql_result($res,0,0));
+			return(mysqli_result($res,0,0));
 		} // end if rows
 	} // end if result
 	
 	return false;
 } // end db_fetch_cell();
-
-
-/**
-* db_fetch_row($sql)
-* 
-* run a 'select' sql query and return the first row found
-*
-* @arg $sql - the sql query to execute
-* @returns - the first row of the result as a hash
-*/
-function db_fetch_row($sql)
-{
-	$res = db_query($sql);
-	
-	if ($query)
-	{
-		$rows = mysql_numrows($res);
-		
-		if ($rows > 0)
-		{
-			return(mysql_fetch_assoc($res));
-		} // end if rows
-	} // end if result
-	
-	return false;
-} // end db_fetch_row();
-
 
 /**
 * db_fetch_assoc($sql)
@@ -208,11 +186,11 @@ function db_fetch_assoc($sql)
 	
 	if ($res)
 	{
-		$rows = mysql_numrows($res);
+		$rows = mysqli_num_rows($res);
 		
 		if ($rows > 0)
 		{
-			while($row = mysql_fetch_assoc($res))
+			while($row = mysqli_fetch_assoc($res))
 			{
 				array_push($data, $row);
 			}
@@ -231,7 +209,7 @@ function db_fetch_assoc($sql)
 */
 function db_data_seek($q_handle, $rownum)
 {
-	if (!mysql_data_seek($q_handle, $rownum))
+	if (!mysqli_data_seek($q_handle, $rownum))
 	{
 		if ($GLOBALS["netmrg"]["dbdebug"])
 		{

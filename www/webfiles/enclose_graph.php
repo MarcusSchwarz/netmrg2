@@ -102,7 +102,7 @@ function show_dissection()
 	$opts = template() . "type={$_REQUEST['type']}&id={$_REQUEST['id']}";
 	$dbq = db_query("SELECT id FROM graph_ds WHERE graph_id = '{$_REQUEST['id']}' AND mon_id != -2 ORDER BY position, id");
 	echo('<div align="center">');
-	while ($dbr = mysql_fetch_array($dbq))
+	while ($dbr = mysqli_fetch_array($dbq))
 	{
 		echo('<img src="get_graph.php?' . template() . 'type=' . $_REQUEST['type'] . '_item&id=' . $dbr['id'] . '"><br>');
 	}

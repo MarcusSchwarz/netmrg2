@@ -641,7 +641,7 @@ function GetGroups($type,$id)
 	foreach ($query as $sql_cmd)
 	{
 		$db_result = db_query($sql_cmd);
-		while ($r = mysql_fetch_array($db_result))
+		while ($r = mysqli_fetch_array($db_result))
 		{
 			if ($type == "customgraph")
 			{

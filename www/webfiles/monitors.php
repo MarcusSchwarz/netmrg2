@@ -122,7 +122,7 @@ function do_list()
 
 	$mon_results = db_query("SELECT * FROM monitors WHERE sub_dev_id='{$_REQUEST['sub_dev_id']}'");
 	$mons = array();
-	while ($arow = mysql_fetch_array($mon_results))
+	while ($arow = mysqli_fetch_array($mon_results))
 	{
 		$arow['short_name'] = get_short_test_name($arow['test_type'], $arow['test_id'], $arow['test_params']);
 		array_push($mons, $arow);

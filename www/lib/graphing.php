@@ -265,7 +265,7 @@ function custom_graph_command($id, $timeframe, $templated, $single_ds)
 	// *** Padded Length Calculation
 	$padded_length = 5;
 	$ds_results = db_query("SELECT max(length(graph_ds.label)) as maxlen FROM graph_ds WHERE graph_ds.graph_id=$id $ew");
-	$ds_row = mysql_fetch_array($ds_results);
+	$ds_row = mysqli_fetch_array($ds_results);
 	if (!empty($ds_row['maxlen']) && $padded_length < $ds_row['maxlen'])
 	{
 		$padded_length = $ds_row['maxlen'];

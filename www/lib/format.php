@@ -1225,7 +1225,7 @@ function make_edit_select_monitor_old($mon_id_cur, $prepended_array = array())
         ");
 
 	$mons = array();
-	while ($arow = mysql_fetch_array($mon_results))
+	while ($arow = mysqli_fetch_array($mon_results))
 	{
 		$arow['mon_name'] = get_monitor_name($arow['id']);
 		array_push($mons, $arow);

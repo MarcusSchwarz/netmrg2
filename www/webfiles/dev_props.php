@@ -103,7 +103,7 @@ function do_list()
 	$results = db_query("SELECT * FROM dev_props WHERE dev_type_id = {$_REQUEST['dev_type']}");
 	$prop_count = 0;
 
-	while ($row = mysql_fetch_array($results))
+	while ($row = mysqli_fetch_array($results))
 	{
 		$test_name = get_short_test_name($row['test_type'], $row['test_id'], $row['test_params']);
 		$prop_id = $row['id'];

@@ -417,7 +417,7 @@ function Updater($dbupdates, $version = "", $which_update = "", $force = false)
 					db_query($dbquery['query'], true);
 					
 					// check for error
-					if (!mysql_errno($GLOBALS["netmrg"]["dbconn"]))
+					if (!mysqli_errno($GLOBALS["netmrg"]["dbconn"]))
 					{
 						$update_status = "applied";
 						$updates_applied++;
@@ -426,7 +426,7 @@ function Updater($dbupdates, $version = "", $which_update = "", $force = false)
 					else
 					{
 						$update_status = "error";
-						$update_error = "<br /><b>DB_ERROR:</b> Couldn't execute query:<br>\n<pre>{$dbquery['query']}</pre><br>\n<pre>".mysql_error($GLOBALS["netmrg"]["dbconn"])."</pre><br>\n\n";
+						$update_error = "<br /><b>DB_ERROR:</b> Couldn't execute query:<br>\n<pre>{$dbquery['query']}</pre><br>\n<pre>".mysqli_error($GLOBALS["netmrg"]["dbconn"])."</pre><br>\n\n";
 						if ($force)
 						{
 							LogUpdate($dbupver, $dbquery['name'], $dbver);
