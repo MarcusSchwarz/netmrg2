@@ -852,7 +852,7 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` int(11) NOT NULL auto_increment,
   `user` varchar(50) NOT NULL default '',
-  `pass` varchar(50) NOT NULL default '',
+  `pass` varchar(140) NOT NULL default '',
   `permit` tinyint(4) NOT NULL default '0',
   `fullname` varchar(200) default NULL,
   `group_id` int(11) NOT NULL default '0',

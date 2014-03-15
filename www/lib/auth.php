@@ -34,21 +34,14 @@
 *   $user = username
 *
 */
-function check_user($user)
-{
-	$auth_select = "SELECT 1 FROM user WHERE user='$user'";
-	$auth_result = db_query($auth_select);
-	if (db_num_rows($auth_result) > 0)
-	{
-		$auth_valid = true;
-	}
-	else
-	{
-		$auth_valid = false;
-	} // end if we have a result or not
+function check_user($user) {
+    $s = getDatabase()->prepare('SELECT 1 FROM user WHERE user = :user');
+    $s->bindValue(':user', $user);
+    $s->execute();
+    $result = $s->fetchColumn();
 
-	return $auth_valid;
-} // end check_user();
+    return ($result == 1) ? true : false;
+}
 
 
 /**
@@ -58,22 +51,41 @@ function check_user($user)
 *   $user = username
 *   $pass = password
 */
-function check_user_pass($user, $pass)
-{
-	$auth_select = "SELECT 1 FROM user WHERE user='$user' AND pass=MD5('$pass')";
-	$auth_result = db_query($auth_select);
-	if (db_num_rows($auth_result) > 0)
-	{
-		$auth_valid = true;
-	}
-	else
-	{
-		$auth_valid = false;
-	} // end if we have a result or not
+function check_user_pass($user, $pass) {
+    $s = getDatabase()->prepare('SELECT 1 FROM user WHERE user = :user AND pass = :pass');
+    $s->bindValue(':user', $user);
+    $s->bindValue(':pass', generate_password_hash($pass));
+    $s->execute();
+    $result = $s->fetchColumn();
 
-	return $auth_valid;
-} // end check_user_pass()
+    if ($result == 1) {
+        return true;
+    }
 
+    // test against old type password hashes
+    $s->bindValue(':user', $user);
+    $s->bindValue(':pass', md5($pass));
+    $s->execute();
+    $result = $s->fetchColumn();
+
+    if ($result == 1) {
+        // update old password hash
+        $s = getDatabase()->prepare('UPDATE user SET pass = :pass WHERE user = :user');
+        $s->bindValue(':user', $user);
+        $s->bindValue(':pass', generate_password_hash($pass));
+        $s->execute();
+        return true;
+    }
+
+    return false;
+}
+
+function generate_password_hash($pass) {
+    for ($i = 0; $i < 10240; $i++) {
+        $pass = hash('sha512', $pass.HASHING_SECRET);
+    }
+    return $pass;
+}
 
 /**
 * IsLoggedIn();
@@ -97,10 +109,10 @@ function IsLoggedIn()
 		&& time() - $_SESSION["netmrgsess"]["accessTime"] <= $GLOBALS["netmrg"]["authTimeout"])
 	{
 		return true;
-	} // end if the username/password checks out and the ips match
+	}
 
 	return false;
-} // end IsLoggedIn();
+}
 
 
 /**
@@ -108,12 +120,12 @@ function IsLoggedIn()
 *
 * gets $user's full name
 */
-function get_full_name($user)
-{
-	$q = db_query("SELECT fullname FROM user WHERE user='$user'");
-	$r = db_fetch_array($q);
-	return $r["fullname"];
-} // end get_full_name()
+function get_full_name($user) {
+    $s = getDatabase()->prepare('SELECT fullname FROM user WHERE user = :user');
+    $s->bindValue(':user', $user);
+    $s->execute();
+    return $s->fetchColumn();
+}
 
 
 /**
@@ -122,29 +134,24 @@ function get_full_name($user)
 * checks the logged in user's auth level to be sure they have
 * at least auth level $level.  If not, send them away
 */
-function check_auth($level)
-{
+function check_auth($level) {
 	// if they aren't logged in
-	if (!IsLoggedIn())
-	{
+	if (!IsLoggedIn()) {
 		$_SESSION["netmrgsess"]["redir"] = $_SERVER["REQUEST_URI"];
-		if ($GLOBALS["netmrg"]["externalAuth"])
-		{
+		if ($GLOBALS["netmrg"]["externalAuth"]) {
 			header("Location: {$GLOBALS['netmrg']['webroot']}/login.php");
-			exit(0);
-		} // end if externalauth
+			exit;
+		}
 		header("Location: {$GLOBALS['netmrg']['webroot']}/error.php?action=invalid");
-		exit(0);
-	} // end if they aren't logged in
+		exit;
+	}
 
 	// if they don't have enough permissions
-	else if ($_SESSION["netmrgsess"]["permit"] < $level)
-	{
+	else if ($_SESSION["netmrgsess"]["permit"] < $level) {
 		header("Location: {$GLOBALS['netmrg']['webroot']}/error.php?action=denied");
-		exit(0);
-	} // end if they don't have enough permissions
-
-} // end check_auth()
+		exit;
+	}
+}
 
 
 /**
@@ -153,22 +160,19 @@ function check_auth($level)
 * called from the 'view.php' page
 * checks that the user is allowed to see this page
 */
-function viewCheckAuth($object_id, $object_type)
-{
+function viewCheckAuth($object_id, $object_type) {
 	global $PERMIT;
 	check_auth($GLOBALS['PERMIT']["SingleViewOnly"]);
 	
 	// the groups this object_id is in
 	$object_id_groups = GetGroups($object_type,$object_id);
 	
-	if (!in_array($_SESSION["netmrgsess"]["group_id"], $object_id_groups)
-		&& $_SESSION["netmrgsess"]["permit"] == $PERMIT["SingleViewOnly"])
-	{
+	if (!in_array($_SESSION["netmrgsess"]["group_id"], $object_id_groups) && $_SESSION["netmrgsess"]["permit"] == $PERMIT["SingleViewOnly"]) {
 		return false;
 	} // end if allowed group id is not in this objects groups and we're SVO
 	
 	return true;
-} // end viewCheckAuth()
+}
 
 
 /**
@@ -178,15 +182,13 @@ function viewCheckAuth($object_id, $object_type)
 * checks that the user is allowed to see this page
 * and redirects if they are not
 */
-function viewCheckAuthRedirect($object_id, $object_type)
-{
-	if (!viewCheckAuth($object_id, $object_type))
-	{
+function viewCheckAuthRedirect($object_id, $object_type) {
+	if (!viewCheckAuth($object_id, $object_type)) {
 		$_SESSION["netmrgsess"]["redir"] = $_SERVER["REQUEST_URI"];
 		header("Location: {$GLOBALS['netmrg']['webroot']}/error.php?action=denied");
 		exit;
-	} // end if not authorized
-} // end viewCheckAuthRedirect()
+	}
+}
 
 
 /**
@@ -198,16 +200,14 @@ function viewCheckAuthRedirect($object_id, $object_type)
 * id = id of item
 *
 */
-function EncloseGraphCheckAuth($type, $id)
-{
+function EncloseGraphCheckAuth($type, $id) {
 	global $PERMIT;
 	check_auth($GLOBALS['PERMIT']["SingleViewOnly"]);
 
 	// the groups this object_id is in
 	$object_id_groups = array();
 
-	switch ($type)
-	{
+	switch ($type) {
 		case "mon" :
 		case "tinymon" :
 			$object_id_groups = GetGroups("monitor",$id);
@@ -220,16 +220,14 @@ function EncloseGraphCheckAuth($type, $id)
 		case "custom" :
 			$object_id_groups = GetGroups("customgraph",$id);
 			break;
-	} // end switch graph type
+	}
 
-	if (!in_array($_SESSION["netmrgsess"]["group_id"], $object_id_groups)
-		&& $_SESSION["netmrgsess"]["permit"] == $PERMIT["SingleViewOnly"])
-	{
+	if (!in_array($_SESSION["netmrgsess"]["group_id"], $object_id_groups) && $_SESSION["netmrgsess"]["permit"] == $PERMIT["SingleViewOnly"]) {
 		$_SESSION["netmrgsess"]["redir"] = $_SERVER["REQUEST_URI"];
 		header("Location: {$GLOBALS['netmrg']['webroot']}/error.php?action=denied");
 		exit;
 	}
-} // end EncloseGraphCheckAuth();
+}
 
 
 /**
@@ -241,16 +239,14 @@ function EncloseGraphCheckAuth($type, $id)
 * id = id of item
 *
 */
-function GraphCheckAuth($type, $id)
-{
+function GraphCheckAuth($type, $id) {
 	global $PERMIT;
 	check_auth($GLOBALS['PERMIT']["SingleViewOnly"]);
 
 	// the groups this object_id is in
 	$object_id_groups = array();
 
-	switch ($type)
-	{
+	switch ($type) {
 		case "mon" :
 		case "tinymon" :
 			$object_id_groups = GetGroups("monitor",$id);
@@ -265,15 +261,13 @@ function GraphCheckAuth($type, $id)
 		case "custom_item" :
 			$object_id_groups = GetGroups("customgraph",$id);
 			break;
-	} // end switch graph type
+	}
 
-	if (!in_array($_SESSION["netmrgsess"]["group_id"], $object_id_groups)
-		&& $_SESSION["netmrgsess"]["permit"] == $PERMIT["SingleViewOnly"])
-	{
+	if (!in_array($_SESSION["netmrgsess"]["group_id"], $object_id_groups) && $_SESSION["netmrgsess"]["permit"] == $PERMIT["SingleViewOnly"]) {
 		readfile($GLOBALS["netmrg"]["fileroot"]."/webfiles/img/access_denied.png");
 		exit;
 	}
-} // end GraphCheckAuth();
+}
 
 
 /**
@@ -281,10 +275,8 @@ function GraphCheckAuth($type, $id)
 *
 * reset authentication variables
 */
-function ResetAuth()
-{
-	if (isset($_SESSION["netmrgsess"]))
-	{
+function ResetAuth() {
+	if (isset($_SESSION["netmrgsess"])) {
 		unset($_SESSION["netmrgsess"]);
 		$_SESSION["netmrgsess"] = array();
 		$_SESSION["netmrgsess"]["username"] = "";
@@ -292,8 +284,8 @@ function ResetAuth()
 		$_SESSION["netmrgsess"]["remote_addr"] = "";
 		$_SESSION["netmrgsess"]["permit"] = "";
 		$_SESSION["netmrgsess"]["accessTime"] = "";
-	} // end if isset netmrg session
-} // end ResetAuth()
+	}
+}
 
 
 /**
@@ -301,44 +293,40 @@ function ResetAuth()
 *
 * gets the user's permission level
 */
-function get_permit($user)
-{
-	if (IsLoggedIn())
-	{
+function get_permit($user) {
+	if (IsLoggedIn()) {
 		global $PERMIT;
-		if ($GLOBALS["netmrg"]["verhist"][$GLOBALS["netmrg"]["dbversion"]] >= $GLOBALS["netmrg"]["verhist"]["0.17"])
-		{
-			$sql = "SELECT IF(disabled=0, permit, '".$PERMIT["Disabled"]."') AS permit FROM user WHERE user='".$user."'";
-		} // end if the disabled column works
-		else
-		{
-			$sql = "SELECT permit FROM user WHERE user='".$user."'";
-		} // end if no disabled column
-		$handle = db_query($sql);
-		$row = db_fetch_array($handle);
-		return $row["permit"];
-	} // end if there is somebody logged in, get their permissions
+		if ($GLOBALS["netmrg"]["verhist"][$GLOBALS["netmrg"]["dbversion"]] >= $GLOBALS["netmrg"]["verhist"]["0.17"]) {
+            $s = getDatabase()->prepare('SELECT IF(disabled = 0, permit, :permit) AS permit FROM user WHERE user = :user');
+            $s->bindValue(':permit', $PERMIT['Disabled']);
+		}
+		else {
+            //kinda deprecated, maybe we should simply remove it?
+            $s = getDatabase()->prepare('SELECT permit FROM user WHERE user = :user');
+		}
+        $s->bindValue(':user', $user);
+        $s->execute();
+        return $s->fetchColumn();
+	}
 
 	return false;
-} // end get_permit()
+}
 
 /**
 * GetUserID()
 *
 * gets the user id of the logged in user
 */
-function GetUserID()
-{
-	if (IsLoggedIn())
-	{
-		$sql = "SELECT id FROM user WHERE user='" . $_SESSION["netmrgsess"]["username"] . "'";
-		$handle = db_query($sql);
-		$row = db_fetch_array($handle);
-		return empty($row["id"]) ? false : $row["id"];
-	} // end IsLoggedIn
-	
+function GetUserID() {
+	if (IsLoggedIn()) {
+        $s = getDatabase()->prepare('SELECT id FROM user WHERE user= :user');
+        $s->bindValue(':user', $_SESSION["netmrgsess"]["username"]);
+        $s->execute();
+        return $s->fetchColumn();
+	}
+
 	return false;
-} // end GetUserID()
+}
 
 
 /**
@@ -347,22 +335,21 @@ function GetUserID()
 * gets the group id of the logged in user
 * $user = the username of get info on
 */
-function get_group_id($user = "")
-{
-	if (empty($user))
-	{
+function get_group_id($user = "") {
+	if (empty($user)) {
 		$user = $_SESSION["netmrgsess"]["username"];
-	} // end if no user set
-	if (IsLoggedIn())
-	{
-		$sql = "SELECT group_id FROM user WHERE user='$user'";
-		$handle = db_query($sql);
-		$row = db_fetch_array($handle);
-		return $row["group_id"];
-	} // end IsLoggedIn
+	}
+
+    if (IsLoggedIn()) {
+        $s = getDatabase()->prepare('SELECT group_id FROM user WHERE user = :user');
+        $s->bindValue(':user', $user);
+        $s->execute();
+
+        return $s->fetchColumn();
+	}
 	
 	return false;
-} // end get_group_id()
+}
 
 
 /**
@@ -372,18 +359,15 @@ function get_group_id($user = "")
 * if they only have 'single view' priviledges or they
 * weren't on their way to somewhere else
 */
-function view_redirect()
-{
-	if (empty($_SESSION["netmrgsess"]["redir"]) || ($_SESSION["netmrgsess"]["permit"] == 0))
-	{
+function view_redirect() {
+	if (empty($_SESSION["netmrgsess"]["redir"]) || ($_SESSION["netmrgsess"]["permit"] == 0)) {
 		header("Location: {$GLOBALS['netmrg']['webroot']}/device_tree.php");
-		exit(0);
+		exit;
 	}
-	else
-	{
+	else {
 		$redir = $_SESSION["netmrgsess"]["redir"];
 		unset($_SESSION["netmrgsess"]["redir"]);
 		header("Location: $redir");
-		exit(0);
-	} // end if we don't have a redir page or we do
-} // end view_redirect()
+		exit;
+	}
+}

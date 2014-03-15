@@ -1328,7 +1328,7 @@ function SetUserPref($uid, $module, $pref, $value)
 * returns the version the database thinks we are
 */
 function GetDBVersion() {
-    return $GLOBALS["netmrg"]["pdoconn"]->query('SELECT version FROM versioninfo WHERE module = "Main"', PDO::FETCH_COLUMN, 0);
+    return getDatabase()->query('SELECT version FROM versioninfo WHERE module = "Main"', PDO::FETCH_COLUMN, 0);
 }
 
 
@@ -1348,11 +1348,11 @@ function UpdaterNeedsRun()
 *
 * updates the version the database is in
 */
-function UpdateDBVersion($ver)
-{
-	$sql = "UPDATE versioninfo SET version='$ver' WHERE module='Main'";
-	$handle = db_query($sql);
-} // end UpdateDBVersion();
+function UpdateDBVersion($ver) {
+    $s = getDatabase()->prepare("UPDATE versioninfo SET version = :ver WHERE module = 'Main'");
+    $s->bindValue(':ver', $ver);
+    $s->execute();
+}
 
 
 /**
@@ -1369,16 +1369,13 @@ function GetXMLConfig()
 	$GLOBALS["netmrg"]["companylink"]  = $xmlconfig["NETMRG"][0]["WEBSITE"][0]["COMPANYLINK"][0]["VALUE"];
 	$GLOBALS["netmrg"]["webhost"]      = $xmlconfig["NETMRG"][0]["WEBSITE"][0]["WEBHOST"][0]["VALUE"];
 	$GLOBALS["netmrg"]["webroot"]      = $xmlconfig["NETMRG"][0]["WEBSITE"][0]["WEBROOT"][0]["VALUE"];
-	if (!isset($xmlconfig["NETMRG"][0]["WEBSITE"][0]["EXTERNALAUTH"]))
-	{
+	if (!isset($xmlconfig["NETMRG"][0]["WEBSITE"][0]["EXTERNALAUTH"])) {
 		$xmlconfig["NETMRG"][0]["WEBSITE"][0]["EXTERNALAUTH"][0]["VALUE"] = false;
 	} // end set default for external auth
-	if ($xmlconfig["NETMRG"][0]["WEBSITE"][0]["EXTERNALAUTH"][0]["VALUE"] == "true")
-	{
+	if ($xmlconfig["NETMRG"][0]["WEBSITE"][0]["EXTERNALAUTH"][0]["VALUE"] == "true") {
 		$GLOBALS["netmrg"]["externalAuth"] = true;
 	} // end if true
-	else
-	{
+	else {
 		$GLOBALS["netmrg"]["externalAuth"] = false;
 	} // end else false
 
@@ -1399,7 +1396,9 @@ function GetXMLConfig()
 
 	// RRDTool Config
 	$GLOBALS["netmrg"]["rrdtool_version"] = $xmlconfig["NETMRG"][0]["RRDTOOL"][0]["VERSION"][0]["VALUE"];
-	if (empty($GLOBALS["netmrg"]["rrdtool_version"])) { $GLOBALS["netmrg"]["rrdtool_version"] = "1.0"; }
+	if (empty($GLOBALS["netmrg"]["rrdtool_version"])) {
+        $GLOBALS["netmrg"]["rrdtool_version"] = "1.0";
+    }
 
 } // end GetXMLConfig();
 
@@ -1411,41 +1410,25 @@ function GetXMLConfig()
 *
 * @returns array of errors
 */
-function PrereqsMet()
-{
-	/**
-	PHP >= v4.1.0
-	PHP Safe Mode == off
-	RRDtool is executable
-	netmrg-gatherer is executable
-	*/
-	
+function PrereqsMet() {
 	$errors = array();
 	
-	// PHP >= 4.1.0
-	$phpver = explode(".", phpversion());
-	if ($phpver[0] < 4 && $phpver[1] < 1 && $phpver[2] < 0)
-	{
-		array_push($errors, "PHP Version 4.1.0 or higher required");
-	} // end if version less than 4.1.0
-	
-	// PHP Safe Mode == off
-	if (ini_get("safe_mode"))
-	{
+    if (!version_compare(phpversion(), "5.3.0", ">=")) {
+        array_push($errors, "PHP Version 5.3.0 or higher required");
+    }
+
+	// PHP Safe Mode == off; it is deprecated since 5.3
+	if (ini_get("safe_mode")) {
 		array_push($errors, "PHP Safe Mode not supported");
-	} // end if safe mode enabled
+	}
 	
-	// RRDtool is executable
-	if (!is_executable($GLOBALS["netmrg"]["rrdtool"]))
-	{
+	if (!is_executable($GLOBALS["netmrg"]["rrdtool"])) {
 		array_push($errors, "RRD Tool not found or is not executable");
-	} // end if rrdtool not executable
+	}
 	
-	// netmrg-gatherer is executable
-	if (!is_executable($GLOBALS["netmrg"]["binary"]))
-	{
+	if (!is_executable($GLOBALS["netmrg"]["binary"])) {
 		array_push($errors, "NetMRG Gatherer not found or not executable");
-	} // end if gatherer not executable
+	}
 	
 	return $errors;
-} // end PrereqsMet();
+}

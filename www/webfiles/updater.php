@@ -261,6 +261,11 @@ $dbupdates = array(
 			"name" => "Minimum Graph Option",
 			"query" => "ALTER TABLE `graph_ds` MODIFY `stats` set('CURRENT','AVERAGE','MAXIMUM','SUMS','INTEGER','MULTSUM', 'MINIMUM') NOT NULL DEFAULT 'CURRENT,AVERAGE,MAXIMUM'"),
 	), // end 0.21
+
+    "0.22" => array(
+        "name" => "Password Hash Field",
+        "query" => "ALTER TABLE user CHANGE pass pass VARCHAR( 140 ) DEFAULT '' NOT NULL;"
+    )
 	
 ); // end $dbupdates;
 
