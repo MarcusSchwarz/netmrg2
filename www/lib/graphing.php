@@ -33,6 +33,8 @@
 *
 * @param int $mon_id      the monitor id as defined in the graph template
 * @param int $subdev_id   the subdevice id to which the template is applied
+*
+* @returns int|bool
 */
 function dereference_templated_monitor($mon_id, $subdev_id)
 {

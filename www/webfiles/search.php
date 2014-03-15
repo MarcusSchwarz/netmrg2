@@ -162,6 +162,8 @@ function display_result($object_type, $object_id, $object_value, $object_groups,
 * performs the search of $query over $SEARCH_ITEMS
 *
 * @param string $query the search query
+*
+* @returns array
 */
 function perform_search($query)
 {

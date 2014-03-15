@@ -29,21 +29,16 @@
 
 require_once "../include/config.php";
 
-
 $login_error = "";
 
 // if we've already seen this page, go away
-if (IsLoggedIn())
-{
+if (IsLoggedIn()) {
 	view_redirect();
-} // end if we've alread seen this page
+}
 
 /***** EXTERNAL AUTH *****/
 // if external auth
-if ($GLOBALS["netmrg"]["externalAuth"]
-	&& !empty($_SERVER["PHP_AUTH_USER"])
-	&& check_user($_SERVER["PHP_AUTH_USER"]))
-{
+if ($GLOBALS["netmrg"]["externalAuth"] && !empty($_SERVER["PHP_AUTH_USER"]) && check_user($_SERVER["PHP_AUTH_USER"])) {
 	$_SESSION["netmrgsess"]["prettyname"] = $_SERVER["PHP_AUTH_USER"];
 	$_SESSION["netmrgsess"]["username"] = $_SERVER["PHP_AUTH_USER"];
 	$_SESSION["netmrgsess"]["password"] = "";
@@ -53,12 +48,9 @@ if ($GLOBALS["netmrg"]["externalAuth"]
 	$_SESSION["netmrgsess"]["group_id"] = get_group_id();
 
 	view_redirect();
-} // end if external auth and usernames match
+}
 // if external auth and default user exists
-else if ($GLOBALS["netmrg"]["externalAuth"]
-	&& !empty($_SERVER["PHP_AUTH_USER"])
-	&& check_user($GLOBALS["netmrg"]["defaultMapUser"]))
-{
+else if ($GLOBALS["netmrg"]["externalAuth"]	&& !empty($_SERVER["PHP_AUTH_USER"]) && check_user($GLOBALS["netmrg"]["defaultMapUser"])) {
 	$_SESSION["netmrgsess"]["prettyname"] = $_SERVER["PHP_AUTH_USER"];
 	$_SESSION["netmrgsess"]["username"] = $GLOBALS["netmrg"]["defaultMapUser"];
 	$_SESSION["netmrgsess"]["password"] = "";
@@ -68,23 +60,16 @@ else if ($GLOBALS["netmrg"]["externalAuth"]
 	$_SESSION["netmrgsess"]["group_id"] = get_group_id($GLOBALS["netmrg"]["defaultMapUser"]);
 
 	view_redirect();
-} // end if external auth and usernames match
-else if ($GLOBALS["netmrg"]["externalAuth"]
-	&& !empty($_SERVER["PHP_AUTH_USER"])
-	&& !check_user($_SERVER["PHP_AUTH_USER"]))
-{
+}
+else if ($GLOBALS["netmrg"]["externalAuth"] && !empty($_SERVER["PHP_AUTH_USER"]) && !check_user($_SERVER["PHP_AUTH_USER"])) {
 	header("Location: {$GLOBALS['netmrg']['webroot']}/error.php?action=denied");
-	exit(0);
-} // end if external auth and usernames don't match
-
+	exit;
+}
 
 // if we need to login
-if (!empty($_REQUEST["user_name"]))
-{
-	if (!$GLOBALS["netmrg"]["externalAuth"]
-		&& check_user_pass($_REQUEST["user_name"], $_REQUEST["password"]))
-	{
-		$_SESSION["netmrgsess"]["prettyname"] = $_REQUEST["user_name"];
+if (!empty($_REQUEST["user_name"])) {
+	if (!$GLOBALS["netmrg"]["externalAuth"] && check_user_pass($_REQUEST["user_name"], $_REQUEST["password"])) {
+        $_SESSION["netmrgsess"]["prettyname"] = $_REQUEST["user_name"];
 		$_SESSION["netmrgsess"]["username"] = $_REQUEST["user_name"];
 		$_SESSION["netmrgsess"]["password"] = $_REQUEST["password"];
 		$_SESSION["netmrgsess"]["accessTime"] = time();
@@ -92,29 +77,26 @@ if (!empty($_REQUEST["user_name"]))
 		$_SESSION["netmrgsess"]["permit"] = get_permit($_SESSION["netmrgsess"]["username"]);
 		$_SESSION["netmrgsess"]["group_id"] = get_group_id();
 		view_redirect();
-	} // end if normal auth
-
-	else
-	{
+	}
+	else {
 		$login_error = "Invalid Username or Password";
-	} // end if the username & password is valid or not
-}// end if there was a username
+	}
+}
 
 begin_page("login.php", "Login", 0, '', array("login_focus.js"));
 ?>
 <br><br>
-<font color="#000080" size="3"><strong>User Login</strong></font>
+<span style="color:#000080;font-size:large;font-weight:bold;">User Login</span>
 <br><br>
 
 <?php
-if (!empty($login_error))
-{
+if (!empty($login_error)) {
 ?>
 	<div class="error">
 	<?php echo "$login_error\n"; ?>
 	</div>
 <?php
-} // end if there was a login error
+}
 ?>
 <form action="./login.php" method="post" name="lif">
 <table>

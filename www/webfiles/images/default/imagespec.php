@@ -49,4 +49,3 @@ $GLOBALS["netmrg"]["imagespec"] = array(
 	"status-unknown-trig"    => "status-unknown-trig.png",
 	"status-unknown-untrig"  => "status-unknown-untrig.png"
 );
-?>

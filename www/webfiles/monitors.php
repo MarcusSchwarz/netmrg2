@@ -133,7 +133,7 @@ function do_list()
 		return strcmp($a['short_name'], $b['short_name']);
 	}
 
-	usort($mons, mon_sort);
+	usort($mons, 'mon_sort');
 	$mon_count = 0;
 
 	foreach ($mons as $mon_row)

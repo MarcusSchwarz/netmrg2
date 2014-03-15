@@ -97,7 +97,7 @@ function dodisplay()
 		return compare_interface_names($a['name'], $b['name']);
 	}
 	
-	usort($rows, mysort);
+	usort($rows, 'mysort');
 	
 	make_display_table("Sub-Devices for " . get_device_name($_REQUEST["dev_id"]),
 		"{$_SERVER['PHP_SELF']}?action=add&dev_id={$_REQUEST['dev_id']}&tripid={$_REQUEST['tripid']}",

@@ -44,6 +44,7 @@ $GLOBALS["netmrg"]["verhist"] = array(
 	"0.19" => 13,
 	"0.19.1" => 14,
 	"0.20" => 15,
+    "0.21" => 16,
 ); // end verhist
 
 
@@ -116,8 +117,6 @@ if ( !empty($_SESSION["netmrgsess"]["slideshow"])
 //   for just this user with their entries they can see
 $LOCAL_MENU = array();
 // the current main nav group we're under
-$LOCAL_MENU_CURTREE;
-$LOCAL_MENU_CURITEM;
 
 $PERMIT = array(
 	'Disabled'       => -1,

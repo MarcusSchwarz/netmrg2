@@ -664,7 +664,9 @@ function GetGroups($type,$id)
 *
 * returns the parent device of the $subdevice_id
 *
-* @param integer subdevice_id
+* @param integer $subdevice_id
+*
+* @returns int
 */
 function GetSubdeviceParent($subdevice_id)
 {

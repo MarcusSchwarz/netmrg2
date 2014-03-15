@@ -39,17 +39,16 @@
 *
 * starts the page w/ basic HTML
 *
-* @param string $pagename    page that this is
-* @param string $prettyname  shown in the title bar
-* @param boolean $refresh    whether to refresh this page or not
-* @param string $bodytags    options for the <body> tag
+* @param string $pagename         page that this is
+* @param string $prettyname       shown in the title bar
+* @param boolean $refresh         whether to refresh this page or not
+* @param string $bodytags         options for the <body> tag
+* @param array $javascript_files  additional javascript files which should be loaded
 */
-function begin_page($pagename = "", $prettyname = "", $refresh = false, $bodytags = "", $javascript_files = array())
-{
+function begin_page($pagename = "", $prettyname = "", $refresh = false, $bodytags = "", $javascript_files = array()) {
 	// gather errors from prerequisits being met or not
 	$prereqs_errors = PrereqsMet();
-	$display_menu = false;
-	
+
 	// always include these javascripts
 	$extra_jscript_files = $javascript_files;
 	$javascript_files = array();
@@ -106,6 +105,7 @@ function end_page()
 * @param boolean $display_menu  whether to refresh this page or not
 * @param boolean $refresh       whether to refresh this page or not
 * @param string $bodytags       options for the <body> tag
+* @param array $javascript_files  additional javascript files which should be loaded
 */
 function DisplayPageHeader($pagename = "", $prettyname = "", $refresh = false, $display_menu = false, $bodytags = "", $javascript_files = array())
 {
@@ -541,6 +541,8 @@ function MakeNavURI($name, $link, $title = "", $onclick = "", $alias=array())
 * converts all spaces in the string to non-breaking spaces
 *
 * @param string $input string w/ spaces to have replaced
+*
+* @returns string
 */
 function space_to_nbsp($input)
 {
@@ -581,11 +583,7 @@ function GetClassList($class_array = array())
 * @param string $title    the title of the table
 * @param string $addlink  the link to use to add something if it doesn't 
 *                         refer to this page
-* @param array $header_element  an array containing 'text' describing the link
-*                         and 'href' that the text points at.  this can be an
-*                         arbitrary number of array items, and they can be empty
 */
-
 function make_display_table($title, $addlink = "")
 {
 	$elements = array();
@@ -609,7 +607,6 @@ function make_display_table($title, $addlink = "")
 * @param string $addlink  the link to use to add something if it doesn't 
 *                         refer to this page
 */
-
 function make_display_table_array($title, $elements, $addlink = "")
 {
 
@@ -660,14 +657,7 @@ function make_display_table_array($title, $elements, $addlink = "")
 * makes an item that is displayed in a table
 *
 * @param string $style   the current style of this row
-* @param array $element  an array containing 'text' describing the link
-*                        and 'href' that the text points at.  this can be an
-*                        arbitrary number of array items, and they can be empty
-*                        'checkboxname' : name of checkboxes
-*                        'checkboxid' : id to use in checkbox
-*                        'checkdisabled' : true if checkbox is disabled
 */
-
 function make_display_item($style = "editfield0")
 {
 	$elements = array();
@@ -1250,7 +1240,7 @@ function make_edit_select_monitor_old($mon_id_cur, $prepended_array = array())
 		}
 	}
 
-	usort($mons, mon_sort);
+	usort($mons, 'mon_sort');
 
 	foreach ($mons as $mon_row)
 	{
@@ -1418,7 +1408,6 @@ function cond_formatted_link($enabled, $text, $link = "", $caption = "", $img = 
 function formatted_link($text, $link, $caption = "", $img = "")
 {
 	$text = space_to_nbsp($text);
-	$returnstr = "";
 
 	if (!empty($img))
 	{
@@ -1444,7 +1433,6 @@ function formatted_link($text, $link, $caption = "", $img = "")
 
 function formatted_link_disabled($text, $img = "")
 {
-	$returnstr = "";
 	if (!empty($img))
 	{
 		$returnstr = '<img src="'.get_image_by_name($img).'" border="0" alt="'.$text.'" />';
@@ -1584,6 +1572,3 @@ function DisplayResults($results)
 		} // end foreach result
 	} // end if we have results
 } // end DisplayResults();
-
-
-?>

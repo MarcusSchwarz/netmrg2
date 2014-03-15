@@ -268,7 +268,7 @@ function view_interface_cache()
 		}
 	}
 	
-	usort($results, sortme);
+	usort($results, 'sortme');
 			
 	$dev_name = get_device_name($_REQUEST['dev_id']);
 

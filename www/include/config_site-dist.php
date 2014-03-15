@@ -40,4 +40,3 @@
 // $GLOBALS["netmrg"]["traffictemplateid"] = 7;
 // $GLOBALS["netmrg"]["disktemplateid"]	= 8;
 
-?>

@@ -145,8 +145,9 @@ function mysqli_result($res, $row, $field = 0) {
 * 
 *  run a 'select' sql query and return the first column of the first row found
 *
-*  @arg $sql - the sql query to execute
-*  @returns - (bool) the output of the sql query as a single variable
+*  @param $sql - the sql query to execute
+*
+*  @returns mixed the output of the sql query as a single variable
 */
 function db_fetch_cell($sql)
 {
@@ -170,8 +171,9 @@ function db_fetch_cell($sql)
 * 
 * run a 'select' sql query and return all rows found
 * 
-* @arg $sql - the sql query to execute
-* @returns - the entire result set as a multi-dimensional hash
+* @param $sql - the sql query to execute
+*
+* @returns mixed - the entire result set as a multi-dimensional hash
 */
 function db_fetch_assoc($sql)
 {
