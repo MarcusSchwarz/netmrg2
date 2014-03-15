@@ -53,7 +53,7 @@ $GLOBALS["netmrg"]["disktemplateid"]	= 8;
 // include local site config
 if (is_readable("../include/config_site.php"))
 {
-	include_once("../include/config_site.php");
+	include_once "../include/config_site.php";
 } // end if site config
 
 
@@ -89,15 +89,15 @@ GetXMLConfig();
 
 
 /***** INCLUDES *****/
-require_once($GLOBALS["netmrg"]["libdir"]."/lib/database.php");
-require_once($GLOBALS["netmrg"]["libdir"]."/lib/static.php");
-require_once($GLOBALS["netmrg"]["libdir"]."/lib/format.php");
-require_once($GLOBALS["netmrg"]["libdir"]."/lib/auth.php");
-require_once($GLOBALS["netmrg"]["libdir"]."/lib/misc.php");
-require_once($GLOBALS["netmrg"]["libdir"]."/lib/graphing.php");
-require_once($GLOBALS["netmrg"]["libdir"]."/lib/xajax/xajax.inc.php");
-require_once($GLOBALS["netmrg"]["libdir"]."/lib/ajax.php");
-require_once($GLOBALS["netmrg"]["imagebasedir"]."/imagespec.php");
+require_once $GLOBALS["netmrg"]["libdir"]."/lib/database.php";
+require_once $GLOBALS["netmrg"]["libdir"]."/lib/static.php";
+require_once $GLOBALS["netmrg"]["libdir"]."/lib/format.php";
+require_once $GLOBALS["netmrg"]["libdir"]."/lib/auth.php";
+require_once $GLOBALS["netmrg"]["libdir"]."/lib/misc.php";
+require_once $GLOBALS["netmrg"]["libdir"]."/lib/graphing.php";
+require_once $GLOBALS["netmrg"]["libdir"]."/lib/xajax/xajax.inc.php";
+require_once $GLOBALS["netmrg"]["libdir"]."/lib/ajax.php";
+require_once $GLOBALS["netmrg"]["imagebasedir"]."/imagespec.php";
 
 
 

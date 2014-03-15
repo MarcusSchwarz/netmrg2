@@ -28,7 +28,7 @@
 ********************************************/
 
 
-require_once("../include/config.php");
+require_once "../include/config.php";
 if (isset($_REQUEST["object_id"]) && isset($_REQUEST["object_type"]))
 {
 	viewCheckAuthRedirect($_REQUEST["object_id"], $_REQUEST["object_type"]);

@@ -27,7 +27,7 @@
 ********************************************/
 
 
-require_once("../include/config.php");
+require_once "../include/config.php";
 check_auth($GLOBALS['PERMIT']["ReadWrite"]);
 
 // if no action, set a default one

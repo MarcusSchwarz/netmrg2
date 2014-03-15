@@ -28,7 +28,7 @@
 ********************************************/
 
 
-require_once("../include/config.php");
+require_once "../include/config.php";
 
 
 // Source of HTML/JS: http://www.js-examples.com

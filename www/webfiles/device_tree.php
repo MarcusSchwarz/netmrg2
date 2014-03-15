@@ -27,7 +27,7 @@
 ********************************************/
 
 
-require_once("../include/config.php");
+require_once "../include/config.php";
 
 // require at least read
 check_auth($GLOBALS['PERMIT']["SingleViewOnly"]);

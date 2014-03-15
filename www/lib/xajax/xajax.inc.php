@@ -36,7 +36,7 @@ if (!defined ('XAJAX_DEFAULT_CHAR_ENCODING'))
 	define ('XAJAX_DEFAULT_CHAR_ENCODING', 'utf-8' );
 }
 
-require_once("xajaxResponse.inc.php");
+require_once "xajaxResponse.inc.php";
 
 // Communication Method Defines
 if (!defined ('XAJAX_GET'))
@@ -375,7 +375,7 @@ class xajax
 		if (array_key_exists($sFunctionName,$this->aFunctionIncludeFiles))
 		{
 			ob_start();
-			include_once($this->aFunctionIncludeFiles[$sFunctionName]);
+			include_once $this->aFunctionIncludeFiles[$sFunctionName];
 			ob_end_clean();
 		}
 		
@@ -559,7 +559,7 @@ class xajax
 			}
 		}
 		else if (!file_exists($realJsFile)) {
-			require(dirname($realJsFile) . "/xajaxCompress.php");
+			require dirname($realJsFile) . "/xajaxCompress.php";
 			$javaScript = implode('', file($srcFile));
 			$compressedScript = xajaxCompressJavascript($javaScript);
 			$fH = @fopen($realJsFile, "w");

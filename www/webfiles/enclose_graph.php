@@ -30,7 +30,7 @@
 ********************************************/
 
 
-require_once("../include/config.php");
+require_once "../include/config.php";
 // we need to auth different ways depending on type of graph
 switch($_REQUEST["type"])
 {
