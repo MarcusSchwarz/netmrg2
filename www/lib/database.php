@@ -117,12 +117,6 @@ function db_insert_id()
  */
 function db_quote($value)
 {
-	// strip slashes if magic quotes is on
-	if (get_magic_quotes_gpc())
-	{
-		$value = stripslashes($value);
-	} // end if magic quotes
-	
 	// quote if not a number or a numeric string
 	if (!is_array($value))
 	{

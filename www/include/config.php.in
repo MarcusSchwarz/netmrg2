@@ -125,15 +125,11 @@ $dsn = 'mysql:dbname='.$GLOBALS["netmrg"]["dbname"].';host='.$dbhost;
 $user = $GLOBALS["netmrg"]["dbuser"];
 $password = $GLOBALS["netmrg"]["dbpass"];
 
-// temporarily maintain 2 db connections until the migration is finished
+//todo temporarily maintain 2 db connections until the migration to pdo is finished
 $GLOBALS["netmrg"]["dbconn"]    = db_connect();
 $GLOBALS["netmrg"]["pdoconn"]   = new PDO($dsn, $user, $password);
 $GLOBALS["netmrg"]["dbversion"] = GetDBVersion();
 
-// magic_quotes_gpc workaround
-if (!get_magic_quotes_gpc())
-{
-	$_REQUEST = array_map('addslashes_deep', $_REQUEST);
-	$_SERVER = array_map('addslashes_deep', $_SERVER);
-	$_COOKIE = array_map('addslashes_deep', $_COOKIE);
-} // end if no magic quotes gpc, do it ourselves
+// todo temporarily still here until migration to pdo is finished
+$_REQUEST = array_map('addslashes_deep', $_REQUEST);
+$_SERVER = array_map('addslashes_deep', $_SERVER);
