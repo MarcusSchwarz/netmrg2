@@ -30,8 +30,7 @@
 require_once "../include/config.php";
 check_auth($GLOBALS['PERMIT']["ReadAll"]);
 
-if (empty($_REQUEST["action"]))
-{
+if (empty($_REQUEST["action"])) {
 	// Display the list of sub-devices for a particular device.
 
 	begin_page("sub_dev_param.php", "Sub Device Parameters");
@@ -39,44 +38,44 @@ if (empty($_REQUEST["action"]))
 	DrawGroupNavHistory("sub_device", $_REQUEST["sub_dev_id"]);
 	js_confirm_dialog("del", "Are you sure you want to delete subdevice parameter ", "", "{$_SERVER['PHP_SELF']}?action=dodelete&sub_dev_id={$_REQUEST['sub_dev_id']}&tripid={$_REQUEST['tripid']}&name=");
 
-	$results = db_query("SELECT name, value FROM sub_dev_variables WHERE type='static' AND sub_dev_id={$_REQUEST['sub_dev_id']}");
+	$results = getDatabase()->query('SELECT name, value FROM sub_dev_variables WHERE type = "static" AND sub_dev_id = '.intval($_REQUEST['sub_dev_id']));
+	$rowcount = getDatabase()->query('SELECT COUNT(name) FROM sub_dev_variables WHERE type = "static" AND sub_dev_id = '.intval($_REQUEST['sub_dev_id']))->fetchColumn();
 
 	make_display_table("Configured Parameters for " . get_dev_sub_device_name($_REQUEST["sub_dev_id"]), 
 		"{$_SERVER['PHP_SELF']}?action=add&sub_dev_id={$_REQUEST['sub_dev_id']}&tripid={$_REQUEST['tripid']}",
 		array("text" => "Name"),
 		array("text" => "Value")
-	); // end make_display_table();
+	);
 
-	for ($i = 0; $i < db_num_rows($results); $i++)
-	{
-		$row = db_fetch_array($results);
-		make_display_item("editfield".($i%2),
+	for ($i = 0; $i < $rowcount; $i++) {
+		$row = $results->fetch(PDO::FETCH_ASSOC);
+		make_display_item("editfield".($i % 2),
 			array("text" => $row["name"]),
 			array("text" => $row["value"]),
 			array("text" => formatted_link("Edit", "{$_SERVER['PHP_SELF']}?action=edit&sub_dev_id={$_REQUEST['sub_dev_id']}&tripid={$_REQUEST['tripid']}&name=" . $row["name"]) . "&nbsp;" . 
 				formatted_link("Delete", "javascript:del('".addslashes(htmlspecialchars($row['name']))."', '".addslashes(htmlspecialchars($row['name']))."')"), "")
-		); // end make_display_item();
+		);
 	}
 
 	?>
     </table><br><br>
     <?php
 
-	$results = db_query("SELECT name, value FROM sub_dev_variables WHERE type='dynamic' AND sub_dev_id={$_REQUEST['sub_dev_id']}");
+    $results = getDatabase()->query('SELECT name, value FROM sub_dev_variables WHERE type = "dynamic" AND sub_dev_id = '.intval($_REQUEST['sub_dev_id']));
+    $rowcount = getDatabase()->query('SELECT COUNT(name) FROM sub_dev_variables WHERE type = "dynamic" AND sub_dev_id = '.intval($_REQUEST['sub_dev_id']))->fetchColumn();
 
 	make_display_table("Dynamic Parameters for " . get_dev_sub_device_name($_REQUEST["sub_dev_id"]), "#",
 		array("text" => "Name"),
 		array("text" => "Value")
-	); // end make_display_table();
+	);
 
-	for ($i = 0; $i < db_num_rows($results); $i++)
-	{
-		$row = db_fetch_array($results);
-		make_display_item("editfield".($i%2),
+	for ($i = 0; $i < $rowcount; $i++) {
+		$row = $results->fetch(PDO::FETCH_ASSOC);
+		make_display_item("editfield".($i % 2),
 			array("text" => $row["name"]),
 			array("text" => $row["value"]),
 			array("text" => "")
-		); // end make_display_item();
+		);
 	}
 
 	?>
@@ -85,47 +84,39 @@ if (empty($_REQUEST["action"]))
 
 	end_page();
 }
-
-elseif ($_REQUEST["action"] == "doedit")
-{
+elseif ($_REQUEST["action"] == "doedit") {
 	check_auth($GLOBALS['PERMIT']["ReadWrite"]);
-        if ($_REQUEST["type"] == "add")
-	{
-		$db_cmd = "INSERT INTO";
-		$db_end = "";
+    if ($_REQUEST["type"] == "add")	{
+        $s = getDatabase()->prepare('INSERT INTO sub_dev_variables (name, value, sub_dev_id) VALUES (:name, :value, :sub_dev_id)');
 	}
-	else
-	{
-		$db_cmd = "UPDATE";
-		$db_end = "WHERE name=\"{$_REQUEST['oldname']}\" AND sub_dev_id={$_REQUEST['sub_dev_id']}";
+	else {
+        $s = getDatabase()->prepare('UPDATE sub_dev_variables SET name = :name, value = :value, sub_dev_id = :sub_dev_id WHERE name = :oldname AND sub_dev_id = :sub_dev_id');
+        $s->bindValue(':oldname', $_REQUEST['oldname']);
 	}
-
-	db_update("$db_cmd sub_dev_variables SET
-			name=\"{$_REQUEST['name']}\",
-			value=\"{$_REQUEST['value']}\",
-			sub_dev_id={$_REQUEST['sub_dev_id']}
-			$db_end");
+    $s->bindValue(':name', $_REQUEST['name']);
+    $s->bindValue(':value', $_REQUEST['value']);
+    $s->bindValue(':sub_dev_id', $_REQUEST['sub_dev_id']);
+    $s->execute();
 
 	header("Location: " . $_SERVER["PHP_SELF"] . "?sub_dev_id={$_REQUEST['sub_dev_id']}&tripid={$_REQUEST['tripid']}");
 }
-
-elseif (($_REQUEST["action"] == "edit") || ($_REQUEST["action"] == "add"))
-{
+elseif (($_REQUEST["action"] == "edit") || ($_REQUEST["action"] == "add")) {
 	check_auth($GLOBALS['PERMIT']["ReadWrite"]);
 	begin_page("sub_dev_param.php", "Add/Edit Sub Device Parameter");
        	make_edit_table("Sub-Device Parameter");
 
-	if ($_REQUEST["action"] == "edit")
-	{
-		$query = db_query("SELECT * FROM sub_dev_variables WHERE sub_dev_id = {$_REQUEST['sub_dev_id']} AND name = \"{$_REQUEST['name']}\"");
-		if (db_num_rows($query) > 0)
-		{
-			$row   = db_fetch_array($query);
+	if ($_REQUEST["action"] == "edit") {
+        $query = getDatabase()->prepare('SELECT * FROM sub_dev_variables WHERE sub_dev_id = :sub_dev_id AND name = :name');
+        $query->bindValue(':sub_dev_id', $_REQUEST['sub_dev_id']);
+        $query->bindValue(':name', $_REQUEST['name']);
+        $query->execute();
+        $row = $query->fetch(PDO::FETCH_ASSOC);
+
+		if (!empty($row)) {
 			make_edit_hidden("oldname", $row['name']);
 		}
 	}
-	else
-	{
+	else {
 		$row["name"] = "";
 		$row["value"] = "";
 	}
@@ -141,10 +132,11 @@ elseif (($_REQUEST["action"] == "edit") || ($_REQUEST["action"] == "add"))
 	end_page();
 
 }
-
-elseif ($_REQUEST["action"] == "dodelete")
-{
+elseif ($_REQUEST["action"] == "dodelete") {
 	check_auth($GLOBALS['PERMIT']["ReadWrite"]);
-	db_update("DELETE FROM sub_dev_variables WHERE sub_dev_id={$_REQUEST['sub_dev_id']} AND name='{$_REQUEST['name']}' AND type='static'");
+    $s = getDatabase()->prepare('DELETE FROM sub_dev_variables WHERE sub_dev_id = :sub_dev_id AND name = :name AND type = "static"');
+    $s->bindValue(':sub_dev_id', $_REQUEST['sub_dev_id']);
+    $s->bindValue(':name', $_REQUEST['name']);
+    $s->execute();
 	header("Location: " . $_SERVER["PHP_SELF"] . "?sub_dev_id={$_REQUEST['sub_dev_id']}&tripid={$_REQUEST['tripid']}");
 }

@@ -30,128 +30,107 @@
 require_once "../include/config.php";
 check_auth($GLOBALS['PERMIT']["ReadWrite"]);
 
-// check action
-if (empty($_REQUEST["action"]))
-{
+if (empty($_REQUEST["action"])) {
 	$_REQUEST["action"] = "";
 }
-// compatibility
 $action = $_REQUEST["action"];
 
 // if no action (list) or perfoming an insert/update/delete
-if ((empty($action)) || ($action == "doedit") || ($action == "dodelete") || ($action == "doadd") || ($action == "multidodelete"))
-{
+if ((empty($action)) || ($action == "doedit") || ($action == "dodelete") || ($action == "doadd") || ($action == "multidodelete")) {
+    if ($action == "doedit") {
+        if ($_REQUEST["test_id"] == 0) {
+            $s = getDatabase()->prepare('INSERT INTO tests_script (name, cmd, data_type, dev_type) VALUES (:name, :cmd, :data_type, :dev_type)');
+        }
+        else {
+            $s = getDatabase()->prepare('UPDATE tests_script SET name = :name, cmd = :cmd, data_type = :data_type, dev_type = :dev_type WHERE id = :id');
+            $s->bindValue(':id', $_REQUEST['test_id']);
+        }
+        $s->bindValue(':name', $_REQUEST['test_name']);
+        $s->bindValue(':cmd', $_REQUEST['test_cmd']);
+        $s->bindValue(':data_type', $_REQUEST['data_type']);
+        $s->bindValue(':dev_type', $_REQUEST['dev_type']);
+        $s->execute();
 
-if ($action == "doedit")
-{
+        Header("Location: {$_SERVER['PHP_SELF']}");
+        exit;
+    }
 
-	if ($_REQUEST["test_id"] == 0)
-	{
-		$db_cmd = "INSERT INTO";
-		$db_end = "";
-	}
-	else
-	{
-		$db_cmd = "UPDATE";
-		$db_end = "WHERE id='{$_REQUEST["test_id"]}'";
-	}
+    if ($action == "dodelete") {
+        getDatabase()->exec('DELETE FROM tests_script WHERE id = '.intval($_REQUEST['test_id']));
+        Header("Location: {$_SERVER['PHP_SELF']}");
+        exit;
+    }
 
-	db_update("$db_cmd tests_script SET name='{$_REQUEST['test_name']}', cmd='{$_REQUEST['test_cmd']}', data_type='{$_REQUEST['data_type']}', dev_type='{$_REQUEST['dev_type']}' $db_end");
-	Header("Location: {$_SERVER['PHP_SELF']}");
-	exit();
-} // done editing
+    if ($action == "multidodelete") {
+        if (isset($_REQUEST['test'])) {
+            $s = getDatabase()->prepare('DELETE FROM tests_script WHERE id = :id');
+            while (list($key,$value) = each($_REQUEST["test"])) {
+                $s->bindValue(':id', $key);
+                $s->execute();
+            }
+        }
+        Header("Location: {$_SERVER['PHP_SELF']}");
+        exit;
+    }
 
-if ($action == "dodelete")
-{
-	db_update("DELETE FROM tests_script WHERE id='{$_REQUEST["test_id"]}'");
-	Header("Location: {$_SERVER['PHP_SELF']}");
-	exit();
-} // done deleting
 
-if ($action == "multidodelete")
-{
-	if (isset($_REQUEST['test']))
-	{
-		while (list($key,$value) = each($_REQUEST["test"]))
-		{
-			db_update("DELETE FROM tests_script WHERE id='$key'");
-		}
-	}
-	Header("Location: {$_SERVER['PHP_SELF']}");
-	exit();
+    /** start the page **/
+    begin_page("tests_scripts.php", "Scripts - Tests");
+    js_checkbox_utils();
+    js_confirm_dialog("del", "Are you sure you want to delete script test ", " ?", "{$_SERVER['PHP_SELF']}?action=dodelete&test_id=");
+    ?>
+    <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="post" name="form">
+    <input type="hidden" name="action" value="">
+    <?php
+
+    // Display a list
+    make_display_table("Script Tests", "",
+        array("text" => checkbox_toolbar()),
+        array("text" => "Name"),
+        array("text" => "Command"),
+        array("text" => "Data Type")
+    );
+
+    $test_results = getDatabase()->query('SELECT id, name, cmd, data_type FROM tests_script ORDER BY name');
+
+    $test_total = getDatabase()->query('SELECT COUNT(id) FROM tests_script')->fetchColumn();
+
+    for ($test_count = 1; $test_count <= $test_total; ++$test_count) {
+        $test_row = $test_results->fetch(PDO::FETCH_ASSOC);
+        $test_id  = $test_row["id"];
+
+        make_display_item("editfield".(($test_count - 1) % 2),
+        array("checkboxname" => "test", "checkboxid" => $test_id),
+        array("text" => htmlspecialchars($test_row["name"])),
+        array("text" => htmlspecialchars($test_row["cmd"])),
+        array("text" => $GLOBALS["SCRIPT_DATA_TYPES"][$test_row["data_type"]]),
+        array("text" => formatted_link("Edit", "{$_SERVER["PHP_SELF"]}?action=edit&test_id=$test_id", "", "edit") . "&nbsp;" .
+            formatted_link("Delete", "javascript:del('" . addslashes(htmlspecialchars($test_row["name"])) . "', '" . $test_row["id"] . "')", "", "delete"))
+        );
+    }
+    make_checkbox_command("", 5,
+        array("text" => "Delete", "action" => "multidodelete", "prompt" => "Are you sure you want to delete the checked Script tests?")
+    );
+    make_status_line("script test", $test_count - 1);
+    ?>
+    </table>
+    </form>
+    <?php
+    end_page();
 }
 
 
-/** start the page **/
-begin_page("tests_scripts.php", "Scripts - Tests");
-js_checkbox_utils();
-js_confirm_dialog("del", "Are you sure you want to delete script test ", " ?", "{$_SERVER['PHP_SELF']}?action=dodelete&test_id=");
-?>
-<form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="post" name="form">
-<input type="hidden" name="action" value="">
-<?php
-
-// Display a list
-
-make_display_table("Script Tests", "",
-	array("text" => checkbox_toolbar()),
-	array("text" => "Name"),
-	array("text" => "Command"),
-	array("text" => "Data Type")
-); // end make_display_table();
-
-$test_results = db_query("
-	SELECT  id,
-	name,
-	cmd,
-	data_type
-	FROM tests_script
-	ORDER BY name
-"); // end test_results
-
-$test_total = db_num_rows($test_results);
-
-for ($test_count = 1; $test_count <= $test_total; ++$test_count)
-{
-
-        $test_row = db_fetch_array($test_results);
-        $test_id  = $test_row["id"];
-
-        make_display_item("editfield".(($test_count-1)%2),
-		array("checkboxname" => "test", "checkboxid" => $test_id),
-		array("text" => htmlspecialchars($test_row["name"])),
-		array("text" => htmlspecialchars($test_row["cmd"])),
-		array("text" => $GLOBALS["SCRIPT_DATA_TYPES"][$test_row["data_type"]]),
-		array("text" => formatted_link("Edit", "{$_SERVER["PHP_SELF"]}?action=edit&test_id=$test_id", "", "edit") . "&nbsp;" .
-			formatted_link("Delete", "javascript:del('" . addslashes(htmlspecialchars($test_row["name"])) . "', '" . $test_row["id"] . "')", "", "delete"))
-	); // end make_display_item();
-} // end tests
-make_checkbox_command("", 5,
-	array("text" => "Delete", "action" => "multidodelete", "prompt" => "Are you sure you want to delete the checked Script tests?")
-); // end make_checkbox_command
-make_status_line("script test", $test_count - 1);
-?>
-</table>
-</form>
-<?php
-	end_page();
-} // End if no action
-
-
 // Display editing screen
-if (($action == "edit") || ($action == "add"))
-{
+if (($action == "edit") || ($action == "add")) {
 	/** start the page **/
 	begin_page("tests_scripts.php", "Scripts - Tests");
 	js_confirm_dialog("del", "Are you sure you want to delete script test ", " ?", "{$_SERVER['PHP_SELF']}?action=dodelete&test_id=");
 
-	if ($action == "add")
-	{
+	if ($action == "add") {
 		$_REQUEST["test_id"] = 0;
 	}
 
-	$test_results = db_query("SELECT * FROM tests_script WHERE id='{$_REQUEST["test_id"]}'");
-	$test_row = db_fetch_array($test_results);
+    $test_row = getDatabase()->query('SELECT * FROM tests_script WHERE id = '.intval($_REQUEST['test_id']))->fetch(PDO::FETCH_ASSOC);
 	$test_name = $test_row["name"];
 	$test_cmd = $test_row["cmd"];
 
@@ -165,6 +144,5 @@ if (($action == "edit") || ($action == "add"))
 	make_edit_submit_button();
 	make_edit_end();
 
-
 	end_page();
-} // End editing screen
+}

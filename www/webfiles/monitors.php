@@ -30,14 +30,11 @@
 require_once "../include/config.php";
 check_auth($GLOBALS['PERMIT']["ReadAll"]);
 
-// set default action
-if (empty($_REQUEST["action"]))
-{
+if (empty($_REQUEST["action"])) {
 	$_REQUEST["action"] = "list";
-} // end if no action
+}
 
-switch($_REQUEST["action"])
-{
+switch($_REQUEST["action"]) {
 	case "doedit":
 		check_auth($GLOBALS['PERMIT']["ReadWrite"]);
 		do_edit();
@@ -52,8 +49,7 @@ switch($_REQUEST["action"])
 	
 	case "multidodelete":
 		check_auth($GLOBALS['PERMIT']["ReadWrite"]);
-		while (list($key,$value) = each($_REQUEST["monitor"]))
-		{
+		while (list($key,$value) = each($_REQUEST["monitor"])) {
 			delete_monitor($key);
 		}
 		redirect();
@@ -67,8 +63,7 @@ switch($_REQUEST["action"])
 	
 	case "multiduplicate":
 		check_auth($GLOBALS['PERMIT']["ReadWrite"]);
-		while (list($key,$value) = each($_REQUEST["monitor"]))
-		{
+		while (list($key,$value) = each($_REQUEST["monitor"])) {
 			duplicate_monitor($key);
 		}
 		redirect();
@@ -84,13 +79,11 @@ switch($_REQUEST["action"])
 	case "list":
 		do_list();
 		break;
-} // end switch action
-
+}
 
 
 /***** FUNCTIONS *****/
-function do_list()
-{
+function do_list() {
 	begin_page("monitor.php", "Monitors", 1);
 	js_checkbox_utils();
 	?>
@@ -100,14 +93,12 @@ function do_list()
 	<input type="hidden" name="tripid" value="<?php echo $_REQUEST['tripid']; ?>">
 	<?php
 
-	if (preg_match("/snmp_cache_view.php.*type=interface/", $_SERVER["HTTP_REFERER"]))
-	{
+	if (preg_match("/snmp_cache_view.php.*type=interface/", $_SERVER["HTTP_REFERER"])) {
 		PrepGroupNavHistory("int_snmp_cache_view", $_REQUEST["dev_id"]);
-	} // end if came from interface view of snmp_cache_view.php
-	else if (preg_match("/snmp_cache_view.php.*type=disk/", $_SERVER["HTTP_REFERER"]))
-	{
+	}
+	else if (preg_match("/snmp_cache_view.php.*type=disk/", $_SERVER["HTTP_REFERER"])) {
 		PrepGroupNavHistory("disk_snmp_cache_view", $_REQUEST["dev_id"]);
-	} // end if came from disk view of snmp_cache_view.php
+	}
 	PrepGroupNavHistory("sub_device", $_REQUEST["sub_dev_id"]);
 	DrawGroupNavHistory("sub_device", $_REQUEST["sub_dev_id"]);
 	
@@ -118,57 +109,47 @@ function do_list()
 		array("text" => "Test"),
 		array("text" => "Data"),
 		array("text" => "Graph")
-	); // end make_display_table();
+	);
 
-	$mon_results = db_query("SELECT * FROM monitors WHERE sub_dev_id='{$_REQUEST['sub_dev_id']}'");
+    $mon_results = getDatabase()->query('SELECT * FROM monitors WHERE sub_dev_id = '.intval($_REQUEST['sub_dev_id']));
 	$mons = array();
-	while ($arow = mysqli_fetch_array($mon_results))
-	{
+	while ($arow = $mon_results->fetch(PDO::FETCH_ASSOC)) {
 		$arow['short_name'] = get_short_test_name($arow['test_type'], $arow['test_id'], $arow['test_params']);
 		array_push($mons, $arow);
 	}
 
-	function mon_sort($a, $b)
-	{
+	function mon_sort($a, $b) {
 		return strcmp($a['short_name'], $b['short_name']);
 	}
 
 	usort($mons, 'mon_sort');
 	$mon_count = 0;
 
-	foreach ($mons as $mon_row)
-	{
+	foreach ($mons as $mon_row) {
 		$mon_id  = $mon_row["id"];
 
-		if ($mon_row["data_type"] != -1)
-		{
+		if ($mon_row["data_type"] != -1) {
 			$graph = "<a href=\"enclose_graph.php?type=mon&id=$mon_id\"><img border='0' src='get_graph.php?type=tinymon&id=$mon_id'></a>";
 		}
-		else
-		{
+		else {
 			$graph = "Not Graphed";
-		} // end if data type
+		}
 
-		if ((!isset($mon_row['delta_time'])) || ($mon_row["delta_time"] == 0) || !isset($mon_row['last_val']))
-		{
+		if ((!isset($mon_row['delta_time'])) || ($mon_row["delta_time"] == 0) || !isset($mon_row['last_val'])) {
 			$rate_of_change = "";
 		}
-		else
-		{
-			$rate_of_change = sanitize_number($mon_row["delta_val"] / $mon_row["delta_time"],2);
-		} // end if delta
+		else {
+			$rate_of_change = sanitize_number($mon_row["delta_val"] / $mon_row["delta_time"], 2);
+		}
 		
-		if (!isset($mon_row['last_val']))
-		{
+		if (!isset($mon_row['last_val'])) {
 			$mon_row['last_val'] = "";
 		}
-		else
-		{
+		else {
 			$mon_row['last_val'] = sanitize_number($mon_row['last_val']);
 		}
 		
-		if (!isset($mon_row['last_time']))
-		{
+		if (!isset($mon_row['last_time'])) {
 			$mon_row['last_time'] = "";
 		}
 
@@ -189,7 +170,7 @@ function do_list()
 		$html_name = htmlspecialchars($mon_row['short_name']);
 		$java_name = addslashes($html_name);
 
-		make_display_item("editfield".($mon_count%2),
+		make_display_item("editfield".($mon_count % 2),
 			array("checkboxname" => "monitor", "checkboxid" => $mon_row['id']),
 			array("text" => $html_name, "href" => "events.php?mon_id={$mon_row['id']}&tripid={$_REQUEST['tripid']}"),
 			array("text" => $data),
@@ -197,90 +178,54 @@ function do_list()
 			array("text" => formatted_link("Duplicate", "{$_SERVER['PHP_SELF']}?action=duplicate&mon_id=$mon_id&sub_dev_id={$_REQUEST['sub_dev_id']}&tripid={$_REQUEST['tripid']}", "", "duplicate") . "&nbsp;" . 
 				formatted_link("Edit", "{$_SERVER['PHP_SELF']}?action=edit&mon_id=$mon_id&sub_dev_id={$_REQUEST['sub_dev_id']}&tripid={$_REQUEST['tripid']}", "", "edit") . "&nbsp;" .
 				formatted_link("Delete","javascript:del('$java_name', '$mon_id')", "", "delete"))
-		); // end make_display_item();
-		
+		);
 		$mon_count++;
-
-	} // end for each monitor
+	}
 	make_checkbox_command("", 5,
 		array("text" => "Duplicate", "action" => "multiduplicate"),
 		array("text" => "Delete", "action" => "multidodelete", "prompt" => "Are you sure you want to delete the checked monitors?")
-	); // end make_checkbox_command
+	);
 	make_status_line("monitor", $mon_count);
 	?>
 	</table>
 	</form>
 	<?php
-
 	end_page();
+}
 
-} // end do_list()
 
-
-function edit()
-{
+function edit() {
 	begin_page("monitor.php", "Monitors");
 	
-	// if we're editing a monitor
-	if ($_REQUEST["action"] == "edit")
-	{
-		make_edit_table("Edit Monitor", "return validateform();");
-	} // end if edit
-	// if we're adding a monitor
-	else
-	{
-		make_edit_table("Add Monitor", "return validateform();");
-	} // end else add
-	
-	// if we're editing a monitor
-	if ($_REQUEST["action"] == "edit")
-	{
-		$mon_results = db_query("
-			SELECT
-			monitors.id                     AS id,
-			monitors.sub_dev_id             AS sub_dev_id,
-			monitors.data_type              AS data_type,
-			monitors.min_val                AS min_val,
-			monitors.max_val                AS max_val,
-			monitors.test_type              AS test_type,
-			monitors.test_id                AS test_id,
-			monitors.test_params            AS test_params
-			FROM monitors
-			WHERE monitors.id='{$_REQUEST['mon_id']}'
-			");
-		$mon_row = db_fetch_array($mon_results);
-		if (empty($mon_row["min_val"])) { $mon_row["min_val"] = "U"; }
-		if (empty($mon_row["max_val"])) { $mon_row["max_val"] = "U"; }
-
-	
-	} // end if editing a monitor
-	// if we're adding a monitor
-	else
-	{
+	if ($_REQUEST["action"] == "edit") {
+        make_edit_table("Edit Monitor", "return validateform();");
+        $mon_results = getDatabase()->query('SELECT id, sub_dev_id, data_type, min_val, max_val, test_type, test_id, test_params FROM monitors WHERE id = '.intval($_REQUEST['mon_id']));
+		$mon_row = $mon_results->fetch(PDO::FETCH_ASSOC);
+		if (empty($mon_row["min_val"])) {
+            $mon_row["min_val"] = "U";
+        }
+		if (empty($mon_row["max_val"])) {
+            $mon_row["max_val"] = "U";
+        }
+	}
+	else {
+        make_edit_table("Add Monitor", "return validateform();");
 		$mon_row["data_type"] = 1;
 		$mon_row["test_id"] = 1;
 		$mon_row["min_val"] = "U";
 		$mon_row["max_val"] = "U";
-		if (!empty($_REQUEST["type"]))
-		{
-			$mon_row["test_type"] = $_REQUEST["type"];
-		}
-		else
-		{
-			$mon_row["test_type"] = 0;
-		}
+        $mon_row["test_type"] = (!empty($_REQUEST["type"])) ? $_REQUEST["type"] : 0;
 		$mon_row["test_params"] = "";
 		$_REQUEST["mon_id"] = 0;
-	} // end if adding a monitor
+	}
 	
 	// TODO
-	if (isset($_REQUEST["sub_dev_id"]))
-	{
+    // What this might have been some day?
+	if (isset($_REQUEST["sub_dev_id"])) {
 		$mon_row["sub_dev_id"] = $_REQUEST["sub_dev_id"];
 		$dev_thingy = "&sub_dev_id={$_REQUEST['sub_dev_id']}";
 	}
-	else
-	{
+	else {
 		$dev_thingy = "";
 	}
 	
@@ -322,12 +267,10 @@ function edit()
 		[<a href="javascript:make_max_undefined();">make maximum undefined</a>]');
 	
 	make_edit_group("Ownership");
-	if ($_REQUEST["edit_subdevice"] == 1)
-	{
+	if ($_REQUEST["edit_subdevice"] == 1) {
 		make_edit_select_subdevice($_REQUEST["sub_dev_id"]);
 	}
-	else
-	{
+	else {
 		$label = "<big><b>Subdevice:</b><br>  ";
 		$label .= get_dev_sub_device_name($_REQUEST['sub_dev_id']);
 		$label .= "  [<a href='{$_SERVER['PHP_SELF']}?action={$_REQUEST['action']}&mon_id={$_REQUEST['mon_id']}&edit_subdevice=1&sub_dev_id={$_REQUEST['sub_dev_id']}&tripid={$_REQUEST['tripid']}'>change</a>]</big>";
@@ -344,39 +287,42 @@ function edit()
 	make_edit_end();
 	
 	end_page();
-} // end edit();
+}
 
-function redirect()
-{
+function redirect() {
 	header("Location: monitors.php?sub_dev_id={$_REQUEST['sub_dev_id']}&tripid={$_REQUEST['tripid']}");
-} // end redirect()
+}
 
 
-function do_edit()
-{
-	if ($_REQUEST["mon_id"] == 0)
-	{
-		$db_cmd = "INSERT INTO";
-		$db_end = "";
+function do_edit() {
+	if ($_REQUEST["mon_id"] == 0) {
+        $s = getDatabase()->prepare('INSERT INTO monitors (sub_dev_id, test_type, test_id, test_params, data_type, min_val, max_val, tuned) VALUES (:sub_dev_id, :test_type, :test_id, :test_params, :data_type, :min_val, :max_val, 0)');
 	}
-	else
-	{
-		$db_cmd = "UPDATE";
-		$db_end = "WHERE id='{$_REQUEST['mon_id']}'";
+	else {
+        $s = getDatabase()->prepare('UPDATE monitors SET sub_dev_id = :sub_dev_id, test_type = :test_type, test_id = :test_id, test_params = :test_params, data_type = :data_type, min_val = :min_val, max_val = :max_val, tuned = 0 WHERE id = :id');
+        $s->bindValue(':id', $_REQUEST['mon_id']);
 	}
 	
-	if ($_REQUEST["min_val"] == "U") { $_REQUEST["min_val"] = "NULL"; }
-	if ($_REQUEST["max_val"] == "U") { $_REQUEST["max_val"] = "NULL"; }
-	
-	
-	db_update("$db_cmd monitors SET
-		sub_dev_id='{$_REQUEST['subdev_id'][0]}',
-		test_type='{$_REQUEST['test_type']}',
-		test_id='{$_REQUEST['test_id']}',
-		test_params='" . $_REQUEST['test_params'] ."',
-		data_type='{$_REQUEST['data_type']}',
-		min_val={$_REQUEST['min_val']},
-		max_val={$_REQUEST['max_val']},
-		tuned=0 $db_end");
-	
-} // end do_edit()
+	if ($_REQUEST["min_val"] == "U") {
+        $_REQUEST["min_val"] = "NULL";
+        $s->bindValue(':min_val', null);
+    }
+    else {
+        $s->bindValue(':min_val', $_REQUEST['min_val']);
+    }
+	if ($_REQUEST["max_val"] == "U") {
+        $_REQUEST["max_val"] = "NULL";
+        $s->bindValue(':max_val', null);
+    }
+    else {
+        $s->bindValue(':max_val', $_REQUEST['max_val']);
+    }
+
+    $s->bindValue(':sub_dev_id', $_REQUEST['subdev_id'][0]);
+    $s->bindValue(':test_type', $_REQUEST['test_type']);
+    $s->bindValue(':test_id', $_REQUEST['test_id']);
+    $s->bindValue(':test_params', $_REQUEST['test_params']);
+    $s->bindValue(':data_type', $_REQUEST['data_type']);
+
+    $s->execute();
+}

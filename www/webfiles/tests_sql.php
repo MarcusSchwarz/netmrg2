@@ -30,128 +30,109 @@
 require_once "../include/config.php";
 check_auth($GLOBALS['PERMIT']["ReadWrite"]);
 
-// set default action
-if (empty($_REQUEST["action"]))
-{
+if (empty($_REQUEST["action"])) {
 	$_REQUEST["action"] = "";
 }
-// compatibility
 $action = $_REQUEST["action"];
 
-if ((empty($action)) || ($action == "doedit") || ($action == "dodelete") || ($action == "doadd") || ($action == "multidodelete"))
-{
-// Change databases if necessary and then display list
+if ((empty($action)) || ($action == "doedit") || ($action == "dodelete") || ($action == "doadd") || ($action == "multidodelete")) {
+    // Change databases if necessary and then display list
+    if ($action == "doedit") {
+        if ($_REQUEST["test_id"] == 0) {
+            $s = getDatabase()->prepare('INSERT INTO tests_sql (name, sub_dev_type, host, user, password, query, column_num, timeout) VALUES (:name, :sub_dev_type, :host, :user, :password, :query, :column_num, :timeout)');
+        }
+        else {
+            $s = getDatabase()->prepare('UPDATE tests_sql SET name = :name, sub_dev_type = :sub_dev_type, host = :host, user = :user, password = :password, query = :query, column_num = :column_num, timeout = :timeout WHERE id = :id');
+            $s->bindValue(':id', $_REQUEST['test_id']);
+        }
+        $s->bindValue(':name', $_REQUEST['name']);
+        $s->bindValue(':sub_dev_type', $_REQUEST['dev_type']);
+        $s->bindValue(':host', $_REQUEST['host']);
+        $s->bindValue(':user', $_REQUEST['sql_user']);
+        $s->bindValue(':password', $_REQUEST['sql_password']);
+        $s->bindValue(':query', $_REQUEST['query']);
+        $s->bindValue(':column_num', $_REQUEST['column_num']);
+        $s->bindValue(':timeout', $_REQUEST['timeout']);
+        $s->execute();
 
-if ($action == "doedit")
-{
+        header("Location: {$_SERVER['PHP_SELF']}");
+        exit;
+    }
 
-	if ($_REQUEST["test_id"] == 0)
-	{
-		$db_cmd = "INSERT INTO";
-		$db_end = "";
-	}
-	else
-	{
-		$db_cmd = "UPDATE";
-		$db_end = "WHERE id='{$_REQUEST['test_id']}'";
-	}
-	
-	$_REQUEST['column_num'] = $_REQUEST['column_num'] * 1;
-	
-	db_update("$db_cmd tests_sql SET name='{$_REQUEST['test_name']}',
-		sub_dev_type='{$_REQUEST['dev_type']}', host='{$_REQUEST['host']}',
-		user='{$_REQUEST['sql_user']}', password='{$_REQUEST['sql_password']}',
-		query='{$_REQUEST['query']}', column_num='{$_REQUEST['column_num']}',
-		timeout='{$_REQUEST['timeout']}' 
-		$db_end");
-	header("Location: {$_SERVER['PHP_SELF']}");
-	exit();
-} // done editing
+    if ($action == "dodelete") {
+        getDatabase()->exec('DELETE FROM tests_sql WHERE id = '.intval($_REQUEST['test_id']));
+        header("Location: {$_SERVER['PHP_SELF']}");
+        exit;
+    }
 
-if ($action == "dodelete")
-{
-	db_update("DELETE FROM tests_sql WHERE id='{$_REQUEST['test_id']}'");
-	header("Location: {$_SERVER['PHP_SELF']}");
-	exit();
-} // done deleting
+    if ($action == "multidodelete") {
+        if (isset($_REQUEST['test'])) {
+            $s = getDatabase()->prepare('DELETE FROM tests_sql WHERE id = :id');
+            while (list($key,$value) = each($_REQUEST["test"])) {
+                $s->bindValue(':id', $key);
+                $s->execute();
+            }
+        }
+        Header("Location: {$_SERVER['PHP_SELF']}");
+        exit;
+    }
 
-if ($action == "multidodelete")
-{
-	if (isset($_REQUEST['test']))
-	{
-		while (list($key,$value) = each($_REQUEST["test"]))
-		{
-			db_update("DELETE FROM tests_sql WHERE id='$key'");
-		}
-	}
-	Header("Location: {$_SERVER['PHP_SELF']}");
-	exit();
+    /** start page **/
+    begin_page("tests_sql.php", "SQL - Tests");
+    js_checkbox_utils();
+    js_confirm_dialog("del", "Are you sure you want to delete SQL test ", " ? ", "{$_SERVER['PHP_SELF']}?action=dodelete&test_id=");
+    ?>
+    <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="post" name="form">
+    <input type="hidden" name="action" value="">
+    <?php
+
+    make_display_table("SQL Tests", "",
+        array("text" => checkbox_toolbar()),
+        array("text" => "Name"),
+        array("text" => "Host"),
+        array("text" => "User"),
+        array("text" => "Query")
+    );
+
+    $test_results = getDatabase()->query('SELECT * FROM tests_sql ORDER BY name');
+    $test_total = getDatabase()->query('SELECT COUNT(*) FROM tests_sql')->fetchColumn();
+
+    // For each test
+    for ($test_count = 1; $test_count <= $test_total; ++$test_count) {
+        $test_row = $test_results->fetch(PDO::FETCH_ASSOC);
+
+        make_display_item("editfield".(($test_count - 1) % 2),
+            array("checkboxname" => "test", "checkboxid" => $test_row['id']),
+            array("text" => htmlspecialchars($test_row["name"])),
+            array("text" => htmlspecialchars($test_row["host"])),
+            array("text" => htmlspecialchars($test_row["user"])),
+            array("text" => htmlspecialchars(paraphrase($test_row["query"], 75))),
+            array("text" => formatted_link("Edit", "{$_SERVER["PHP_SELF"]}?action=edit&test_id=" . $test_row["id"], "", "edit") . "&nbsp;" .
+                formatted_link("Delete", "javascript:del('" . addslashes(htmlspecialchars($test_row["name"])) . "', '" . $test_row["id"] . "')", "", "delete"))
+        );
+    }
+
+    make_checkbox_command("", 6,
+        array("text" => "Delete", "action" => "multidodelete", "prompt" => "Are you sure you want to delete the checked SQL tests?")
+    );
+    make_status_line("SQL test", $test_count - 1);
+    ?>
+    </table>
+    </form>
+    <?php
+        end_page();
 }
 
-/** start page **/
-begin_page("tests_sql.php", "SQL - Tests");
-js_checkbox_utils();
-js_confirm_dialog("del", "Are you sure you want to delete SQL test ", " ? ", "{$_SERVER['PHP_SELF']}?action=dodelete&test_id=");
-?>
-<form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="post" name="form">
-<input type="hidden" name="action" value="">
-<?php
-
-// Display a list
-
-make_display_table("SQL Tests", "",
-	array("text" => checkbox_toolbar()),
-	array("text" => "Name"),
-	array("text" => "Host"),
-	array("text" => "User"),
-	array("text" => "Query")
-); // end make_display_table();
-
-$test_results = db_query("SELECT * FROM tests_sql ORDER BY name");
-$test_total = db_num_rows($test_results);
-
-// For each test
-for ($test_count = 1; $test_count <= $test_total; ++$test_count)
-{
-	$test_row = db_fetch_array($test_results);
-
-	make_display_item("editfield".(($test_count-1)%2),
-		array("checkboxname" => "test", "checkboxid" => $test_row['id']),
-		array("text" => htmlspecialchars($test_row["name"])),
-		array("text" => htmlspecialchars($test_row["host"])),
-		array("text" => htmlspecialchars($test_row["user"])),
-		array("text" => htmlspecialchars(paraphrase($test_row["query"],75))),
-		array("text" => formatted_link("Edit", "{$_SERVER["PHP_SELF"]}?action=edit&test_id=" . $test_row["id"], "", "edit") . "&nbsp;" .
-			formatted_link("Delete", "javascript:del('" . addslashes(htmlspecialchars($test_row["name"])) . "', '" . $test_row["id"] . "')", "", "delete"))
-	); // end make_display_item();
-} // end tests
-
-	make_checkbox_command("", 6,
-		array("text" => "Delete", "action" => "multidodelete", "prompt" => "Are you sure you want to delete the checked SQL tests?")
-	); // end make_checkbox_command
-	make_status_line("SQL test", $test_count - 1);
-?>
-</table>
-</form>
-<?php
-	end_page();
-} // End if no action
-
-
-// Display editing screen
-if (($action == "edit") || ($action == "add"))
-{
+if (($action == "edit") || ($action == "add")) {
 	/** start page **/
 	begin_page("tests_sql.php", "SQL - Tests");
 	js_confirm_dialog("del", "Are you sure you want to delete SQL test ", " ? ", "{$_SERVER['PHP_SELF']}?action=dodelete&test_id=");
 
-	if ($action == "add")
-	{
+	if ($action == "add") {
 		$_REQUEST["test_id"] = 0;
 	}
 
-	$test_results = db_query("SELECT * FROM tests_sql WHERE id='{$_REQUEST['test_id']}'");
-	$test_row = db_fetch_array($test_results);
+    $test_row = getDatabase()->query('SELECT * FROM tests_sql WHERE id = '.intval($_REQUEST['test_id']))->fetch(PDO::FETCH_ASSOC);
 
 	make_edit_table("Edit SQL Test");
 	make_edit_group("General");
@@ -171,4 +152,4 @@ if (($action == "edit") || ($action == "add"))
 
 	end_page();
 
-} // End editing screen
+}

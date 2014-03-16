@@ -26,21 +26,18 @@
 *
 ********************************************/
 
-function get_img_tag_from_status($status)
-{
+function get_img_tag_from_status($status) {
 
 	$color = get_color_from_situation($status);
 
-	$img = ('<img src="' . get_image_by_name($color . '_led_on') . '" border="0" align="middle" alt="status '.$status.'" />');
+	$img = '<img src="' . get_image_by_name($color . '_led_on') . '" border="0" align="middle" alt="status '.$status.'" />';
 
 	return $img;
 } // end get_img_tag_from_status()
 
 
-function get_color_from_situation($situation)
-{
-	switch ($situation)
-	{
+function get_color_from_situation($situation) {
+	switch ($situation) {
 		case 0: 	$color = "blue";	break;
 		case 1: 	$color = "green";	break;
 		case 2: 	$color = "yellow";	break;
@@ -54,15 +51,13 @@ function get_color_from_situation($situation)
 
 
 // seed with microseconds
-function make_seed()
-{
+function make_seed() {
    list($usec, $sec) = explode(' ', microtime());
    return (float) $sec + ((float) $usec * 100000);
 }
 
 
-function htmlcolor_to_rgb($htmlcolor)
-{
+function htmlcolor_to_rgb($htmlcolor) {
 	$c = str_replace("#", "", $htmlcolor);
 	$r1 = substr($c,0,2);
 	$g1 = substr($c,2,2);
@@ -74,7 +69,6 @@ function htmlcolor_to_rgb($htmlcolor)
 }
 
 
-function rgb_to_htmlcolor($r, $g, $b)
-{
+function rgb_to_htmlcolor($r, $g, $b) {
 	return sprintf("#%02x%02x%02x", $r, $g, $b);
 }

@@ -30,31 +30,26 @@ require_once "../include/config.php";
 
 check_auth($GLOBALS['PERMIT']["ReadWrite"]);
 
-if (isset($_REQUEST['type']) && isset($_REQUEST['dev_id']))
-{
+if (isset($_REQUEST['type']) && isset($_REQUEST['dev_id'])) {
 	$_REQUEST['dev_id'] = intval($_REQUEST['dev_id']);
-	switch ($_REQUEST['type'])
-	{
+	switch ($_REQUEST['type']) {
 		case "interface":	do_interface_recache($_REQUEST['dev_id']); 	break;
 		case "disk":		do_disk_recache($_REQUEST['dev_id']); 		break;
 		case "properties":	do_properties_recache($_REQUEST['dev_id']); break;
 	}
 }
 
-function do_interface_recache($dev_id)
-{
+function do_interface_recache($dev_id) {
 	system($GLOBALS['netmrg']['binary'] . " -qi $dev_id");
 	header("Location: snmp_cache_view.php?action=view&type=interface&dev_id=$dev_id&tripid={$_REQUEST['tripid']}");
 }
 
-function do_disk_recache($dev_id)
-{
+function do_disk_recache($dev_id) {
 	system($GLOBALS['netmrg']['binary'] . " -qd $dev_id");
 	header("Location: snmp_cache_view.php?action=view&type=disk&dev_id=$dev_id&tripid={$_REQUEST['tripid']}");
 }
 
-function do_properties_recache($dev_id)
-{
+function do_properties_recache($dev_id) {
 	system($GLOBALS['netmrg']['binary'] . " -qP $dev_id");
 	header("Location: grpdev_list.php?parent_id={$_REQUEST['parent_id']}&tripid={$_REQUEST['tripid']}");
 }

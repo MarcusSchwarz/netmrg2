@@ -30,17 +30,14 @@
 require_once "../include/config.php";
 check_auth($GLOBALS['PERMIT']["ReadAll"]);
 
-if (!empty($_REQUEST["action"]))
-{
+if (!empty($_REQUEST["action"])) {
 	$action = $_REQUEST["action"];
 }
-else
-{
+else {
 	$action = "";
-} // end if action is set or not
+}
 
-switch ($action)
-{
+switch ($action) {
 	case "doedit":
 	case "doadd":
 		check_auth($GLOBALS['PERMIT']["ReadWrite"]);
@@ -68,44 +65,45 @@ switch ($action)
 		break;
 }
 
-function duplicate()
-{
-	$q = db_query("SELECT * FROM notifications WHERE id = '{$_REQUEST['id']}'");
-	$r = db_fetch_array($q);
-	$r['name'] = db_escape_string($r['name']);
-	$r['command'] = db_escape_string($r['command']); 
-	db_update("INSERT INTO notifications SET name='{$r['name']} (duplicate)', command='{$r['command']}', disabled='{$r['disabled']}'");
-	header("Location: {$_SERVER['PHP_SELF']}");
-}
+function duplicate() {
+    $q = getDatabase()->query('SELECT * FROM notifications WHERE id = '.intval($_REQUEST['id']));
+	$r = $q->fetch(PDO::FETCH_ASSOC);
 
-function do_addedit()
-{
-	if ($_REQUEST["id"] == 0)
-	{
-		$db_cmd = "INSERT INTO";
-		$db_end = "";
-	}
-	else
-	{
-		$db_cmd = "UPDATE";
-		$db_end = "WHERE id='{$_REQUEST['id']}'";
-	}
-	if (empty($_REQUEST["disabled"])) { $_REQUEST["disabled"] = ""; }
-	db_update("$db_cmd notifications SET name='{$_REQUEST['name']}',
-		command='{$_REQUEST['command']}', disabled='{$_REQUEST['disabled']}'
-		$db_end");
+    $s = getDatabase()->prepare('INSERT INTO notifications (name, command, disabled) VALUES (:name, :command, :disabled)');
+    $s->bindValue(':name', $r['name'].' (duplicate)');
+    $s->bindValue(':command', $r['command']);
+    $s->bindValue(':disabled', $r['disabled']);
+    $s->execute();
 
 	header("Location: {$_SERVER['PHP_SELF']}");
 }
 
-function do_delete()
-{
-	db_update("DELETE FROM notifications WHERE id='{$_REQUEST['id']}'");
-	header("Location: {$_SERVER['PHP_SELF']}");
-} // done deleting
+function do_addedit() {
+	if ($_REQUEST["id"] == 0) {
+        $s = getDatabase()->prepare('INSERT INTO notifications (name, command, disabled) VALUES (:name, :command, :disabled)');
+	}
+	else {
+        $s = getDatabase()->prepare('UPDATE notifications SET name = :name, command = :command, disabled = :disabled WHERE id = :id');
+        $s->bindValue(':id', $_REQUEST['id']);
+	}
+	if (empty($_REQUEST["disabled"])) {
+        $_REQUEST["disabled"] = "";
+    }
 
-function display()
-{
+    $s->bindValue(':name', $_REQUEST['name']);
+    $s->bindValue(':command', $_REQUEST['command']);
+    $s->bindValue(':disabled', $_REQUEST['disabled']);
+    $s->execute();
+
+	header("Location: {$_SERVER['PHP_SELF']}");
+}
+
+function do_delete() {
+    getDatabase()->exec('DELETE FROM notifications WHERE id = '.intval($_REQUEST['id']));
+	header("Location: {$_SERVER['PHP_SELF']}");
+}
+
+function display() {
 	// Display a list
 	begin_page("notifications.php", "Notifications");
 	js_confirm_dialog("del", "Are you sure you want to delete notification ", " ?", "{$_SERVER['PHP_SELF']}?action=dodelete&id=");
@@ -114,50 +112,37 @@ function display()
 		array("text" => "Name"),
 		array("text" => "Disabled"),
 		array("text" => "Command")
-	); // end make_display_table();
+	);
 	
-	$res = db_query("SELECT * FROM notifications");
-	
-	// For each notification
-	for ($i = 0; $i < db_num_rows($res); $i++)
-	{
-		$row = db_fetch_array($res);
-	
-		make_display_item("editfield".($i%2),
+    $res = getDatabase()->query('SELECT * FROM notifications');
+
+    $i = 0;
+    while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
+		make_display_item("editfield".($i % 2),
 			array("text" => $row["name"]),
 			array("text" => ($row['disabled'] == 1 ? "Yes" : "No")),
 			array("text" => $row["command"]),
 			array("text" => formatted_link("Edit", "{$_SERVER['PHP_SELF']}?action=edit&id={$row['id']}", "", "edit") . "&nbsp;" .
 				formatted_link("Duplicate", "{$_SERVER["PHP_SELF"]}?action=duplicate&id=" . $row['id'], "", "duplicate") . "&nbsp;" .
 				formatted_link("Delete", "javascript:del('". addslashes($row['name'])."', '{$row['id']}')", "", "delete"))
-		); // end make_display_item();
+		);
+        $i++;
 	}
 	
 	?>
 	</table>
 	<?php
 	end_page();
-} // End display
+}
 	
-function addedit()
-{
+function addedit() {
 	GLOBAL $action;
-	if (!empty($action) && ($action == "edit" || $action == "add"))
-	{
+	if (!empty($action) && ($action == "edit" || $action == "add")) {
 	begin_page("notifications.php", "Notifications");
-	
-		// Display editing screen
-		if ($action == "add")
-		{
-			$id = 0;
-		}
-		else
-		{
-			$id = $_REQUEST["id"];
-		} // end if add
-	
-		$res = db_query("SELECT * FROM notifications WHERE id=$id");
-		$row = db_fetch_array($res);
+
+        $id = ($action == "add") ? 0 : $_REQUEST["id"];
+        $res = getDatabase()->query('SELECT * FROM notifications WHERE id = '.intval($id));
+		$row = $res->fetch(PDO::FETCH_ASSOC);
 	
 		make_edit_table("Edit Notificiation Method");
 		make_edit_text("Name:", "name", "50", "100", $row["name"]);
@@ -168,8 +153,7 @@ function addedit()
 		make_edit_hidden("action", "doedit");
 		make_edit_submit_button();
 		make_edit_end();
-	
-	} // End editing screen
+	}
 	
 	end_page();
 }

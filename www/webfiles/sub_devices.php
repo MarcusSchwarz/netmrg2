@@ -30,14 +30,11 @@
 require_once "../include/config.php";
 check_auth($GLOBALS['PERMIT']["ReadAll"]);
 
-if (!isset($_REQUEST['action']))
-{
+if (!isset($_REQUEST['action'])) {
 	$_REQUEST['action'] = "";
 }
 
-// what to do
-switch ($_REQUEST["action"])
-{
+switch ($_REQUEST["action"]) {
 	case "doedit":
 		check_auth($GLOBALS['PERMIT']["ReadWrite"]);
 		doedit();
@@ -69,8 +66,7 @@ switch ($_REQUEST["action"])
 
 
 /***** FUNCTIONS *****/
-function dodisplay()
-{
+function dodisplay() {
 	// Display the list of sub-devices for a particular device.
 
 	begin_page("sub_devices.php", "Sub Device");
@@ -85,15 +81,13 @@ function dodisplay()
 	DrawGroupNavHistory("device", $_REQUEST["dev_id"]);
 	js_confirm_dialog("del", "Are you sure you want to delete subdevice ", " and all associated items?", "{$_SERVER['PHP_SELF']}?action=dodelete&dev_id={$_REQUEST['dev_id']}&tripid={$_REQUEST['tripid']}&sub_dev_id=");
 
-	$results = db_query("SELECT name, id, type FROM sub_devices WHERE sub_devices.dev_id={$_REQUEST['dev_id']}");
+    $results = getDatabase()->query('SELECT name, id, type FROM sub_devices WHERE sub_devices.dev_id = '.intval($_REQUEST['dev_id']));
 	$rows = array();
-	while ($row = db_fetch_array($results))
-	{
+	while ($row = $results->fetch(PDO::FETCH_ASSOC)) { // fetchAll()??
 		array_push($rows, $row);
 	}
 	
-	function mysort($a, $b)
-	{
+	function mysort($a, $b)	{
 		return compare_interface_names($a['name'], $b['name']);
 	}
 	
@@ -104,30 +98,32 @@ function dodisplay()
 		array("text" => checkbox_toolbar()),
 		array("text" => "Sub-Devices"),
 		array("text" => "Type")
-	); // end make_display_table();
+	);
 
 	GLOBAL $SUB_DEVICE_TYPES;
 
-	for ($i = 0; $i < db_num_rows($results); $i++)
-	{
+    $nh_q = getDatabase()->prepare('SELECT value FROM sub_dev_variables WHERE sub_dev_id = :sub_dev_id AND name = "nexthop"');
+    $nhd_q = getDatabase()->prepare('SELECT dev_id FROM sub_devices WHERE id = :id');
+
+    $rowcount = count($rows);
+	for ($i = 0; $i < $rowcount; $i++) {
 		$row = $rows[$i];
 		$type = "<b>" . $SUB_DEVICE_TYPES[$row["type"]] . "</b>";
 
 		/* next hop handling */
-		if ($row['type'] == 2)	// network interface sub-device
-		{
-			$nh_res = db_query("SELECT value FROM sub_dev_variables WHERE sub_dev_id={$row['id']} AND name='nexthop'");
-			if ($nh_row = db_fetch_array($nh_res)) // next hop located
-			{
-				$nhd_res = db_query("SELECT dev_id FROM sub_devices WHERE id = {$nh_row['value']}");
-				if ($nhd_row = db_fetch_array($nhd_res))
-				{
+		if ($row['type'] == 2) {	// network interface sub-device
+            $nh_q->bindValue(':sub_dev_id', $row['id']);
+            $nh_q->execute();
+			if ($nh_row = $nh_q->fetch(PDO::FETCH_ASSOC)) { // next hop located
+                $nhd_q->bindValue(':id', $nh_row['value']);
+				$nhd_q->execute();
+				if ($nhd_row = $nhd_q->fetch(PDO::FETCH_ASSOC)) {
 					$type .= " [Next Hop: <a href=\"sub_devices.php?dev_id={$nhd_row['dev_id']}\">" . get_dev_sub_device_name($nh_row['value']) . "</a>]";
 				}
 			}
 		}
 
-		make_display_item("editfield".($i%2),
+		make_display_item("editfield".($i % 2),
 			array("checkboxname" => "subdevice", "checkboxid" => $row['id']),
 			array("text" => $row["name"], "href" => "monitors.php?sub_dev_id={$row['id']}&tripid={$_REQUEST['tripid']}"),
 			array("text" => $type),
@@ -150,85 +146,69 @@ function dodisplay()
 	</form>
 	<?php
 	end_page();
-} // end display();
+}
 
 
-function doedit()
-{
-	if ($_REQUEST["sub_dev_id"] == 0)
-	{
-		$db_cmd = "INSERT INTO";
-		$db_end = "";
+function doedit() {
+	if ($_REQUEST["sub_dev_id"] == 0) {
+        $s = getDatabase()->prepare('INSERT INTO sub_devices (name, type, dev_id) VALUES (:name, :type, :dev_id)');
 	}
-	else
-	{
-		$db_cmd = "UPDATE";
-		$db_end = "WHERE id={$_REQUEST['sub_dev_id']}";
+	else {
+        $s = getDatabase()->prepare('UPDATE sub_devices SET name = :name, type = :type, dev_id = :dev_id WHERE id = :id');
+        $s->bindValue(':id', $_REQUEST['sub_dev_id']);
 	}
 
-	db_update("$db_cmd sub_devices SET
-		name='{$_REQUEST['name']}',
-		type='{$_REQUEST['type']}',
-		dev_id='{$_REQUEST['edit_dev_id']}'
-		$db_end");
+    $s->bindValue(':name', $_REQUEST['name']);
+    $s->bindValue(':type', $_REQUEST['type']);
+    $s->bindValue(':dev_id', $_REQUEST['edit_dev_id']);
+    $s->execute();
 
 	header("Location: {$_SERVER['PHP_SELF']}?dev_id={$_REQUEST['dev_id']}&tripid={$_REQUEST['tripid']}");
-} // end doedit();
+}
 
 
-function dodelete()
-{
-	if (isset($_REQUEST['subdevice']))
-	{
-		while (list($key,$value) = each($_REQUEST["subdevice"]))
-		{
+function dodelete() {
+	if (isset($_REQUEST['subdevice'])) {
+		while (list($key, $value) = each($_REQUEST["subdevice"])) {
 			delete_subdevice($key);
 		}
 	}
-	else
-	{
+	else {
 		delete_subdevice($_REQUEST["sub_dev_id"]);
 	}
 	header("Location: {$_SERVER['PHP_SELF']}?dev_id={$_REQUEST['dev_id']}&tripid={$_REQUEST['tripid']}");
-	exit();
-} // end dodelete();
+	exit;
+}
 
 
-function doduplicate()
-{
-	if (isset($_REQUEST['subdevice']))
-	{
-		while (list($key,$value) = each($_REQUEST["subdevice"]))
-		{
+function doduplicate() {
+	if (isset($_REQUEST['subdevice'])) {
+		while (list($key, $value) = each($_REQUEST["subdevice"])) {
 			duplicate_subdevice($key);
 		}
 	}
-	else
-	{
+	else {
 		duplicate_subdevice($_REQUEST['sub_dev_id']);
 	}
 	
 	header("Location: {$_SERVER['PHP_SELF']}?dev_id={$_REQUEST['dev_id']}&tripid={$_REQUEST['tripid']}");
-	exit();
-} // end doduplicate();
+	exit;
+}
 
 
-function displayedit()
-{
+function displayedit() {
 	begin_page("sub_devices.php", "Add/Edit Sub Device");
 
-	if ($_REQUEST["action"] == "add")
-	{
+	if ($_REQUEST["action"] == "add") {
 		$_REQUEST["sub_dev_id"] = 0;
 		$row = array();
 		$row["name"] = "";
 		$row["type"] = "";
-	} // end if add
+	}
 
-	if ($_REQUEST["sub_dev_id"] > 0)
-	{
-		$query = db_query("SELECT * FROM sub_devices WHERE id = {$_REQUEST['sub_dev_id']}");
-		$row   = db_fetch_array($query);
+	if ($_REQUEST["sub_dev_id"] > 0) {
+        $query = getDatabase()->query('SELECT * FROM sub_devices WHERE id = '.intval($_REQUEST['sub_dev_id']));
+		$row   = $query->fetch(PDO::FETCH_ASSOC);
 	}
 
 	make_edit_table("Sub-Device Properties");
@@ -242,5 +222,4 @@ function displayedit()
 	make_edit_submit_button();
 	make_edit_end();
 	end_page();
-
-} // end displayedit();
+}

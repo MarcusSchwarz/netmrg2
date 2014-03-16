@@ -29,17 +29,17 @@
 
 
 require_once "../include/config.php";
-if (isset($_REQUEST["object_id"]) && isset($_REQUEST["object_type"]))
-{
+if (isset($_REQUEST["object_id"]) && isset($_REQUEST["object_type"])) {
 	viewCheckAuthRedirect($_REQUEST["object_id"], $_REQUEST["object_type"]);
 }
 
 $slideshow = false;
 
-if (empty($_REQUEST["action"])) $_REQUEST["action"] = "";
+if (empty($_REQUEST["action"])) {
+    $_REQUEST["action"] = "";
+}
 
-switch ($_REQUEST["action"])
-{
+switch ($_REQUEST["action"]) {
 	case "list":
 		check_auth($GLOBALS['PERMIT']["ReadWrite"]);
 	case "view":
@@ -95,58 +95,48 @@ switch ($_REQUEST["action"])
 	default:
 		display_error();
 		break;
-} // end switch action
+}
 
 
 
 /***** FUNCTIONS *****/
-function display_error()
-{
+function display_error() {
 	begin_page("view.php", "View");
 	echo("An error occurred.");
 	end_page();
 }
 
-function display_edit()
-{
+function display_edit() {
 	$object_name = get_view_name();
-	if (!empty($object_name))
-	{
+	if (!empty($object_name)) {
 		$object_name .= ' - ';
-	} // end if object name
+	}
 	begin_page("view.php", $object_name."Edit View Item");
 	
-	switch ($_REQUEST["action"])
-	{
+	switch ($_REQUEST["action"]) {
 		case "add":
 			$row["type"] = "graph";
 			$row["graph_id"] = 0;
 			$row["separator_text"] = "";
-			if ($_REQUEST["object_type"] == "subdevice")
-			{
+			if ($_REQUEST["object_type"] == "subdevice") {
 				$row['subdev_id'] = $_REQUEST["object_id"];
 			}
-			else if ($_REQUEST["object_type"] == "device")
-			{
-				$q1 = db_query("SELECT id FROM sub_devices WHERE dev_id = {$_REQUEST['object_id']}");
-				if ($r1 = db_fetch_array($q1))
-				{
+			else if ($_REQUEST["object_type"] == "device") {
+                $q1 = getDatabase()->query('SELECT id FROM sub_devices WHERE dev_id = '.intval($_REQUEST['object_id']));
+				if ($r1 = $q1->fetch(PDO::FETCH_ASSOC)) {
 					$row['subdev_id'] = $r1['id'];
 				}
-				else
-				{
+				else {
 					$row['subdev_id'] = 0;
 				}
 			}
-			else
-			{
+			else {
 				$row['subdev_id'] = 0;
 			}
 			break;
 		
 		case "edit":
-			$q = db_query("SELECT * FROM view WHERE id={$_REQUEST['id']}");
-			$row = db_fetch_array($q);
+			$row = getDatabase()->query('SELECT * FROM view WHERE id = '.intval($_REQUEST['id']))->fetch(PDO::FETCH_ASSOC);
 			break;
 	}
 	
@@ -159,8 +149,7 @@ function display_edit()
 	make_edit_select_subdevice($row["subdev_id"]);
 	make_edit_group("Separator");
 	make_edit_text("Separator Text:", "separator_text", "40", "100", $row["separator_text"]);
-	switch ($_REQUEST["action"])
-	{
+	switch ($_REQUEST["action"])  {
 		case "add":
 			make_edit_hidden("object_id", $_REQUEST["object_id"]);
 			make_edit_hidden("object_type", $_REQUEST["object_type"]);
@@ -173,7 +162,6 @@ function display_edit()
 			make_edit_hidden("id", $_REQUEST['id']);
 			make_edit_hidden("object_id", $row["object_id"]);
 			make_edit_hidden("object_type", $row["object_type"]);
-			//print_r($row);
 			break;
 	}
 	make_edit_submit_button();
@@ -181,76 +169,70 @@ function display_edit()
 	end_page();
 }
 
-function do_add()
-{
+function do_add() {
 	$_REQUEST["graph_id"] = "";
 	
-	if ($_REQUEST["type"] == "graph" && !empty($_REQUEST['graph_id_custom']))
-		$_REQUEST['graph_id'] = $_REQUEST['graph_id_custom'];
-	else if($_REQUEST["type"] == "template" && !empty($_REQUEST['graph_id_template']))
-		$_REQUEST['graph_id'] = $_REQUEST['graph_id_template'];
-	
-	db_update("INSERT INTO view SET
-		object_id={$_REQUEST['object_id']},
-		object_type='{$_REQUEST['object_type']}',
-		graph_id='{$_REQUEST['graph_id']}',
-		type='{$_REQUEST['type']}',
-		separator_text='{$_REQUEST['separator_text']}',
-		pos={$_REQUEST['pos']},
-		subdev_id={$_REQUEST['subdev_id'][0]}");
-	
+	if ($_REQUEST["type"] == "graph" && !empty($_REQUEST['graph_id_custom'])) {
+        $_REQUEST['graph_id'] = $_REQUEST['graph_id_custom'];
+    }
+	else if($_REQUEST["type"] == "template" && !empty($_REQUEST['graph_id_template'])) {
+        $_REQUEST['graph_id'] = $_REQUEST['graph_id_template'];
+    }
+
+    $s = getDatabase()->prepare('INSERT INTO view (object_id, object_type, graph_id, type, separator_text, pos, subdev_id) VALUES (:object_id, :object_type, :graph_id, :type, :separator_text, :pos, :subdev_id)');
+    $s->bindValue(':object_id', $_REQUEST['object_id']);
+    $s->bindValue(':object_type', $_REQUEST['object_type']);
+    $s->bindValue(':graph_id', $_REQUEST['graph_id']);
+    $s->bindValue(':type', $_REQUEST['type']);
+    $s->bindValue(':separator_text', $_REQUEST['separator_text']);
+    $s->bindValue(':pos', $_REQUEST['pos']);
+    $s->bindValue(':subdev_id', $_REQUEST['subdev_id'][0]);
+    $s->execute();
+
 	header("Location: {$_SERVER['PHP_SELF']}?object_type={$_REQUEST['object_type']}&object_id={$_REQUEST['object_id']}&action=list");
-	exit(0);
+	exit;
 }
 
-function do_edit()
-{
+function do_edit() {
 	$_REQUEST['graph_id'] = (($_REQUEST['type'] == 'graph') ? $_REQUEST['graph_id_custom'] : $_REQUEST['graph_id_template']);
 
-	db_update("UPDATE view SET
-		graph_id={$_REQUEST['graph_id']},
-		type='{$_REQUEST['type']}',
-		separator_text='{$_REQUEST['separator_text']}',
-		subdev_id={$_REQUEST['subdev_id'][0]}
-		WHERE id={$_REQUEST['id']}");
-	
+    $s = getDatabase()->prepare('UPDATE view SET graph_id = :graph_id, type = :type, seperator_text = :seperator_text, subdev_id = :subdev_id WHERE id = :id');
+    $s->bindValue(':graph_id', $_REQUEST['graph_id']);
+    $s->bindValue(':type', $_REQUEST['type']);
+    $s->bindValue(':separator_text', $_REQUEST['separator_text']);
+    $s->bindValue(':subdev_id', $_REQUEST['subdev_id'][0]);
+    $s->bindValue(':id', $_REQUEST['id']);
+    $s->execute();
+
 	header("Location: {$_SERVER['PHP_SELF']}?object_type={$_REQUEST['object_type']}&object_id={$_REQUEST['object_id']}&action=list");
-	exit(0);
+	exit;
 }
 
-function do_delete()
-{
-	if (isset($_REQUEST["viewitem"]))
-	{
-		while (list($key,$value) = each($_REQUEST["viewitem"]))
-		{
+function do_delete() {
+	if (isset($_REQUEST["viewitem"])) {
+		while (list($key,$value) = each($_REQUEST["viewitem"])) {
 			delete_view_item($key);
 		}
 	}
-	else
-	{
+	else {
 		delete_view_item($_REQUEST['id']);
 	}
 	
 	header("Location: {$_SERVER['PHP_SELF']}?object_type={$_REQUEST['object_type']}&object_id={$_REQUEST['object_id']}&action=list");
-	exit(0);
+	exit;
 }
 
-function do_move($direction)
-{
-	if (isset($_REQUEST["viewitem"]))
-	{
-		if ($direction == "down")
-			$_REQUEST['viewitem'] = array_reverse($_REQUEST['viewitem'], true);
-		while (list($key,$value) = each($_REQUEST["viewitem"]))
-		{
+function do_move($direction) {
+	if (isset($_REQUEST["viewitem"])) {
+		if ($direction == "down") {
+            $_REQUEST['viewitem'] = array_reverse($_REQUEST['viewitem'], true);
+        }
+		while (list($key,$value) = each($_REQUEST["viewitem"])) {
 			move_view_item($_REQUEST['object_id'], $_REQUEST['object_type'], $key, $direction);
 		}
 	}
-	elseif (isset($_REQUEST["id"]))
-	{
-		switch ($direction)
-		{
+	elseif (isset($_REQUEST["id"])) {
+		switch ($direction) {
 			case "up":
 			case "down":
 				move_view_item($_REQUEST['object_id'], $_REQUEST['object_type'], $_REQUEST['id'], $direction);
@@ -267,79 +249,62 @@ function do_move($direction)
 	}
 	
 	header("Location: {$_SERVER['PHP_SELF']}?object_id={$_REQUEST['object_id']}&object_type={$_REQUEST['object_type']}&action=list");
-	exit(0);
+	exit;
 }
 
-function ss_random_all()
-{
-	$myq = db_query("SELECT object_type, object_id FROM view LEFT JOIN devices ON view.object_id=devices.id
-						WHERE object_type='device' AND devices.disabled=0 GROUP BY object_type, object_id
-						ORDER BY RAND() ");
-	while ($myr = db_fetch_array($myq))
-	{
+function ss_random_all() {
+    $myq = getDatabase()->query('SELECT object_type, object_id FROM view LEFT JOIN devices ON view.object_id = devices.id WHERE object_type = "device" AND devices.disabled = 0 GROUP BY object_type, object_id ORDER BY RAND()');
+
+	while ($myr = $myq->fetch(PDO::FETCH_ASSOC)) {
 		array_push($_SESSION["netmrgsess"]["slideshow"]["views"], array( "object_type" => $myr['object_type'] , "object_id" => $myr['object_id'] ));
 	}
 }
 
-function ss_descendants($group)
-{
-	$q = db_query("SELECT id FROM groups WHERE parent_id = $group ORDER BY name");
-	while ($r = db_fetch_array($q))
-	{
+function ss_descendants($group) {
+    $s = getDatabase()->prepare('SELECT id FROM groups WHERE parent_id = :group ORDER BY name');
+    $s->bindValue(':group', $group);
+    $s->execute();
+	while ($r = $s->fetch(PDO::FETCH_ASSOC)) {
 		ss_descendants($r['id']);
 	}
-	
-	$q = db_query("	SELECT dev.id AS id, count(view.id) AS view_items
-					FROM dev_parents dp
-					LEFT JOIN devices dev ON dp.dev_id=dev.id
-					LEFT JOIN view ON dev.id=view.object_id
-					WHERE grp_id = $group
-					AND object_type = 'device'
-					AND dev.disabled = 0
-					GROUP BY dev.id
-					ORDER BY dev.name");
-	while ($r = db_fetch_array($q))
-	{
-		if ($r['view_items'] > 0)
-			array_push($_SESSION["netmrgsess"]["slideshow"]["views"], array( "object_type" => "device" , "object_id" => $r['id']));
+
+    $s = getDatabase()->prepare('SELECT dev.id AS id, count(view.id) AS view_items FROM dev_parents dp LEFT JOIN devices dev ON dp.dev_id = dev.id LEFT JOIN view ON dev.id = view.object_id WHERE grp_id = :group AND object_type = "device" AND dev.disabled = 0 GROUP BY dev.id ORDER BY dev.name');
+    $s->bindValue(':group', $group);
+    $s->execute();
+	while ($r = $s->fetch(PDO::FETCH_ASSOC)) {
+		if ($r['view_items'] > 0) {
+            array_push($_SESSION["netmrgsess"]["slideshow"]["views"], array( "object_type" => "device" , "object_id" => $r['id']));
+        }
 	}
 }
 
-function do_slideshow()
-{
-	if (isset($_REQUEST["type"]))
-	{
-		// we're just starting a slideshow, not in the middle of one.
-		
+function do_slideshow() {
+	if (isset($_REQUEST["type"])) {
 		$_SESSION["netmrgsess"]["slideshow"]["views"] = array();
 		$_SESSION["netmrgsess"]["slideshow"]["current"] = 0;
 		$_SESSION["netmrgsess"]["slideshow"]["type"] = $_REQUEST['type'];
 		
-		switch ($_REQUEST['type'])
-		{
+		switch ($_REQUEST['type']) {
 			case 0:		ss_random_all();						break;
 			case 1:		ss_descendants($_REQUEST['group_id']);	break;
 		}
 		
 		header("Location: {$_SERVER['PHP_SELF']}?action=slideshow");
-		exit(0);
+		exit;
 	}
 	
-	if (count($_SESSION["netmrgsess"]["slideshow"]["views"]) == 0)
-	{
+	if (count($_SESSION["netmrgsess"]["slideshow"]["views"]) == 0) {
 		$object_name = get_view_name();
-		if (!empty($object_name))
-		{
+		if (!empty($object_name)) {
 			$object_name .= ' - ';
 		} // end if object name
 		begin_page("view.php", $object_name."Slide Show");
 		echo("This slide show is empty.");
 		end_page();
-		exit(0);
+		exit;
 	}
 	
-	if (isset($_REQUEST['jump']))
-	{
+	if (isset($_REQUEST['jump'])) {
 		$_SESSION["netmrgsess"]["slideshow"]["current"] = $_REQUEST['jump'];
 	}
 	
@@ -351,13 +316,11 @@ function do_slideshow()
 	$GLOBALS["slide_show_formatted_link"] = cond_formatted_link($_SESSION["netmrgsess"]["slideshow"]["current"] > 0, "Previous Slide", "{$_SERVER['PHP_SELF']}?action=slideshow&jump=" . ($_SESSION["netmrgsess"]["slideshow"]["current"] - 1));
 	$_SESSION["netmrgsess"]["slideshow"]["current"]++;
 	
-	if ( count($_SESSION["netmrgsess"]["slideshow"]["views"]) == $_SESSION["netmrgsess"]["slideshow"]["current"])
-	{
+	if (count($_SESSION["netmrgsess"]["slideshow"]["views"]) == $_SESSION["netmrgsess"]["slideshow"]["current"]) {
 		$_SESSION["netmrgsess"]["slideshow"]["current"] = 0;
 		$GLOBALS["slide_show_formatted_link"] .= formatted_link("Restart Slideshow", "{$_SERVER['PHP_SELF']}?action=slideshow");
 	}
-	else
-	{
+	else {
 		$GLOBALS["slide_show_formatted_link"] .= formatted_link("Next Slide", "{$_SERVER['PHP_SELF']}?action=slideshow");
 	}
 	
@@ -412,47 +375,39 @@ function do_slideshow()
 	
 } // end do_slideshow();
 
-function do_view()
-{
+function do_view() {
 	$object_name = get_view_name();
-	if (!empty($object_name))
-	{
+	if (!empty($object_name)) {
 		$object_name .= ' - ';
-	} // end if object name
-	if ($GLOBALS["slideshow"]
-		&& GetUserPref(GetUserID(), "SlideShow", "AutoScroll") !== ""
-		&& GetUserPref(GetUserID(), "SlideShow", "AutoScroll"))
-	{
+	}
+	if ($GLOBALS["slideshow"] && GetUserPref(GetUserID(), "SlideShow", "AutoScroll") !== "" && GetUserPref(GetUserID(), "SlideShow", "AutoScroll")) {
 		begin_page("view.php", $object_name."View", 1, "onLoad=start() onClick=toggle()");
 	}
-	else
-	{
+	else {
 		begin_page("view.php", $object_name."View", 1);
 	}
-	
-	$view_select =
-		"SELECT		view.id, pos, graphs.name, graphs.title, graph_id, separator_text, subdev_id, pos, view.type AS type
-		FROM		view
-		LEFT JOIN 	graphs ON view.graph_id=graphs.id
-		WHERE 		object_type='{$_REQUEST['object_type']}'
-		AND 		object_id={$_REQUEST['object_id']}
-		ORDER BY 	pos";
-	
-	$view_result = db_query($view_select);
-	$num = db_num_rows($view_result);
-	
-	if ($_REQUEST["action"] == "view")
-	{
+
+    $num = getDatabase()->prepare('SELECT COUNT(view.id) FROM view LEFT JOIN graphs ON view.graph_id = graphs.id WHERE object_type = :object_type AND object_id = :object_id');
+    $num->bindValue(':object_type', $_REQUEST['object_type']);
+    $num->bindValue(':object_id', $_REQUEST['object_id']);
+    $num->execute();
+    $num = $num->fetchColumn();
+
+    $view_result = getDatabase()->prepare('SELECT view.id, pos, graphs.name, graphs.title, graph_id, separator_text, subdev_id, pos, view.type AS type FROM view LEFT JOIN graphs ON view.graph_id = graphs.id WHERE object_type = :object_type AND object_id = :object_id ORDER BY pos');
+    $view_result->bindValue(':object_type', $_REQUEST['object_type']);
+    $view_result->bindValue(':object_id', $_REQUEST['object_id']);
+    $view_result->execute();
+
+	if ($_REQUEST["action"] == "view") {
 		echo '<!-- graphs start -->'."\n";
 		echo '<div id="viewdisplay">'."\n";
 		
-		if (isset($_REQUEST['hist']))
-			$hist = "&hist={$_REQUEST['hist']}";
+		if (isset($_REQUEST['hist'])) {
+            $hist = "&hist={$_REQUEST['hist']}";
+        }
 		
-		while ($row = db_fetch_array($view_result))
-		{
-			switch ($row['type'])
-			{
+		while ($row = $view_result->fetch(PDO::FETCH_ASSOC)) {
+			switch ($row['type']) {
 				case "graph":
 					echo '	<div class="viewgraph">'."\n";
 					$local_graph_type = 'custom';
@@ -492,13 +447,11 @@ function do_view()
 					break;
 				
 				case "template":
-					$nh_res = db_query("SELECT value FROM sub_dev_variables WHERE sub_dev_id={$row['subdev_id']} AND name='nexthop'");
+                    $nh_res = getDatabase()->query('SELECT value FROM sub_dev_variables WHERE sub_dev_id = '.intval($row['subdev_id']).' AND name = "nexthop"');
 					$link = "";
-					if ($nh_row = db_fetch_array($nh_res)) // next hop located
-					{
-						$nhd_res = db_query("SELECT dev_id FROM sub_devices WHERE id = {$nh_row['value']}");
-						if ($nhd_row = db_fetch_array($nhd_res))
-						{
+					if ($nh_row = $nh_res->fetch(PDO::FETCH_ASSOC)) {
+                        $nhd_res = getDatabase()->query('SELECT dev_id FROM sub_devices WHERE id = '.intval($nh_row['value']));
+						if ($nhd_row = $nhd_res->fetch(PDO::FETCH_ASSOC)) {
 							$link = "Next Hop: <a href=\"view.php?action=view&object_type=device&object_id={$nhd_row['dev_id']}\">" . get_dev_sub_device_name($nh_row['value']) . "</a>";
 						}
 					}
@@ -551,34 +504,30 @@ function do_view()
 				case "separator":
 					echo '	<div class="viewseparator">' . $row["separator_text"] . '</div>'."\n";
 					break;
-			} // end switch row type
-		} // end while each row
+			}
+		}
 
 		echo "</div>\n";
 		echo '<div style="clear: both; font-size: 0;">&nbsp;</div>'."\n";
 		echo '<!-- graphs end -->'."\n";
 	
 		$histnum = 0;
-		foreach ($GLOBALS['TIMEFRAMES'] as $tf)
-		{
+		foreach ($GLOBALS['TIMEFRAMES'] as $tf) {
 			print(formatted_link($tf['name'], "{$_SERVER['PHP_SELF']}?action=view&object_type={$_REQUEST['object_type']}&object_id={$_REQUEST['object_id']}&hist=$histnum"));
 			$histnum++;
 		}
 		print("<br>");
 		
-		if ($_SESSION["netmrgsess"]["permit"] > 1)
-		{
+		if ($_SESSION["netmrgsess"]["permit"] > 1) {
 			print(formatted_link("Edit", "{$_SERVER['PHP_SELF']}?action=list&object_type={$_REQUEST['object_type']}&object_id={$_REQUEST['object_id']}"));
 		}
 
-		if ($GLOBALS["slideshow"])
-		{
+		if ($GLOBALS["slideshow"]) {
 			print($GLOBALS["slide_show_formatted_link"]);
 		}
 		
-	} // end if view page
-	else
-	{
+	}
+	else {
 		js_confirm_dialog("del", "Do you want to remove ", " from this view?", "{$_SERVER['PHP_SELF']}?action=dodelete&object_type={$_REQUEST['object_type']}&object_id={$_REQUEST['object_id']}&id=");
 		
 		js_checkbox_utils();
@@ -595,32 +544,26 @@ function do_view()
 			array("text" => checkbox_toolbar()),
 			array("text" => "Item"),
 			array("text" => "Type")
-		); // end make_display_table();
+		);
 		
-		for ($i = 0; $i < $num; $i++)
-		{
-			$row = db_fetch_array($view_result);
+		for ($i = 0; $i < $num; $i++) {
+			$row = $view_result->fetch(PDO::FETCH_ASSOC);
 		
-			if ($i == 0)
-			{
+			if ($i == 0) {
 				$move_up = image_link_disabled("arrow_limit-up", "Move Top") . image_link_disabled("arrow-up", "Move Up");
 			}
-			else
-			{
+			else {
 				$move_up = image_link("arrow_limit-up", "Move Top", "{$_SERVER['PHP_SELF']}?action=move_top&object_id={$_REQUEST['object_id']}&object_type={$_REQUEST['object_type']}&id={$row['id']}") . image_link("arrow-up", "Move Up", "{$_SERVER['PHP_SELF']}?action=move_up&object_id={$_REQUEST['object_id']}&object_type={$_REQUEST['object_type']}&id={$row['id']}");
 			}
 			
-			if ($i == ($num - 1))
-			{
+			if ($i == ($num - 1)) {
 				$move_down = image_link_disabled("arrow-down", "Move Down") . image_link_disabled("arrow_limit-down", "Move Bottom");
 			}
-			else
-			{
+			else {
 				$move_down = image_link("arrow-down", "Move Down", "{$_SERVER['PHP_SELF']}?action=move_down&object_id={$_REQUEST['object_id']}&object_type={$_REQUEST['object_type']}&id={$row['id']}") . image_link("arrow_limit-down", "Move Bottom", "{$_SERVER['PHP_SELF']}?action=move_bottom&object_id={$_REQUEST['object_id']}&object_type={$_REQUEST['object_type']}&id={$row['id']}");
 			}
 			
-			switch ($row['type'])
-			{
+			switch ($row['type']) {
 				case 'graph':
 					$name = $row['title'];
 					$extra_options = formatted_link("Edit Graph", "graph_items.php?graph_id={$row['graph_id']}");
@@ -642,9 +585,9 @@ function do_view()
 				default:
 					$extra_options = "";
 					break;
-			} // end switch ($row['type'])
+			}
 			
-			make_display_item("editfield".($i%2),
+			make_display_item("editfield".($i % 2),
 				array("checkboxname" => "viewitem", "checkboxid" => $row['id']),
 				array("text" => $name),
 				array("text" => $type),
@@ -653,31 +596,29 @@ function do_view()
 					formatted_link("Edit", "{$_SERVER['PHP_SELF']}?id={$row['id']}&action=edit", "", "edit") . "&nbsp;" .
 					formatted_link("Delete","javascript:del('".str_replace('%', '', addslashes($name))."', '{$row['id']}')", "", "delete") . "&nbsp;" .
 					$extra_options)
-			); // end make_display_item();
-		} // end for each row
+			);
+		}
 		
 		make_checkbox_command("", 5,
 			array("text" => "Delete", "action" => "multidodelete", "prompt" => "Are you sure you want to delete the checked items?"),
 			array("text" => "Move Up", "action" => "move_up"),
 			array("text" => "Move Down", "action" => "move_down")
-		); // end make_checkbox_command
+		);
 		make_status_line("{$_REQUEST["type"]} item", $i);
 		print("</table></form>");
 		print(formatted_link("Done Editing", "{$_SERVER['PHP_SELF']}?action=view&object_type={$_REQUEST['object_type']}&object_id={$_REQUEST['object_id']}"));
-	} // end else edit view
+	}
 	
 	end_page();
-} // end do_view();
+}
 
-function get_view_name()
-{
+function get_view_name() {
 	$return_val  = '';
 	
 	$object_id   = $_REQUEST["object_id"];
 	$object_type = $_REQUEST["object_type"];
 	
-	switch ($object_type)
-	{
+	switch ($object_type) {
 		case 'group':
 			$return_val .= db_fetch_cell('SELECT `name` FROM `groups` ' .
 				'WHERE id = ' . db_quote($object_id));
@@ -692,7 +633,6 @@ function get_view_name()
 			$return_val .= db_fetch_cell('SELECT `name` FROM `sub_devices` ' .
 				'WHERE id = ' . db_quote($object_id));
 			break;
-	} // end switch object type
-	
+	}
 	return $return_val;
-} // end function get_view_name()
+}

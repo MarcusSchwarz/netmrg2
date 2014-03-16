@@ -125,7 +125,3 @@ $password = $GLOBALS["netmrg"]["dbpass"];
 $GLOBALS["netmrg"]["dbconn"]    = db_connect();
 $GLOBALS["netmrg"]["pdoconn"]   = new PDO($dsn, $user, $password);
 $GLOBALS["netmrg"]["dbversion"] = GetDBVersion();
-
-// todo temporarily still here until migration to pdo is finished
-$_REQUEST = array_map('addslashes_deep', $_REQUEST);
-$_SERVER = array_map('addslashes_deep', $_SERVER);

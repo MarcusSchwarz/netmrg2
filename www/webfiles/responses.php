@@ -30,13 +30,14 @@ require_once "../include/config.php";
 check_auth($GLOBALS['PERMIT']["ReadAll"]);
 
 
-if (!isset($_REQUEST["action"]))
-	$action = "";
-else
+if (!isset($_REQUEST["action"])) {
+    $action = "";
+}
+else {
 	$action = $_REQUEST["action"];
+}
 
-switch ($action)
-{
+switch ($action) {
 	case "add":
 		check_auth($GLOBALS['PERMIT']["ReadWrite"]);
 		$_REQUEST['id'] = 0;
@@ -62,8 +63,7 @@ switch ($action)
 		display_list();
 }
 
-function display_list()
-{
+function display_list() {
 	begin_page("responses.php", "Responses");
 	js_checkbox_utils();
 	?>
@@ -81,47 +81,39 @@ function display_list()
 		array("text" => "Parameters")
 	);
 
-	$res = db_query("	SELECT responses.id, notifications.name, responses.parameters
-				FROM responses, notifications
-				WHERE responses.notification_id=notifications.id
-				AND event_id={$_REQUEST['event_id']}
-				ORDER BY notifications.name, responses.parameters");
+    $res = getDatabase()->query('SELECT responses.id, notifications.name, responses.parameters FROM responses, notifications WHERE responses.notification_id = notifications.id AND event_id = '.intval($_REQUEST['event_id']).' ORDER BY notifications.name, responses.parameters');
 	$rowcount = 0;
-	while ($row = db_fetch_array($res))
-	{
-		make_display_item("editfield".($rowcount%2),
+	while ($row = $res->fetch(PDO::FETCH_ASSOC)) {
+		make_display_item("editfield".($rowcount % 2),
 			array("checkboxname" => "response", "checkboxid" => $row['id']),
 			array("text" => $row['name']),
 			array("text" => $row['parameters']),
 			array("text" => formatted_link("Edit", "{$_SERVER['PHP_SELF']}?action=edit&id={$row['id']}&tripid={$_REQUEST['tripid']}", "", "edit") . "&nbsp;" .
 				formatted_link("Delete", "javascript:del('{$row['name']}','{$row['id']}')", "", "delete"))
-		); // end make_display_item();
+		);
 		$rowcount++;
 	}
 	make_checkbox_command("", 5,
 		array("text" => "Delete", "action" => "multidodelete", "prompt" => "Are you sure you want to delete the checked responses?")
-	); // end make_checkbox_command
+	);
 	make_status_line("response", $rowcount);
 	?>
 	</table>
 	</form>
 	<?php
 	end_page();
-} // end display_list();
+}
 
-function display_edit()
-{
-	if ($_REQUEST['id'] == 0)
-	{
+function display_edit() {
+	if ($_REQUEST['id'] == 0) {
 		$row['notification_id'] = 0;
 		$row['parameters'] = "";
 		$row['id'] = 0;
 		$row['event_id'] = $_REQUEST['event_id'];
 	}
-	else
-	{
-		$res = db_query("SELECT * FROM responses WHERE id={$_REQUEST['id']}");
-		$row = db_fetch_array($res);
+	else {
+        $res = getDatabase()->query('SELECT * FROM responses WHERE id ='.intval($_REQUEST['id']));
+        $row = $res->fetch(PDO::FETCH_ASSOC);
 	}
 	
 	begin_page("responses.php", "Responses");
@@ -137,35 +129,29 @@ function display_edit()
 	end_page();
 }
 
-function do_edit()
-{
-	if ($_REQUEST['id'] == 0)
-	{
-		$pre  = "INSERT INTO";
-		$post = ", event_id={$_REQUEST['event_id']}";
+function do_edit() {
+	if ($_REQUEST['id'] == 0) {
+        $s = getDatabase()->prepare('INSERT INTO responses (notification_id, parameters, event_id) VALUES (:notification_id, :parameters, :event_id)');
+        $s->bindValue(':event_id', $_REQUEST['event_id']);
 	}
-	else
-	{
-		$pre  = "UPDATE";
-		$post = "WHERE id = {$_REQUEST['id']}";
+	else {
+        $s = getDatabase()->prepare('UPDATE responses SET notification_id = :notification_id, parameters = :parameters WHERE id = :id');
+        $s->bindValue(':id', $_REQUEST['id']);
 	}
-	
-	db_update("$pre responses SET notification_id = '{$_REQUEST['notification_id']}', parameters ='{$_REQUEST['parameters']}' $post");
+    $s->bindValue(':notification_id', $_REQUEST['notification_id']);
+    $s->bindValue(':parameters', $_REQUEST['parameters']);
+    $s->execute();
 	
 	header("Location: {$_SERVER['PHP_SELF']}?event_id={$_REQUEST['event_id']}&tripid={$_REQUEST['tripid']}");
 }
 
-function do_delete()
-{
-	if (isset($_REQUEST['response']))
-	{
-		while (list($key,$value) = each($_REQUEST["response"]))
-		{
+function do_delete() {
+	if (isset($_REQUEST['response'])) {
+		while (list($key,$value) = each($_REQUEST["response"])) {
 			delete_response($key);
 		}
 	}
-	else if(isset($_REQUEST["id"]))
-	{
+	else if(isset($_REQUEST["id"])) {
 		delete_response($_REQUEST['id']);
 	}
 	header("Location: {$_SERVER['PHP_SELF']}?event_id={$_REQUEST['event_id']}&tripid={$_REQUEST['tripid']}");

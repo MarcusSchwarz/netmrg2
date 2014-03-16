@@ -298,25 +298,19 @@ $SCRIPT_DATA_TYPES = array(
 $SEARCH_ITEMS = array(
 	'group' => array(
 		'name' => "Group",
-		'sql' => array("SELECT id, name FROM groups 
-			WHERE name LIKE '%|ARG|%'")
+		'sql' => array("SELECT id, name FROM groups WHERE name LIKE :pattern")
 		),
 	'device' => array(
 		'name' => "Device",
-		'sql' => array("SELECT id, name FROM devices 
-			WHERE name LIKE '%|ARG|%' OR ip LIKE '%|ARG|%'",
-			"SELECT dev_id AS id, name FROM dev_prop_vals val LEFT JOIN devices dev ON val.dev_id=dev.id WHERE value LIKE '%|ARG|%'")
+		'sql' => array("SELECT id, name FROM devices WHERE name LIKE :pattern OR ip LIKE :pattern",
+			"SELECT dev_id AS id, name FROM dev_prop_vals val LEFT JOIN devices dev ON val.dev_id=dev.id WHERE value LIKE :pattern")
 		),
 	'subdevice' => array(
 		'name' => "Sub Device",
-		'sql' => array("SELECT id, name FROM sub_devices 
-			WHERE name LIKE '%|ARG|%
-			GROUP BY id'",
-			"SELECT sub_dev_id AS id, CONCAT(name, ' - ', value) AS name FROM sub_dev_variables
-			WHERE value LIKE '%|ARG|%'
-			GROUP BY sub_dev_id")
+		'sql' => array("SELECT id, name FROM sub_devices WHERE name LIKE :pattern GROUP BY id",
+			"SELECT sub_dev_id AS id, CONCAT(name, ' - ', value) AS name FROM sub_dev_variables WHERE value LIKE :pattern GROUP BY sub_dev_id")
 		)
-); // end SEARCH_ITEMS
+);
 
 $TIMEFRAME_DAILY = array(
 	'name'       => "Daily",

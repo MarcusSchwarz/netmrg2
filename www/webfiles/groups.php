@@ -30,61 +30,52 @@
 require_once "../include/config.php";
 check_auth($GLOBALS['PERMIT']["ReadWrite"]);
 
-// if no action, set a default one
-if (empty($_REQUEST["action"]))
-{
+if (empty($_REQUEST["action"])) {
 	$_REQUEST["action"] = "list";
-} // end if no action
+}
 
-
-// what to do
-switch ($_REQUEST["action"])
-{
+switch ($_REQUEST["action"]) {
 	case "edit" :
 		edit();
 		break;
 		
-	case "add"  :
+	case "add":
 		add();
 		break;
 		
-	case "update" :
+	case "update":
 		update_group($_REQUEST["grp_id"], $_REQUEST["grp_name"], $_REQUEST["grp_comment"], $_REQUEST["edit_parent_id"]);
 		display();
 		break;
 		
-	case "insert" :
+	case "insert":
 		create_group($_REQUEST["grp_name"], $_REQUEST["grp_comment"], $_REQUEST["edit_parent_id"]);
 		display();
 		break;
 		
-	case "delete" :
+	case "delete":
 		delete_group($_REQUEST["grp_id"]);
 		display();
 		break;
 		
-	case "deletemulti" :
-		if (isset($_REQUEST["grp_id"]))
-		{
-			foreach ($_REQUEST["grp_id"] as $key => $val)
-			{
+	case "deletemulti":
+		if (isset($_REQUEST["grp_id"])) {
+			foreach ($_REQUEST["grp_id"] as $key => $val) {
 				delete_group($key);
-			} // end foreach group, delete
+			}
 		}
 		display();
-} // end what to do
-
+}
 
 
 /***** FUNCTIONS *****/
-function edit()
-{
+function edit() {
 	// Display editing screen
 	begin_page("groups.php", "Groups");
 	
 	$grp_id = $_REQUEST["grp_id"];
-	$grp_results = db_query("SELECT * FROM groups WHERE id=$grp_id");
-	$grp_row = db_fetch_array($grp_results);
+    $grp_results = getDatabase()->query('SELECT * FROM groups WHERE id = '.intval($grp_id));
+	$grp_row = $grp_results->fetch(PDO::FETCH_ASSOC);
 	$grp_name = $grp_row["name"];
 	$grp_comment = $grp_row["comment"];
 	
@@ -99,11 +90,10 @@ function edit()
 	make_edit_submit_button();
 	make_edit_end();
 	end_page();
-} // end edit();
+}
 
 
-function add()
-{
+function add() {
 	// Display editing screen
 	begin_page("groups.php", "Groups");
 	
@@ -118,11 +108,10 @@ function add()
 	make_edit_submit_button();
 	make_edit_end();
 	end_page();
-} // end add();
+}
 
 
-function display()
-{
+function display() {
 	header("Location: grpdev_list.php?parent_id={$_REQUEST['parent_id']}&tripid={$_REQUEST['tripid']}");
-	exit();
-} // end display();
+	exit;
+}

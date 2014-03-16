@@ -30,10 +30,11 @@
 require_once "../include/config.php";
 check_auth($GLOBALS['PERMIT']["Admin"]);
 
-if (empty($_REQUEST["action"])) $_REQUEST["action"] = "";
+if (empty($_REQUEST["action"])) {
+    $_REQUEST["action"] = "";
+}
 
-switch ($_REQUEST["action"])
-{
+switch ($_REQUEST["action"]) {
 
 	case "edit":
 	case "add":
@@ -59,73 +60,74 @@ switch ($_REQUEST["action"])
 }
 
 
-function do_edit()
-{
-	if (!empty($_REQUEST["pass"]))
-	{
-		if ($_REQUEST["pass"] != $_REQUEST["vpass"])
-		{
+function do_edit() {
+	if (!empty($_REQUEST["pass"])) {
+		if ($_REQUEST["pass"] != $_REQUEST["vpass"]) {
 			begin_page("users.php", "User Management - Error");
 			echo "<div>Error: your passwords don't match; please go back and try again</div>";
 			end_page();
-			exit(0);
-		} // end if pass doesn't match vpass
-	} // end if pass
+			exit;
+		}
+	}
 
-	if ($_REQUEST["user_id"] == 0)
-	{
-		$db_cmd = "INSERT INTO";
-		$db_end = "";
+
+	if ($_REQUEST["user_id"] == 0) {
+        if (!empty($_REQUEST["pass"])) {
+            $s = getDatabase()->prepare('INSERT INTO user (user, fullname, permit, group_id, disabled, pass) VALUES (:user, :fullname, :permit, :group_id, :disabled, :pass)');
+        }
+        else {
+            $s = getDatabase()->prepare('INSERT INTO user (user, fullname, permit, group_id, disabled) VALUES (:user, :fullname, :permit, :group_id, :disabled)');
+        }
 	}
-	else
-	{
-		$db_cmd = "UPDATE";
-		$db_end = "WHERE id='{$_REQUEST['user_id']}'";
+	else {
+        if (!empty($_REQUEST["pass"])) {
+            $s = getDatabase()->prepare('UPDATE user SET user = :user, fullname = :fullname, permit = :permit, group_id = :group_id, disabled = :disabled, pass = :pass WHERE id = :id');
+        }
+        else{
+            $s = getDatabase()->prepare('UPDATE user SET user = :user, fullname = :fullname, permit = :permit, group_id = :group_id, disabled = :disabled WHERE id = :id');
+        }
+        $s->bindValue(':id', $_REQUEST['user_id']);
 	}
 	
-	$pass_cmd = "";
-	if (!empty($_REQUEST["pass"]))
-	{
-		$pass_cmd = "pass = md5('{$_REQUEST['pass']}'), ";
-	} // end if new password to set
+	if (!empty($_REQUEST["pass"])) {
+        $s->bindValue(':pass', generate_password_hash($_REQUEST['pass']));
+	}
 	
-	if (empty($_REQUEST["group_id"]))
-	{
+	if (empty($_REQUEST["group_id"])) {
 		$_REQUEST["group_id"] = 0;
-	} // end if no group id set
+	}
 
-	if (empty($_REQUEST["disabled"]))
-	{
+	if (empty($_REQUEST["disabled"])) {
 		$_REQUEST["disabled"] = 0;
-	} // end if no disabled value set
-	
-	db_update("$db_cmd user SET user='{$_REQUEST['user']}',
-		fullname='{$_REQUEST['fullname']}', $pass_cmd
-		permit='{$_REQUEST['permit']}', group_id='{$_REQUEST['group_id']}', disabled='{$_REQUEST['disabled']}' $db_end");
-		
+	}
+
+    $s->bindValue(':user', $_REQUEST['user']);
+    $s->bindValue(':fullname', $_REQUEST['fullname']);
+    $s->bindValue(':permit', $_REQUEST['permit']);
+    $s->bindValue(':group_id', $_REQUEST['group_id']);
+    $s->bindValue(':disabled', $_REQUEST['disabled']);
+    $s->execute();
+
 	header("Location: {$_SERVER['PHP_SELF']}");
 }
 
-function do_delete()
-{
-	db_update("DELETE FROM user WHERE id='{$_REQUEST['user_id']}'");
+function do_delete() {
+    getDatabase()->exec('DELETE FROM user WHERE id = '.intval($_REQUEST['user_id']));
 	header("Location: {$_SERVER['PHP_SELF']}");
 }
 
-function do_deletemulti()
-{
-	if (isset($_REQUEST["user"]))
-	{
-		while (list($key,$value) = each($_REQUEST["user"]))
-		{
-			db_update("DELETE FROM user WHERE id='$key'");
+function do_deletemulti() {
+	if (isset($_REQUEST["user"])) {
+        $s = getDatabase()->prepare('DELETE FROM user WHERE id = :id');
+		while (list($key, $value) = each($_REQUEST["user"])) {
+            $s->bindValue(':id', $key);
+            $s->execute();
 		}
 	}
 	header("Location: {$_SERVER['PHP_SELF']}");
 }
 
-function display_edit()
-{
+function display_edit() {
 
 	begin_page("users.php", "User Management", 0, 'onLoad="enableGroup(document.editform.permit.value)"');
 	echo '
@@ -143,26 +145,16 @@ document.editform.group_id.value=0; // Root Group
 </script>
 ';
 	
-	if ($action == "add")
-	{
-		$user_id = 0;
-	}
-	else
-	{
-		$user_id = $_REQUEST["user_id"];
-	} // end if add or not
+    $user_id = intval($_REQUEST["user_id"]);
+    $user_row = getDatabase()->query('SELECT * FROM user WHERE id = '.$user_id)->fetch(PDO::FETCH_ASSOC);
 
-	$user_results = db_query("SELECT * FROM user WHERE id='$user_id'");
-	$user_row = db_fetch_array($user_results);
-	
 	make_edit_table("Edit User");
 	make_edit_text("User ID:", "user", "25", "50", $user_row["user"]);
 	make_edit_text("Full Name", "fullname", "25", "75", $user_row["fullname"]);
-	if (!$GLOBALS["netmrg"]["externalAuth"])
-	{
+	if (!$GLOBALS["netmrg"]["externalAuth"]) {
 		make_edit_password("Password:", "pass", "25", "50", "");
 		make_edit_password("Verify Password:", "vpass", "25", "50", "");
-	} // end if not using external auth, show password form
+	}
 	make_edit_select_from_array("Permit Type:", "permit", $GLOBALS['PERMIT_TYPES'], $user_row["permit"], 'onChange="enableGroup(this.value)"');
 	make_edit_select_from_table("Group:", "group_id", "groups", $user_row["group_id"], "", array(0 => "-Root-"));
 	make_edit_checkbox("Disabled", "disabled", $user_row["disabled"]);
@@ -173,8 +165,7 @@ document.editform.group_id.value=0; // Root Group
 	end_page();
 }
 
-function display_page()
-{
+function display_page() {
 	begin_page("users.php", "User Management");
 	js_checkbox_utils();
 	?>
@@ -186,21 +177,18 @@ function display_page()
 		array("text" => "User ID"),
 		array("text" => "Name"),
 		array("text" => "Permissions")
-	); // end make_display_table();
+	);
 
-	$user_results = db_query("SELECT * FROM user ORDER BY user.user");
-
-	$user_total = db_num_rows($user_results);
+    $user_total = getDatabase()->query('SELECT COUNT(*) FROM user')->fetchColumn();
+    $user_results = getDatabase()->query('SELECT * FROM user ORDER BY user');
 
 	js_confirm_dialog("del", "Are you sure you want to delete user ", " ?", "{$_SERVER['PHP_SELF']}?action=dodelete&user_id=");
 
-	// For each user
-	for ($user_count = 1; $user_count <= $user_total; ++$user_count)
-	{
-		$user_row = db_fetch_array($user_results);
+	for ($user_count = 1; $user_count <= $user_total; ++$user_count) {
+		$user_row = $user_results->fetch(PDO::FETCH_ASSOC);
 		$user_id  = $user_row["id"];
 
-		make_display_item("editfield".(($user_count-1)%2),
+		make_display_item("editfield".(($user_count - 1) % 2),
 			array("checkboxname" => "user", "checkboxid" => $user_id),
 			array("text" => $user_row["user"]),
 			array("text" => $user_row["fullname"]),
@@ -209,13 +197,12 @@ function display_page()
 				formatted_link("Edit", "{$_SERVER['PHP_SELF']}?action=edit&user_id=$user_id", "", "edit") . "&nbsp;" .
 				formatted_link("Delete", "javascript:del('".addslashes($user_row['user'])."', '{$user_row['id']}')", "", "delete")
 				)
-		); // end make_display_item();
-
-	} // end users
+		);
+	}
 
 	make_checkbox_command("", 5,
 		array("text" => "Delete", "action" => "deletemulti", "prompt" => "Are you sure you want to delete the checked users?")
-	); // end make_checkbox_command
+	);
 	make_status_line("user", $user_count - 1);
 	?>
 	</table>
