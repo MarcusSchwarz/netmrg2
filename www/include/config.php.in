@@ -102,26 +102,12 @@ require_once $GLOBALS["netmrg"]["libdir"]."/lib/xajax/xajax.inc.php";
 require_once $GLOBALS["netmrg"]["libdir"]."/lib/ajax.php";
 require_once $GLOBALS["netmrg"]["imagebasedir"]."/imagespec.php";
 require_once $GLOBALS["netmrg"]["libdir"]."/lib/DB.php";
+require_once $GLOBALS["netmrg"]["libdir"]."/lib/Helper.php";
 
 
 
 /***** STARTUP *****/
-
-if ($GLOBALS["netmrg"]["dbsock"] != "") {
-    $dbhost = $GLOBALS["netmrg"]["dbhost"] . ":" . $GLOBALS["netmrg"]["dbsock"];
-}
-elseif ($GLOBALS["netmrg"]["dbport"] > 0) {
-    $dbhost = $GLOBALS["netmrg"]["dbhost"] . ":" . $GLOBALS["netmrg"]["dbport"];
-}
-else {
-    $dbhost = $GLOBALS["netmrg"]["dbhost"];
-}
-
-$dsn = 'mysql:dbname='.$GLOBALS["netmrg"]["dbname"].';host='.$dbhost;
-$user = $GLOBALS["netmrg"]["dbuser"];
-$password = $GLOBALS["netmrg"]["dbpass"];
-
 //todo temporarily maintain 2 db connections until the migration to pdo is finished
 $GLOBALS["netmrg"]["dbconn"]    = db_connect();
-$GLOBALS["netmrg"]["pdoconn"]   = new PDO($dsn, $user, $password);
+initDatabaseConnection();
 $GLOBALS["netmrg"]["dbversion"] = GetDBVersion();
