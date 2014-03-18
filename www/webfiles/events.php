@@ -76,7 +76,6 @@ function do_display() {
 		array("text" => "Status")
 	);
 
-	$query = db_query("SELECT * FROM events WHERE mon_id = {$_REQUEST['mon_id']} ORDER BY name");
     $s = getDatabase()->prepare('SELECT * FROM events WHERE mon_id = :id ORDER BY name');
     $s->bindValue(':id', $_REQUEST['mon_id']);
     $s->execute();

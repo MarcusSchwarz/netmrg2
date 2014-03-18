@@ -952,7 +952,7 @@ function make_edit_select_from_table($header, $name, $table_name, $selected, $se
 	} // end while we have array list
 	
 	// Draw Select Options from SQL table
-	DrawSelectOptionsFromSQL($table_name, $selected, $select_options, $where);
+	DrawSelectOptionsFromSQL($table_name, $selected);
 	
 	// loop through things to put @ the end of the select box
 	while (list($key, $value) = each($end_array_list))
@@ -965,21 +965,22 @@ function make_edit_select_from_table($header, $name, $table_name, $selected, $se
 
 
 /**
-* Creates a select options with items named by the table's name field, and id'd by tables id field
-*
-* $table_name = mysql table field
-* $selected = row id to be selected (if any)
-* $select_options = things like javascript that apply to this select box
-* $where = where clause for query
-*/
-function DrawSelectOptionsFromSQL($table_name, $selected, $select_options="", $where="1")
+ * Creates a select options with items named by the table's name field, and id'd by tables id field
+ *
+ * $table_name = mysql table field
+ * $selected = row id to be selected (if any)
+ * $select_options = things like javascript that apply to this select box
+ * $where = where clause for query
+ * @param $table_name
+ * @param $selected
+ */
+function DrawSelectOptionsFromSQL($table_name, $selected)
 {
-	$item_results = db_query("SELECT * FROM $table_name WHERE $where ORDER BY name,id");
-	$item_total = db_num_rows($item_results);
+	$item_results = getDatabase()->query('SELECT * FROM '.getDatabase()->quote($table_name).' ORDER BY name, id');
+	$item_total = getDatabase()->query('SELECT COUNT(*) FROM '.getDatabase()->quote($table_name))->fetchColumn();
 	
-	for ($item_count = 1; $item_count <= $item_total; ++$item_count)
-	{
-		$item_row  = db_fetch_array($item_results);
+	for ($item_count = 1; $item_count <= $item_total; ++$item_count) {
+		$item_row  = $item_results->fetch(PDO::FETCH_ASSOC);
 		$item_name = $item_row["name"];
 		$item_id   = $item_row["id"];
 		$item_selected = ($item_id == $selected);
@@ -1159,21 +1160,20 @@ function make_edit_select_monitor($mon_id_cur, $prepended_array = array())
 	if ($mon_id_cur > 0)
 	{
 
-		$q = db_query("SELECT devices.id AS devid, sub_devices.id AS subdevid FROM monitors LEFT JOIN sub_devices ON monitors.sub_dev_id=sub_devices.id LEFT JOIN devices ON sub_devices.dev_id=devices.id WHERE monitors.id = $mon_id_cur");
-		$info = db_fetch_array($q);
+		$q = getDatabase()->query('SELECT devices.id AS devid, sub_devices.id AS subdevid FROM monitors LEFT JOIN sub_devices ON monitors.sub_dev_id = sub_devices.id LEFT JOIN devices ON sub_devices.dev_id = devices.id WHERE monitors.id = '.intval($mon_id_cur));
+		$info = $q->fetch(PDO::FETCH_ASSOC);
 	}
 	else
 	{
 		$info['devid'] = -1;
 	}
 
-	$q = db_query("SELECT id, name FROM devices ORDER BY name");
+	$q = getDatabase()->query('SELECT id, name FROM devices ORDER BY name');
 
 	// "Special Monitors"
 	make_edit_select_option("-Internal-", "-1", true);
 
-	while ($r = db_fetch_array($q))
-	{
+	while ($r = $q->fetch(PDO::FETCH_ASSOC)) {
 		echo("<option value='{$r['id']}'>{$r['name']}</option>");
 	}
 ?>
@@ -1189,70 +1189,6 @@ function make_edit_select_monitor($mon_id_cur, $prepended_array = array())
 <?php
 }
 
-function make_edit_select_monitor_old($mon_id_cur, $prepended_array = array())
-{
-	// Creates an edit select box for the selection of "monitors"
-
-	make_edit_select("Monitor:", "mon_id");
-
-	// loop through things to put @ the end of the select box
-	while (list($key, $value) = each($prepended_array))
-	{
-		make_edit_select_option($value, $key, ($key == $mon_id_cur));
-
-	} // end while we have array list
-
-
-	$mon_results = db_query("
-	SELECT	monitors.id			AS id,
-			devices.name		AS dev_name,
-			sub_devices.name	AS sub_name
-
-	FROM	monitors
-
-	LEFT JOIN sub_devices ON monitors.sub_dev_id=sub_devices.id
-	LEFT JOIN devices ON sub_devices.dev_id=devices.id
-        ");
-
-	$mons = array();
-	while ($arow = mysqli_fetch_array($mon_results))
-	{
-		$arow['mon_name'] = get_monitor_name($arow['id']);
-		array_push($mons, $arow);
-	}
-
-	function mon_sort($a, $b)
-	{
-		if ($a['dev_name'] == $b['dev_name'])
-		{
-			if ($a['sub_name'] == $b['sub_name'])
-			{
-				return strcmp($a['mon_name'], $b['mon_name']);
-			}
-			else
-			{
-				return strcmp($a['sub_name'], $b['sub_name']);
-			}
-		}
-		else
-		{
-			return strcmp($a['dev_name'], $b['dev_name']);
-		}
-	}
-
-	usort($mons, 'mon_sort');
-
-	foreach ($mons as $mon_row)
-	{
-		$mon_id = $mon_row["id"];
-	        make_edit_select_option($mon_row['mon_name'], $mon_id, $mon_id_cur == $mon_id);
-	}
-
-	make_edit_select_end();
-
-
-} // end make_edit_select_monitor
-
 function make_edit_select_subdevice($subdev_id_cur, $prepended_array = array(), $select_options = "")
 {
 	// Creates an edit select box for the selection of "subdevices"
@@ -1267,25 +1203,14 @@ function make_edit_select_subdevice($subdev_id_cur, $prepended_array = array(), 
 	} // end while we have array list
 
 
-	$subdev_results = db_query("
-	SELECT	devices.name AS dev_name,
-			sub_devices.name AS sub_name,
-			sub_devices.id AS id
 
-	FROM	sub_devices
+	$subdev_results = getDatabase()->query('SELECT devices.name AS dev_name, sub_devices.name AS sub_name, sub_devices.id AS id FROM sub_devices LEFT JOIN devices ON sub_devices.dev_id = devices.id ORDER BY dev_name, sub_name, id');
+	$subdev_total = getDatabase()->query('SELECT COUNT(devices.name) FROM sub_devices LEFT JOIN devices ON sub_devices.dev_id = devices.id')->fetchColumn();
 
-	LEFT JOIN devices ON sub_devices.dev_id=devices.id
 
-	ORDER BY dev_name, sub_name, id
+	for ($subdev_count = 1; $subdev_count <= $subdev_total; ++$subdev_count) {
 
-        ");
-
-	$subdev_total = db_num_rows($subdev_results);
-
-	for ($subdev_count = 1; $subdev_count <= $subdev_total; ++$subdev_count)
-	{
-
-		$subdev_row = db_fetch_array($subdev_results);
+		$subdev_row = $subdev_results->fetchColumn(PDO::FETCH_ASSOC);
 		$subdev_id = $subdev_row["id"];
 		$subdev_name = get_dev_sub_device_name($subdev_id);
 	        make_edit_select_option($subdev_name, $subdev_id, $subdev_id_cur == $subdev_id);

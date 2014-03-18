@@ -69,6 +69,7 @@ function check_user_pass($user, $pass) {
     $result = $s->fetchColumn();
 
     if ($result == 1) {
+        //todo test database field length before trying to update
         // update old password hash
         $s = getDatabase()->prepare('UPDATE user SET pass = :pass WHERE user = :user');
         $s->bindValue(':user', $user);

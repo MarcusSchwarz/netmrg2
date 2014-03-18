@@ -149,7 +149,6 @@ function display_result($object_type, $object_id, $object_value, $object_groups,
 */
 function perform_search($query) {
 	global $SEARCH_ITEMS;
-	$query = db_escape_string($query);
 	$result = array();
 	
 	while (list($sname, $sitem) = each($SEARCH_ITEMS)) {

@@ -50,7 +50,7 @@ function redraw_subdevice($type, $id, $rp = null)
 		}
 		else
 		{
-			$dev_id = db_fetch_cell("SELECT dev_id FROM sub_devices WHERE id = '$id'");
+			$dev_id = getDatabase()->query('SELECT dev_id FROM sub_devices WHERE id = '.intval($id));
 			$sub_dev_id = $id;
 		}
 	}
@@ -67,13 +67,12 @@ function redraw_subdevice($type, $id, $rp = null)
 	}
 	else
 	{
-		$q = db_query("SELECT id, name FROM sub_devices WHERE dev_id='$dev_id' ORDER BY name");
-		
+		$q = getDatabase()->query('SELECT id, name FROM sub_devices WHERE dev_id='.intval($dev_id).' ORDER BY name');
+
 		$first = true;
 		$i = 0;
 		$selected = -1;
-		while ($row = db_fetch_array($q))
-		{
+		while ($row = $q->fetch(PDO::FETCH_ASSOC)) {
 			if ($first && ($sub_dev_id === null))
 			{
 				redraw_monitor("subdevice", $row['id'], $resp);
@@ -111,7 +110,7 @@ function redraw_monitor($type, $id, $rp = null)
 		}
 		else
 		{
-			$sub_dev_id = db_fetch_cell("SELECT sub_dev_id FROM monitors WHERE id = '$id'");
+			$sub_dev_id = getDatabase()->query('SELECT sub_dev_id FROM monitors WHERE id = '.intval($id))->fetchColumn();
 			$mon_id = $id;
 			redraw_subdevice("subdevice", $sub_dev_id, $resp);
 		}
@@ -133,10 +132,10 @@ function redraw_monitor($type, $id, $rp = null)
 	}
 	else
 	{
-		$q = db_query("SELECT id FROM monitors WHERE sub_dev_id='$sub_dev_id'");
+		$q = getDatabase()->query('SELECT id FROM monitors WHERE sub_dev_id = '.intval($sub_dev_id));
 		$i = 0;
 		$selected = -1;
-		while ($row = db_fetch_array($q))
+		while ($row = $q->fetch(PDO::FETCH_ASSOC))
 		{
 			$resp->addCreateOption("monitor", get_short_monitor_name($row['id']), $row['id']);
 			if ($row['id'] == $mon_id)

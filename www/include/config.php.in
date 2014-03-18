@@ -92,7 +92,6 @@ GetXMLConfig();
 
 
 /***** INCLUDES *****/
-require_once $GLOBALS["netmrg"]["libdir"]."/lib/database.php";
 require_once $GLOBALS["netmrg"]["libdir"]."/lib/static.php";
 require_once $GLOBALS["netmrg"]["libdir"]."/lib/format.php";
 require_once $GLOBALS["netmrg"]["libdir"]."/lib/auth.php";
@@ -107,7 +106,5 @@ require_once $GLOBALS["netmrg"]["libdir"]."/lib/Helper.php";
 
 
 /***** STARTUP *****/
-//todo temporarily maintain 2 db connections until the migration to pdo is finished
-$GLOBALS["netmrg"]["dbconn"]    = db_connect();
 initDatabaseConnection();
 $GLOBALS["netmrg"]["dbversion"] = GetDBVersion();

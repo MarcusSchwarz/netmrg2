@@ -620,18 +620,15 @@ function get_view_name() {
 	
 	switch ($object_type) {
 		case 'group':
-			$return_val .= db_fetch_cell('SELECT `name` FROM `groups` ' .
-				'WHERE id = ' . db_quote($object_id));
+			$return_val .= getDatabase()->query('SELECT name FROM groups WHERE id = '.intval($object_id))->fetchColumn();
 			break;
 			
 		case 'device':
-			$return_val .= db_fetch_cell('SELECT `name` FROM `devices` ' .
-				'WHERE id = ' . db_quote($object_id));
+			$return_val .= getDatabase()->query('SELECT name FROM devices WHERE id = '.intval($object_id))->fetchColumn();
 			break;
 			
 		case 'subdevice':
-			$return_val .= db_fetch_cell('SELECT `name` FROM `sub_devices` ' .
-				'WHERE id = ' . db_quote($object_id));
+			$return_val .= getDatabase()->query('SELECT name FROM sub_devices WHERE id = '.intval($object_id))->fetchColumn();
 			break;
 	}
 	return $return_val;
