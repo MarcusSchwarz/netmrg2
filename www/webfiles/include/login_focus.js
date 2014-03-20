@@ -1,1 +1,3 @@
-addOnloadEvent(function() { document.lif.user_name.focus(); });
+addOnloadEvent(function () {
+    document.lif.user_name.focus();
+});
