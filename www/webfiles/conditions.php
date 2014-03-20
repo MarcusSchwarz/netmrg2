@@ -68,7 +68,11 @@ function do_display() {
         $s->bindValue(':id', $_REQUEST['event_id']);
         $s->execute();
 
-        $rows = $s->columnCount();
+        $rows = getDatabase()->prepare('SELECT COUNT (*) FROM conditions WHERE event_id = :id');
+        $rows->bindValue(':id', $_REQUEST['event_id']);
+        $rows->execute();
+
+        $rows = $rows->fetchColumn();
         $nologic = ($rows == 0) ? "&nologic=1" : "";
 
         js_confirm_dialog("del", "Are you sure you want to delete condition ", " and all associated items?", "{$_SERVER['PHP_SELF']}?action=dodelete&event_id={$_REQUEST['event_id']}&tripid={$_REQUEST['tripid']}&id=");

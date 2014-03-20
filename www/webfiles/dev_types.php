@@ -72,7 +72,7 @@ if ((!isset($_REQUEST["action"])) || ($_REQUEST["action"] == "doedit") || ($_REQ
     $s->bindValue(':order', $orderby);
     $s->execute();
 
-    $grp_total = $s->columnCount();
+    $grp_total = getDatabase()->prepare('SELECT COUNT (*) FROM dev_types')->fetchColumn();
 
     for ($grp_count = 1; $grp_count <= $grp_total; ++$grp_count) {
         $row = $s->fetch(PDO::FETCH_ASSOC);

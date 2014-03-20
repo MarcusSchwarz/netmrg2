@@ -437,7 +437,7 @@ function draw_group($grp_id, $depth, &$rowcount, $init = false) {
                                     $evt_s->bindValue(':id', $mon_id);
                                     $evt_s->execute();
 
-                                    $event_total = $evt_s->columnCount();
+                                    $event_total = getDatabase()->prepare('SELECT COUNT (*) FROM events WHERE mon_id = :id')->fetchColumn();
 
                                     for ($event_count = 1; $event_count <= $event_total; ++$event_count) {
                                         $event_row = $evt_s->fetch(PDO::FETCH_ASSOC);
