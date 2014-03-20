@@ -46,7 +46,7 @@ if (!isset($_REQUEST['action'])) {
     $_REQUEST['action'] = "";
 }
 
-begin_page("enclose_graph.php", "Graph", 1);
+begin_page("Graph", 1);
 
 switch ($_REQUEST['action']) {
     case 'dissect':

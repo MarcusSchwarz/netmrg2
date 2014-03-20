@@ -83,7 +83,7 @@ function do_list() {
     $s->execute();
     $r = $s->fetch(PDO::FETCH_ASSOC);
 
-    begin_page("dev_props.php", "Device Properties for {$r['name']}");
+    begin_page("Device Properties for {$r['name']}");
     js_checkbox_utils();
     ?>
     <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="post" name="form">
@@ -135,7 +135,7 @@ function do_list() {
 
 
 function edit() {
-    begin_page("dev_props.php", "Device Properties");
+    begin_page("Device Properties");
 
     // if we're editing a property
     if ($_REQUEST["action"] == "edit") {

@@ -77,7 +77,7 @@ if ((empty($action)) || ($action == "doedit") || ($action == "dodelete") || ($ac
     }
 
     /** start page **/
-    begin_page("tests_snmp.php", "SNMP - Tests");
+    begin_page("SNMP - Tests");
     js_checkbox_utils();
     js_confirm_dialog("del", "Are you sure you want to delete SNMP test ", " ? ", "{$_SERVER['PHP_SELF']}?action=dodelete&test_id=");
     ?>
@@ -124,7 +124,7 @@ if ((empty($action)) || ($action == "doedit") || ($action == "dodelete") || ($ac
 // Display editing screen
 if (($action == "edit") || ($action == "add")) {
     /** start page **/
-    begin_page("tests_snmp.php", "SNMP - Tests");
+    begin_page("SNMP - Tests");
     js_confirm_dialog("del", "Are you sure you want to delete SNMP test ", " ? ", "{$_SERVER['PHP_SELF']}?action=dodelete&test_id=");
 
     if ($action == "add") {

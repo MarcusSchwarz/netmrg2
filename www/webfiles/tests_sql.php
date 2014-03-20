@@ -78,7 +78,7 @@ if ((empty($action)) || ($action == "doedit") || ($action == "dodelete") || ($ac
     }
 
     /** start page **/
-    begin_page("tests_sql.php", "SQL - Tests");
+    begin_page("SQL - Tests");
     js_checkbox_utils();
     js_confirm_dialog("del", "Are you sure you want to delete SQL test ", " ? ", "{$_SERVER['PHP_SELF']}?action=dodelete&test_id=");
     ?>
@@ -127,7 +127,7 @@ if ((empty($action)) || ($action == "doedit") || ($action == "dodelete") || ($ac
 
 if (($action == "edit") || ($action == "add")) {
     /** start page **/
-    begin_page("tests_sql.php", "SQL - Tests");
+    begin_page("SQL - Tests");
     js_confirm_dialog("del", "Are you sure you want to delete SQL test ", " ? ", "{$_SERVER['PHP_SELF']}?action=dodelete&test_id=");
 
     if ($action == "add") {

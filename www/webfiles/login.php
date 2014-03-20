@@ -87,7 +87,7 @@ if (!empty($_REQUEST["user_name"])) {
     }
 }
 
-begin_page("login.php", "Login", 0, '', array("login_focus.js"));
+begin_page("Login", 0, '', array("login_focus.js"));
 ?>
     <br><br>
     <span style="color:#000080;font-size:large;font-weight:bold;">User Login</span>

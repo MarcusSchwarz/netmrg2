@@ -139,7 +139,7 @@ setcookie("netmrgDevTree[subdevice]", urlencode(serialize($_COOKIE["netmrgDevTre
 setcookie("netmrgDevTree[monitor]", urlencode(serialize($_COOKIE["netmrgDevTree"]["monitor"])), time() + 604800);
 
 
-begin_page("device_tree.php", "Device Tree", 1);
+begin_page("Device Tree", 1);
 ?>
     <table style="border-collapse: collapse;" width="100%" border="0" cellspacing="2" cellpadding="2" align="center">
         <tr>

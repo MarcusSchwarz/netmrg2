@@ -39,13 +39,14 @@
  *
  * starts the page w/ basic HTML
  *
- * @param string  $pagename         page that this is
  * @param string  $prettyname       shown in the title bar
  * @param boolean $refresh          whether to refresh this page or not
  * @param string  $bodytags         options for the <body> tag
  * @param array   $javascript_files additional javascript files which should be loaded
+ *
+ * @internal param string $pagename page that this is
  */
-function begin_page($pagename = "", $prettyname = "", $refresh = false, $bodytags = "", $javascript_files = array()) {
+function begin_page($prettyname = "", $refresh = false, $bodytags = "", $javascript_files = array()) {
     // gather errors from prerequisits being met or not
     $prereqs_errors = PrereqsMet();
 
@@ -61,7 +62,7 @@ function begin_page($pagename = "", $prettyname = "", $refresh = false, $bodytag
     // determine if we should display the menu or not
     $display_menu = (IsLoggedIn() && !UpdaterNeedsRun() && count($prereqs_errors) == 0);
 
-    DisplayPageHeader($pagename, $prettyname, $refresh, $display_menu, $bodytags, $javascript_files);
+    DisplayPageHeader($prettyname, $refresh, $display_menu, $bodytags, $javascript_files);
     ?>
 
     <div id="content">
@@ -99,14 +100,15 @@ function end_page() {
  *
  * draws the top of the page
  *
- * @param string  $pagename         page that this is
  * @param string  $prettyname       shown in the title bar
- * @param boolean $display_menu     whether to refresh this page or not
  * @param boolean $refresh          whether to refresh this page or not
+ * @param boolean $display_menu     whether to refresh this page or not
  * @param string  $bodytags         options for the <body> tag
  * @param array   $javascript_files additional javascript files which should be loaded
+ *
+ * @internal param string $pagename page that this is
  */
-function DisplayPageHeader($pagename = "", $prettyname = "", $refresh = false, $display_menu = false, $bodytags = "", $javascript_files = array()) {
+function DisplayPageHeader($prettyname = "", $refresh = false, $display_menu = false, $bodytags = "", $javascript_files = array()) {
     echo '<?xml version="1.0" encoding="UTF-8"?>'."\n";
     ?>
     <!DOCTYPE html
@@ -122,11 +124,9 @@ function DisplayPageHeader($pagename = "", $prettyname = "", $refresh = false, $
 
         <?php
         $GLOBALS['xajax']->printJavascript("", "xajax_js/xajax.js", "");
-        if (count($javascript_files) > 0) {
-            foreach ($javascript_files as $jsfile) {
-                echo '	<script language="javascript" type="text/javascript" src="'.$GLOBALS["netmrg"]["webroot"].'/include/'.$jsfile.'"></script>'."\n";
-            } // end foreach jsfile
-        } // end if we have javascript to load
+        foreach ($javascript_files as $jsfile) {
+            echo '	<script language="javascript" type="text/javascript" src="'.$GLOBALS["netmrg"]["webroot"].'/include/'.$jsfile.'"></script>'."\n";
+        } // end foreach jsfile
         ?>
 
         <?php if ($refresh) { ?>
@@ -135,10 +135,6 @@ function DisplayPageHeader($pagename = "", $prettyname = "", $refresh = false, $
     </head>
 
     <body <?php echo($bodytags); ?>>
-    <?php if (!empty($pagename)) { ?>
-        <!-- <?php echo $pagename; ?> -->
-    <?php } // end if there's a pagename, output it ?>
-
     <div id="header">
         <div id="headerinfo">
             <div id="logindata">
@@ -1187,12 +1183,12 @@ function make_edit_select_subdevice($subdev_id_cur, $prepended_array = array(), 
 
 function make_edit_select_test($test_type, $test_id, $test_params) {
     echo
-        "
+    "
 		<script type='text/javascript'>
 		
 		function redisplay(selectedIndex)
 		{
-			window.location = '{$_SERVER['PHP_SELF']}?mon_id={$_REQUEST['mon_id']}&sub_dev_id={$_REQUEST['sub_dev_id']}&dev_type={$_REQUEST['dev_type']}&tripid={$_REQUEST['tripid']}&action={$_REQUEST['action']}".$dev_thingy."&type=' + selectedIndex;
+			window.location = '{$_SERVER['PHP_SELF']}?mon_id={$_REQUEST['mon_id']}&sub_dev_id={$_REQUEST['sub_dev_id']}&dev_type={$_REQUEST['dev_type']}&tripid={$_REQUEST['tripid']}&action={$_REQUEST['action']}&type=' + selectedIndex;
 		}
 
 		</script>
@@ -1258,7 +1254,7 @@ function make_edit_select_test($test_type, $test_id, $test_params) {
 // Special Functions
 
 function color_block($color) {
-    return "<b class='colorbox' style='border:thin solid black;background-color:$color'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>";
+    return '<b class="colorbox" style="border:thin solid black;background-color:'.$color.';">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>';
 }
 
 function cond_formatted_link($enabled, $text, $link = "", $caption = "", $img = "") {

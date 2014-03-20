@@ -198,7 +198,7 @@ function view_disk_cache() {
                 ->fetchColumn();
     $dev_name = get_device_name($_REQUEST['dev_id']);
 
-    begin_page("snmp_cache_view.php", "$dev_name - Disk Cache");
+    begin_page("$dev_name - Disk Cache");
     js_checkbox_utils();
     PrepGroupNavHistory("device", $_REQUEST["dev_id"]);
     DrawGroupNavHistory("device", $_REQUEST["dev_id"]);
@@ -282,7 +282,7 @@ function view_interface_cache() {
 
     $dev_name = get_device_name($_REQUEST['dev_id']);
 
-    begin_page("snmp_cache_view.php", "$dev_name - Interface Cache");
+    begin_page("$dev_name - Interface Cache");
     js_checkbox_utils();
     PrepGroupNavHistory("device", $_REQUEST["dev_id"]);
     DrawGroupNavHistory("device", $_REQUEST["dev_id"]);

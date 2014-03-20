@@ -68,7 +68,7 @@ switch ($_REQUEST["action"]) {
 function dodisplay() {
     // Display the list of sub-devices for a particular device.
 
-    begin_page("sub_devices.php", "Sub Device");
+    begin_page("Sub Device");
     js_checkbox_utils();
     ?>
     <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="post" name="form">
@@ -196,7 +196,7 @@ function doduplicate() {
 
 
 function displayedit() {
-    begin_page("sub_devices.php", "Add/Edit Sub Device");
+    begin_page("Add/Edit Sub Device");
 
     if ($_REQUEST["action"] == "add") {
         $_REQUEST["sub_dev_id"] = 0;

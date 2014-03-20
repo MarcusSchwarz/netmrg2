@@ -54,7 +54,7 @@ if ((!isset($_REQUEST["action"])) || ($_REQUEST["action"] == "doedit") || ($_REQ
     }
 
     # Display a list
-    begin_page("dev_types.php", "Device Types");
+    begin_page("Device Types");
     js_confirm_dialog("del", "Are you sure you want to delete device type ", " ? ", "{$_SERVER['PHP_SELF']}?action=dodelete&id=");
     make_display_table("Device Types", "",
         array("text" => "Name", "href" => "{$_SERVER['PHP_SELF']}?orderby=name"),
@@ -93,7 +93,7 @@ if ((!isset($_REQUEST["action"])) || ($_REQUEST["action"] == "doedit") || ($_REQ
 if (!empty($_REQUEST["action"]) && ($_REQUEST["action"] == "edit" || $_REQUEST["action"] == "add")) {
     // Display editing screen
     check_auth($GLOBALS['PERMIT']["ReadWrite"]);
-    begin_page("dev_types.php", "Device Types");
+    begin_page("Device Types");
 
     $id = ($_REQUEST["action"] == "add") ? 0 : $_REQUEST["id"];
 

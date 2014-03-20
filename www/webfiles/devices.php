@@ -205,7 +205,7 @@ function doduplicate() {
 }
 
 function displayadd() {
-    begin_page("devices.php", "Add Device");
+    begin_page("Add Device");
     echo "<span style=\"font-weight:bold;font-size:xlarge;\">\n";
     echo '<a href="';
     echo "devices.php?grp_id={$_REQUEST['grp_id']}&action=addnew&tripid={$_REQUEST['tripid']}";
@@ -218,7 +218,7 @@ function displayadd() {
 }
 
 function displayaddtogrp() {
-    begin_page("devices.php", "Add Device Group");
+    begin_page("Add Device Group");
     make_edit_table("Add Existing Device to a Group");
     make_edit_select_from_table("Device:", "dev_id", "devices", -1);
     make_edit_hidden("action", "doaddtogrp");
@@ -230,7 +230,7 @@ function displayaddtogrp() {
 }
 
 function displayedit() {
-    begin_page("devices.php", "Edit Device");
+    begin_page("Edit Device");
 
     $dev_id = ($_REQUEST["action"] == "addnew") ? 0 : $_REQUEST["dev_id"];
 

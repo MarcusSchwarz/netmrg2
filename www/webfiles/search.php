@@ -56,7 +56,7 @@ switch ($_REQUEST['action']) {
  * @param string $query the search query
  */
 function display($query) {
-    begin_page("search.php", 'Search ('.htmlspecialchars(stripslashes($query)).')');
+    begin_page('Search ('.htmlspecialchars(stripslashes($query)).')');
     $search_result       = perform_search($query);
     $search_result_count = 0;
     foreach ($search_result as $search_items) {

@@ -47,7 +47,7 @@ switch ($_REQUEST["action"]) {
 /***** FUNCTIONS *****/
 function display() {
     // Display a list
-    begin_page("grpdev_list.php", "Groups");
+    begin_page("Groups");
     PrepGroupNavHistory("group", $_REQUEST["parent_id"]);
     DrawGroupNavHistory("group", $_REQUEST["parent_id"]);
     js_confirm_dialog("del_grp", "Are you sure you want to delete group ", " and all associated items?", "groups.php?action=delete&tripid={$_REQUEST['tripid']}&parent_id={$_REQUEST['parent_id']}&grp_id=");

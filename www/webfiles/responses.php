@@ -64,7 +64,7 @@ switch ($action) {
 }
 
 function display_list() {
-    begin_page("responses.php", "Responses");
+    begin_page("Responses");
     js_checkbox_utils();
     ?>
     <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="post" name="form">
@@ -116,7 +116,7 @@ function display_edit() {
         $row = $res->fetch(PDO::FETCH_ASSOC);
     }
 
-    begin_page("responses.php", "Responses");
+    begin_page("Responses");
     make_edit_table("Edit Response");
     make_edit_select_from_table("Notification:", "notification_id", "notifications", $row['notification_id']);
     make_edit_text("Parameters:", "parameters", "50", "100", $row['parameters']);

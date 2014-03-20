@@ -28,9 +28,8 @@
 
 
 require_once "../include/config.php";
-check_auth($GLOBALS['PERMIT']["SingleViewOnly"]);
 
-begin_page("about.php", "About");
+begin_page("About");
 ?>
 
     <div class="about">

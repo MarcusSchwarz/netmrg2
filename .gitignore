@@ -24,6 +24,7 @@
 
 #project specific
 *config.php
+*netmrg.xml
 
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode
 

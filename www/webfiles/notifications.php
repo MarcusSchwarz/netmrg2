@@ -105,7 +105,7 @@ function do_delete() {
 
 function display() {
     // Display a list
-    begin_page("notifications.php", "Notifications");
+    begin_page("Notifications");
     js_confirm_dialog("del", "Are you sure you want to delete notification ", " ?", "{$_SERVER['PHP_SELF']}?action=dodelete&id=");
 
     make_display_table("Notifications", "",
@@ -138,7 +138,7 @@ function display() {
 function addedit() {
     GLOBAL $action;
     if (!empty($action) && ($action == "edit" || $action == "add")) {
-        begin_page("notifications.php", "Notifications");
+        begin_page("Notifications");
 
         $id  = ($action == "add") ? 0 : $_REQUEST["id"];
         $res = getDatabase()->query('SELECT * FROM notifications WHERE id = '.intval($id));

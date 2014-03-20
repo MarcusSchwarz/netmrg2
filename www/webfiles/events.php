@@ -55,7 +55,7 @@ switch ($_REQUEST['action']) {
 function do_display() {
 
     // Display a list
-    begin_page("events.php", "Events");
+    begin_page("Events");
     js_checkbox_utils();
     ?>
     <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="post" name="form">
@@ -116,7 +116,7 @@ function do_display() {
 }
 
 function display_edit() {
-    begin_page("events.php", "Edit Event");
+    begin_page("Edit Event");
 
     if ($_REQUEST['action'] == "add") {
         $row['id']           = 0;

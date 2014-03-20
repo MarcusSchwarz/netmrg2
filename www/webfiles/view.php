@@ -100,7 +100,7 @@ switch ($_REQUEST["action"]) {
 
 /***** FUNCTIONS *****/
 function display_error() {
-    begin_page("view.php", "View");
+    begin_page("View");
     echo("An error occurred.");
     end_page();
 }
@@ -110,7 +110,7 @@ function display_edit() {
     if (!empty($object_name)) {
         $object_name .= ' - ';
     }
-    begin_page("view.php", $object_name."Edit View Item");
+    begin_page($object_name."Edit View Item");
 
     switch ($_REQUEST["action"]) {
         case "add":
@@ -307,7 +307,7 @@ function do_slideshow() {
         if (!empty($object_name)) {
             $object_name .= ' - ';
         } // end if object name
-        begin_page("view.php", $object_name."Slide Show");
+        begin_page($object_name."Slide Show");
         echo("This slide show is empty.");
         end_page();
         exit;
@@ -384,10 +384,10 @@ function do_view() {
         $object_name .= ' - ';
     }
     if ($GLOBALS["slideshow"] && GetUserPref(GetUserID(), "SlideShow", "AutoScroll") !== "" && GetUserPref(GetUserID(), "SlideShow", "AutoScroll")) {
-        begin_page("view.php", $object_name."View", 1, "onLoad=start() onClick=toggle()");
+        begin_page($object_name."View", 1, "onLoad=start() onClick=toggle()");
     }
     else {
-        begin_page("view.php", $object_name."View", 1);
+        begin_page($object_name."View", 1);
     }
 
     $num = getDatabase()->prepare('SELECT COUNT(view.id) FROM view LEFT JOIN graphs ON view.graph_id = graphs.id WHERE object_type = :object_type AND object_id = :object_id');

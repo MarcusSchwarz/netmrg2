@@ -74,7 +74,7 @@ switch ($_REQUEST['action']) {
 function edit($uid) {
     $username = GetUsername($uid);
 
-    begin_page("user_prefs.php", "User Preferences ($username)");
+    begin_page("User Preferences ($username)");
 
     make_edit_table("Edit Preferences for $username");
     make_edit_hidden("action", "update");
@@ -104,7 +104,7 @@ function edit($uid) {
 function update($uid) {
     $username = GetUsername($uid);
 
-    begin_page("user_prefs.php", "User Preferences ($username)");
+    begin_page("User Preferences ($username)");
 
     $errors  = array();
     $results = array();

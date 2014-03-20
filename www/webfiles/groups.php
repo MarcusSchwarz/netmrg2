@@ -71,7 +71,7 @@ switch ($_REQUEST["action"]) {
 /***** FUNCTIONS *****/
 function edit() {
     // Display editing screen
-    begin_page("groups.php", "Groups");
+    begin_page("Groups");
 
     $grp_id      = $_REQUEST["grp_id"];
     $grp_results = getDatabase()->query('SELECT * FROM groups WHERE id = '.intval($grp_id));
@@ -95,7 +95,7 @@ function edit() {
 
 function add() {
     // Display editing screen
-    begin_page("groups.php", "Groups");
+    begin_page("Groups");
 
     make_edit_table("Edit Group");
     make_edit_text("Name:", "grp_name", "25", "100", "");

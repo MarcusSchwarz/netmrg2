@@ -28,9 +28,8 @@
 
 
 require_once "../include/config.php";
-check_auth($GLOBALS['PERMIT']["SingleViewOnly"]);
 
-begin_page("contributors.php", "Contributors");
+begin_page("Contributors");
 ?>
 
     <div class="about">

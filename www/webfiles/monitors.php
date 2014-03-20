@@ -84,7 +84,7 @@ switch ($_REQUEST["action"]) {
 
 /***** FUNCTIONS *****/
 function do_list() {
-    begin_page("monitor.php", "Monitors", 1);
+    begin_page("Monitors", 1);
     js_checkbox_utils();
     ?>
     <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="post" name="form">
@@ -197,7 +197,7 @@ function do_list() {
 
 
 function edit() {
-    begin_page("monitor.php", "Monitors");
+    begin_page("Monitors");
 
     if ($_REQUEST["action"] == "edit") {
         make_edit_table("Edit Monitor", "return validateform();");
@@ -219,16 +219,6 @@ function edit() {
         $mon_row["test_type"]   = (!empty($_REQUEST["type"])) ? $_REQUEST["type"] : 0;
         $mon_row["test_params"] = "";
         $_REQUEST["mon_id"]     = 0;
-    }
-
-    // TODO
-    // What this might have been some day?
-    if (isset($_REQUEST["sub_dev_id"])) {
-        $mon_row["sub_dev_id"] = $_REQUEST["sub_dev_id"];
-        $dev_thingy            = "&sub_dev_id={$_REQUEST['sub_dev_id']}";
-    }
-    else {
-        $dev_thingy = "";
     }
 
     make_edit_group("General Parameters");

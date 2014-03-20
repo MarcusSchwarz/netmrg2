@@ -63,7 +63,7 @@ switch ($_REQUEST["action"]) {
 function do_edit() {
     if (!empty($_REQUEST["pass"])) {
         if ($_REQUEST["pass"] != $_REQUEST["vpass"]) {
-            begin_page("users.php", "User Management - Error");
+            begin_page("User Management - Error");
             echo "<div>Error: your passwords don't match; please go back and try again</div>";
             end_page();
             exit;
@@ -129,7 +129,7 @@ function do_deletemulti() {
 
 function display_edit() {
 
-    begin_page("users.php", "User Management", 0, 'onLoad="enableGroup(document.editform.permit.value)"');
+    begin_page("User Management", 0, 'onLoad="enableGroup(document.editform.permit.value)"');
     echo '
 <script language="JavaScript">
 <!--
@@ -168,7 +168,7 @@ document.editform.group_id.value=0; // Root Group
 }
 
 function display_page() {
-    begin_page("users.php", "User Management");
+    begin_page("User Management");
     js_checkbox_utils();
     ?>
     <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="post" name="form">

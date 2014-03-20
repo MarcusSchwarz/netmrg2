@@ -230,7 +230,7 @@ function display() {
     GLOBAL $RRDTOOL_ITEM_TYPES;
 
     // Change databases if necessary and then display list
-    begin_page("graph_items.php", "Graph Items");
+    begin_page("Graph Items");
     js_checkbox_utils();
 
     js_confirm_dialog("del", "Are you sure you want to delete graph item ", "?", "{$_SERVER['PHP_SELF']}?action=dodelete&graph_id={$_REQUEST['graph_id']}&id=");
@@ -309,7 +309,7 @@ function display() {
 
 function edit() {
 
-    begin_page("graph_items.php", "Add/Edit Graph Item");
+    begin_page("Add/Edit Graph Item");
 
     if ($_REQUEST["action"] == "add") {
         $_REQUEST["id"]       = 0;

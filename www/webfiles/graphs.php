@@ -145,7 +145,7 @@ function duplicate() {
 }
 
 function applytemplates() {
-    begin_page("graphs.php", "Apply Templates");
+    begin_page("Apply Templates");
     js_checkbox_utils("edit");
     make_edit_table("Apply Templates");
 
@@ -213,7 +213,7 @@ function display() {
     if (empty($_REQUEST['type'])) {
         $_REQUEST['type'] = "custom";
     }
-    begin_page("graphs.php", ucfirst($_REQUEST['type'])." Graphs");
+    begin_page(ucfirst($_REQUEST['type'])." Graphs");
     js_checkbox_utils();
     js_confirm_dialog("del", "Are you sure you want to delete graph ", "?", "{$_SERVER['PHP_SELF']}?action=dodelete&type={$_REQUEST['type']}&graph_id=");
     ?>
@@ -293,7 +293,7 @@ function display() {
 
 function edit() {
     // Display editing screen
-    begin_page("graphs.php", "Graphs");
+    begin_page("Graphs");
 
     if ($_REQUEST["action"] == "edit") {
         $graph_results = getDatabase()->query('SELECT * FROM graphs WHERE id = '.intval($_REQUEST["graph_id"]));

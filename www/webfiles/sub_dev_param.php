@@ -33,7 +33,7 @@ check_auth($GLOBALS['PERMIT']["ReadAll"]);
 if (empty($_REQUEST["action"])) {
     // Display the list of sub-devices for a particular device.
 
-    begin_page("sub_dev_param.php", "Sub Device Parameters");
+    begin_page("Sub Device Parameters");
     PrepGroupNavHistory("sub_device", $_REQUEST["sub_dev_id"]);
     DrawGroupNavHistory("sub_device", $_REQUEST["sub_dev_id"]);
     js_confirm_dialog("del", "Are you sure you want to delete subdevice parameter ", "", "{$_SERVER['PHP_SELF']}?action=dodelete&sub_dev_id={$_REQUEST['sub_dev_id']}&tripid={$_REQUEST['tripid']}&name=");
@@ -106,7 +106,7 @@ elseif ($_REQUEST["action"] == "doedit") {
 }
 elseif (($_REQUEST["action"] == "edit") || ($_REQUEST["action"] == "add")) {
     check_auth($GLOBALS['PERMIT']["ReadWrite"]);
-    begin_page("sub_dev_param.php", "Add/Edit Sub Device Parameter");
+    begin_page("Add/Edit Sub Device Parameter");
     make_edit_table("Sub-Device Parameter");
 
     if ($_REQUEST["action"] == "edit") {

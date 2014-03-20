@@ -50,7 +50,7 @@ else {
     view_redirect();
 }
 
-begin_page("error.php", "Error");
+begin_page("Error");
 ?>
     <div class="error">
         <?php echo "$errorstring\n"; ?>

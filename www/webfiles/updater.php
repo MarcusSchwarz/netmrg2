@@ -308,7 +308,7 @@ switch ($_REQUEST['action']) {
  * tells a user what we're about to do
  */
 function prompt() {
-    begin_page("updater.php", "Updater");
+    begin_page("Updater");
 
     $dbver = $GLOBALS["netmrg"]["dbversion"];
 
@@ -352,7 +352,7 @@ function prompt() {
  * shows and applies updates
  */
 function Updater($dbupdates, $version = "", $which_update = "", $force = false) {
-    begin_page("updater.php", "Updater");
+    begin_page("Updater");
 
     $dbver = $GLOBALS["netmrg"]["dbversion"];
 
