@@ -17,3 +17,9 @@ netmrg2 will keep the spirit and simplicity of NetMRG.
 
 The main focus of the project lies in the adaption of language changes in PHP,
 and in adding some tweaks to improve the usability of netmrg.
+
+=== Please notice ===
+This code is (almost) completely untested and work in progress. Personally I don't have much experience with C/C++, so especially that part still is almost untouched.
+Any help with the project is highly appreciated :)
+
+Do not install this over an existing installation without backup!
