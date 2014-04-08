@@ -1,6 +1,26 @@
 
                           Chapter 2. Revision History
 
+     * 0.22
+
+       2014-04-08
+
+       PHP has been upgraded to use pdo with a mysql driver instead of the
+       deprecated mysql_* functions; some code cleanup in the PHP part,
+       removed some unused code and deprecated function calls; removed i18n
+       from PHP, as it has never been used; password hashes are now more
+       secure
+       The collector now only loads the default config file if no custom
+       config file has been named
+
+
+     * 0.21
+
+       ????
+
+       Code changes have been part of the original code set, but have never
+       been officially released; snmp v3 seems to be part of those changes
+
      * 0.20
 
        2008.04.11
