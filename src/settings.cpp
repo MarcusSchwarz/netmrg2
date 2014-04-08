@@ -132,7 +132,7 @@ void parse_config_section(xmlDocPtr doc, xmlNodePtr cur, string section)
 	xmlChar * value;
 	string val_str;
 
-	debuglogger(DEBUG_GLOBAL, LEVEL_DEBUG, NULL, (string)_("Parsing config section") + " '" + section + "'");
+	debuglogger(DEBUG_GLOBAL, LEVEL_DEBUG, NULL, "Parsing config section" + " '" + section + "'");
 
 	cur = cur->xmlChildrenNode;
 	while (cur != NULL)
@@ -205,7 +205,7 @@ void parse_config_section(xmlDocPtr doc, xmlNodePtr cur, string section)
 				set_setting(setSyslogFacility, val_str);
 		}
 		else
-		debuglogger(DEBUG_GLOBAL, LEVEL_WARNING, NULL, (string)_("Second stage parser not aware of this section."));
+		debuglogger(DEBUG_GLOBAL, LEVEL_WARNING, NULL, "Second stage parser not aware of this section.");
 		xmlFree(value);
 		cur = cur->next;
 	} // end while not null
@@ -220,7 +220,7 @@ void load_settings_file(const string & filename)
 	doc = xmlParseFile(filename.c_str());
 	if (doc == NULL)
 	{
-		debuglogger(DEBUG_GLOBAL, LEVEL_ERROR, NULL, (string)_("Failed to parse configuration file") + " (" + filename + ")");
+		debuglogger(DEBUG_GLOBAL, LEVEL_ERROR, NULL, "Failed to parse configuration file" + " (" + filename + ")");
 		return;
 	}
 
@@ -228,14 +228,14 @@ void load_settings_file(const string & filename)
 
 	if (cur == NULL)
 	{
-		debuglogger(DEBUG_GLOBAL, LEVEL_ERROR, NULL, (string)_("Empty configuration file") + " (" + filename + ")");
+		debuglogger(DEBUG_GLOBAL, LEVEL_ERROR, NULL, "Empty configuration file" + " (" + filename + ")");
 		xmlFreeDoc(doc);
 		return;
 	}
 
 	if (xmlStrcmp(cur->name, (const xmlChar *) "netmrg"))
 	{
-		debuglogger(DEBUG_GLOBAL, LEVEL_ERROR, NULL, (string)_("Configuration file of the wrong type.  Root node is not 'netmrg.'") + " (" + filename + ")");
+		debuglogger(DEBUG_GLOBAL, LEVEL_ERROR, NULL, "Configuration file of the wrong type.  Root node is not 'netmrg.'" + " (" + filename + ")");
 		xmlFreeDoc(doc);
 		return;
 	}
@@ -265,7 +265,7 @@ void load_settings_file(const string & filename)
 			// ignored sections
 		}
 		else
-		debuglogger(DEBUG_GLOBAL, LEVEL_NOTICE, NULL, (string)_("Unexpected section in configuration file: ") + xmltostring(cur->name));
+		debuglogger(DEBUG_GLOBAL, LEVEL_NOTICE, NULL, "Unexpected section in configuration file: " + xmltostring(cur->name));
 
 		cur = cur->next;
 	}

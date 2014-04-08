@@ -35,8 +35,10 @@
 #  include <netinet/in.h>
 #endif
 
+/*
 #include "gettext.h"
 #define _(String) gettext(String)
+*/
 
 #if HAVE_SYS_WAIT_H
 # include <sys/wait.h>
