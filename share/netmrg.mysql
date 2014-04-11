@@ -841,6 +841,9 @@ INSERT INTO `updates` (`update_version`, `name`, `version_applied_to`, `dateappl
 INSERT INTO `updates` (`update_version`, `name`, `version_applied_to`, `dateapplied`) VALUES ('0.20','SNMP Interface Cache New Fields','0.19','2007-03-21 20:56:44');
 INSERT INTO `updates` (`update_version`, `name`, `version_applied_to`, `dateapplied`) VALUES ('0.20','Graph Item Consolidation Function Field','0.19','2007-03-21 20:56:45');
 INSERT INTO `updates` (`update_version`, `name`, `version_applied_to`, `dateapplied`) VALUES ('0.20','Device Unknowns on SNMP Restart Field','0.19','2007-03-21 20:56:45');
+INSERT INTO `updates` (`update_version`, `name`, `version_applied_to`, `dateapplied`) VALUES ('0.21','SNMPv3','0.21','2014-04-11 00:00:00');
+INSERT INTO `updates` (`update_version`, `name`, `version_applied_to`, `dateapplied`) VALUES ('0.21','Minimum Graph Option','0.21','2014-04-11 00:00:00');
+INSERT INTO `updates` (`update_version`, `name`, `version_applied_to`, `dateapplied`) VALUES ('0.22','Password Hash Field','0.22','2014-04-11 00:00:00');
 /*!40000 ALTER TABLE `updates` ENABLE KEYS */;
 UNLOCK TABLES;
 
