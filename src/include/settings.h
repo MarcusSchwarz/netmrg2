@@ -66,6 +66,6 @@ void		load_settings_file(const string & filename);
 
 // other functions
 void		print_settings();
-void		setup_intl();
+//void		setup_intl();
 
 #endif

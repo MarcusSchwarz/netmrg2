@@ -147,7 +147,7 @@ AC_ARG_ENABLE(warnings,
 
 
 ### Checks for libraries.
-AC_CHECK_LIB(intl, bindtextdomain)
+#AC_CHECK_LIB(intl, bindtextdomain)
 AC_CHECK_LIB(dl, dlopen)
 AC_CHECK_LIB(z, compress)
 AC_CHECK_LIB(pthread, pthread_create,
@@ -367,7 +367,6 @@ AC_CONFIG_FILES( \
 	etc/netmrg.conf \
 	etc/netmrg.xml \
 	m4/Makefile \
-	po/Makefile.in \
 	src/Makefile \
 	src/include/netmrg.h \
 	var/Makefile \

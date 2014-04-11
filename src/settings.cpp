@@ -87,7 +87,7 @@ void load_settings_default()
 	set_setting(setSyslogFacility, DEF_SYSLOG_FACILITY);
 
 	// update intl info
-	setup_intl();
+	//setup_intl();
 }
 
 void print_settings()
@@ -273,19 +273,19 @@ void load_settings_file(const string & filename)
 	xmlFreeDoc(doc);
 
 	// settings may have changed, reset intl info to be safe
-	setup_intl();
+	//setup_intl();
 }
 
 // setup_intl - internationalization support
-void setup_intl()
-{
-	// use language settings from the environment
-	setlocale(LC_ALL, "");
-
-	// set the location of translation tables for the domain
-	bindtextdomain("netmrg", get_setting(setPathLocale).c_str());
-
-	// select the domain
-	textdomain("netmrg");
-}
+//void setup_intl()
+//{
+//	// use language settings from the environment
+//	setlocale(LC_ALL, "");
+//
+//	// set the location of translation tables for the domain
+//	bindtextdomain("netmrg", get_setting(setPathLocale).c_str());
+//
+//	// select the domain
+//	textdomain("netmrg");
+//}
 
