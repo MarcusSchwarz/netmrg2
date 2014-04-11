@@ -350,7 +350,7 @@ if test "$HAVE_NET_SNMP" = "no"; then
 fi
 
 # Internationalization support
-AM_GNU_GETTEXT([external])
+# AM_GNU_GETTEXT([external])
 
 #
 #  Run configure in directories
