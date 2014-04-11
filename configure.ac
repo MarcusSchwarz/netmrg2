@@ -23,7 +23,7 @@ AC_INIT(NetMRG, 0.22)
 #AC_REVISION($Revision:1281 $)
 AC_CONFIG_SRCDIR(src/netmrg.cpp)
 AC_CANONICAL_HOST
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([foreign])
 AM_CONFIG_HEADER(src/include/config.h)
 AC_PROG_MAKE_SET
 
@@ -366,7 +366,6 @@ AC_CONFIG_FILES( \
 	etc/init.d-netmrg \
 	etc/netmrg.conf \
 	etc/netmrg.xml \
-	m4/Makefile \
 	src/Makefile \
 	src/include/netmrg.h \
 	var/Makefile \

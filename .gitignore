@@ -26,6 +26,8 @@
 *config.php
 *netmrg.xml
 
+autom4te.cache/
+
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode
 
 ## Directory-based project format
