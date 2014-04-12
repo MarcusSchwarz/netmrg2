@@ -132,7 +132,7 @@ void parse_config_section(xmlDocPtr doc, xmlNodePtr cur, string section)
 	xmlChar * value;
 	string val_str;
 
-	debuglogger(DEBUG_GLOBAL, LEVEL_DEBUG, NULL, "Parsing config section" + " '" + section + "'");
+	debuglogger(DEBUG_GLOBAL, LEVEL_DEBUG, NULL, "Parsing config section '" + section + "'");
 
 	cur = cur->xmlChildrenNode;
 	while (cur != NULL)
@@ -220,7 +220,7 @@ void load_settings_file(const string & filename)
 	doc = xmlParseFile(filename.c_str());
 	if (doc == NULL)
 	{
-		debuglogger(DEBUG_GLOBAL, LEVEL_ERROR, NULL, "Failed to parse configuration file" + " (" + filename + ")");
+		debuglogger(DEBUG_GLOBAL, LEVEL_ERROR, NULL, "Failed to parse configuration file (" + filename + ")");
 		return;
 	}
 
@@ -228,14 +228,14 @@ void load_settings_file(const string & filename)
 
 	if (cur == NULL)
 	{
-		debuglogger(DEBUG_GLOBAL, LEVEL_ERROR, NULL, "Empty configuration file" + " (" + filename + ")");
+		debuglogger(DEBUG_GLOBAL, LEVEL_ERROR, NULL, "Empty configuration file (" + filename + ")");
 		xmlFreeDoc(doc);
 		return;
 	}
 
 	if (xmlStrcmp(cur->name, (const xmlChar *) "netmrg"))
 	{
-		debuglogger(DEBUG_GLOBAL, LEVEL_ERROR, NULL, "Configuration file of the wrong type.  Root node is not 'netmrg.'" + " (" + filename + ")");
+		debuglogger(DEBUG_GLOBAL, LEVEL_ERROR, NULL, "Configuration file of the wrong type.  Root node is not 'netmrg.' (" + filename + ")");
 		xmlFreeDoc(doc);
 		return;
 	}
