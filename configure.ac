@@ -25,6 +25,7 @@ AC_CONFIG_SRCDIR(src/netmrg.cpp)
 AC_CANONICAL_HOST
 AM_INIT_AUTOMAKE([foreign])
 AM_CONFIG_HEADER(src/include/config.h)
+AM_MAINTAINER_MODE([disable])
 AC_PROG_MAKE_SET
 
 # We wanna use C++, not that silly C language ;)
