@@ -28,6 +28,11 @@
 
 autom4te.cache/
 
+# Anjuta
+.anjuta*
+*.anjuta
+autogen.sh
+
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode
 
 ## Directory-based project format
