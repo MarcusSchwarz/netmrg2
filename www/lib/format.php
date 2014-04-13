@@ -927,9 +927,9 @@ function make_edit_select_from_table($header, $name, $table_name, $selected, $se
  * @param $selected
  */
 function DrawSelectOptionsFromSQL($table_name, $selected) {
-    $item_results = getDatabase()->query('SELECT * FROM '.getDatabase()->quote($table_name).' ORDER BY name, id');
+    $item_results = getDatabase()->query('SELECT * FROM '.getDatabase()->quoteIdent($table_name).' ORDER BY name, id');
     $item_total   = getDatabase()
-                    ->query('SELECT COUNT(*) FROM '.getDatabase()->quote($table_name))
+                    ->query('SELECT COUNT(*) FROM '.getDatabase()->quoteIdent($table_name))
                     ->fetchColumn();
 
     for ($item_count = 1; $item_count <= $item_total; ++$item_count) {

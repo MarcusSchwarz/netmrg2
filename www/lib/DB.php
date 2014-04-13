@@ -25,8 +25,23 @@
  */
 
 
+class MyPDO extends PDO {
+
+    /**
+     * Quotes a table name or field name
+     *
+     * @param  string $field the name of the field or table
+     *
+     * @return string        the quotes string
+     */
+    public function quoteIdent($field) {
+        return "`".str_replace("`","``",$field)."`";
+    }
+}
+
+
 /**
- * @return \PDO
+ * @return \MyPDO
  */
 function getDatabase() {
     if (isset($GLOBALS['netmrg']['__pdoconn'])) {
@@ -53,5 +68,5 @@ function initDatabaseConnection() {
     $user     = $GLOBALS["netmrg"]["dbuser"];
     $password = $GLOBALS["netmrg"]["dbpass"];
 
-    $GLOBALS['netmrg']['__pdoconn'] = new PDO($dsn, $user, $password);
+    $GLOBALS['netmrg']['__pdoconn'] = new MyPDO($dsn, $user, $password);
 }
