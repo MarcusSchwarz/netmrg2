@@ -383,6 +383,12 @@ netmrg_man1_DATA = share/doc/man/man1/*.1
 # options to install files in the var/log directory
 netmrg_var_logdir = $(localstatedir)/log/$(PACKAGE)
 netmrg_var_log_DATA = 
+
+# The following line should be created automagically, but it isn't :(
+netmrg_libexecSCRIPT_INSTALL = $(INSTALL_SCRIPT)
+
+# The following line should be created automagically, but it isn't :(
+binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
 all: all-recursive
 
 .SUFFIXES:
@@ -953,7 +959,6 @@ distclean: distclean-recursive
 	@rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	@echo "  RM     Makefile"
 	@rm -f Makefile
-
 install-netmrg_libexecSCRIPTS: $(netmrg_libexec_SCRIPTS)
 	@$(NORMAL_INSTALL)
 	test -z "$(netmrg_libexecdir)" || $(mkdir_p) "$(DESTDIR)$(netmrg_libexecdir)"
@@ -965,7 +970,6 @@ install-netmrg_libexecSCRIPTS: $(netmrg_libexec_SCRIPTS)
 	    $(netmrg_libexecSCRIPT_INSTALL) "$$d$$p" "$(DESTDIR)$(netmrg_libexecdir)/$$f"; \
 	  else :; fi; \
 	done
-
 install-binSCRIPTS: $(bin_SCRIPTS)
 	@$(NORMAL_INSTALL)
 	test -z "$(bindir)" || $(mkdir_p) "$(DESTDIR)$(bindir)"

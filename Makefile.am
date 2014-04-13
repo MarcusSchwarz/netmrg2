@@ -52,6 +52,8 @@ distclean: distclean-recursive
 	@echo "  RM     Makefile"
 	@rm -f Makefile
 
+# The following line should be created automagically, but it isn't :(
+netmrg_libexecSCRIPT_INSTALL = $(INSTALL_SCRIPT)
 install-netmrg_libexecSCRIPTS: $(netmrg_libexec_SCRIPTS)
 	@$(NORMAL_INSTALL)
 	test -z "$(netmrg_libexecdir)" || $(mkdir_p) "$(DESTDIR)$(netmrg_libexecdir)"
@@ -64,6 +66,8 @@ install-netmrg_libexecSCRIPTS: $(netmrg_libexec_SCRIPTS)
 	  else :; fi; \
 	done
 
+# The following line should be created automagically, but it isn't :(
+binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
 install-binSCRIPTS: $(bin_SCRIPTS)
 	@$(NORMAL_INSTALL)
 	test -z "$(bindir)" || $(mkdir_p) "$(DESTDIR)$(bindir)"
