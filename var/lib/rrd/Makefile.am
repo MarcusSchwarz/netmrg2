@@ -21,6 +21,8 @@ clean-rrd :
 	@echo "  RM     $(netmrg_var_lib_DATA)"
 	@rm -f $(netmrg_var_lib_DATA)
 
+# The following line should be created automagically, but it isn't :(
+netmrg_var_libDATA_INSTALL = $(INSTALL_DATA)
 install-netmrg_var_libDATA: $(netmrg_var_lib_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(netmrg_var_libdir)" || $(mkdir_p) "$(DESTDIR)$(netmrg_var_libdir)"
