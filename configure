@@ -3014,6 +3014,9 @@ $as_echo "no" >&6; }
 fi
 
 
+WANT_AUTOCONF="latest"
+WANT_AUTOMAKE="latest"
+
 # We wanna use C++, not that silly C language ;)
 ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'

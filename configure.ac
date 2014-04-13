@@ -27,6 +27,9 @@ AM_MAINTAINER_MODE([disable])
 AM_CONFIG_HEADER(src/include/config.h)
 AC_PROG_MAKE_SET
 
+WANT_AUTOCONF="latest"
+WANT_AUTOMAKE="latest"
+
 # We wanna use C++, not that silly C language ;)
 AC_LANG(C++)
 
