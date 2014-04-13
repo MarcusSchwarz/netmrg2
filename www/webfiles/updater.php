@@ -263,8 +263,10 @@ $dbupdates = array(
     ), // end 0.21
 
     "0.22"     => array(
-        "name"  => "Password Hash Field",
-        "query" => "ALTER TABLE user CHANGE pass pass VARCHAR( 140 ) DEFAULT '' NOT NULL;"
+        array(
+            "name"  => "Password Hash Field",
+            "query" => "ALTER TABLE user CHANGE pass pass VARCHAR( 140 ) DEFAULT '' NOT NULL;"
+        )
     )
 
 ); // end $dbupdates;

@@ -37,7 +37,7 @@ if (!isset($_REQUEST['index'])) {
 begin_page("Event Log", 1);
 
 $eventlog_handle = getDatabase()->query('SELECT event_id, date, time_since_last_change, situation, dev_id, devices.name AS dev_name, events.name AS ev_name FROM event_log, events, monitors, sub_devices, devices WHERE event_log.event_id = events.id AND events.mon_id = monitors.id AND monitors.sub_dev_id = sub_devices.id AND sub_devices.dev_id = devices.id ORDER BY event_log.id DESC');
-$numrows         = getDatabase()->query('SELECT COUNT (event_id) FROM event_log, events, monitors, sub_devices, devices WHERE event_log.event_id = events.id AND events.mon_id = monitors.id AND monitors.sub_dev_id = sub_devices.id AND sub_devices.dev_id = devices.id')->fetchColumn();
+$numrows         = getDatabase()->query('SELECT COUNT(event_id) FROM event_log, events, monitors, sub_devices, devices WHERE event_log.event_id = events.id AND events.mon_id = monitors.id AND monitors.sub_dev_id = sub_devices.id AND sub_devices.dev_id = devices.id')->fetchColumn();
 
 make_plain_display_table("Event Log", "Date/Time", "#", "Time Since Last Change", "#", "Event", "#");
 

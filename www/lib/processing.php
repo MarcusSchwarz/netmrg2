@@ -1169,7 +1169,7 @@ function SetUserPref($uid, $module, $pref, $value) {
  * returns the version the database thinks we are
  */
 function GetDBVersion() {
-    return getDatabase()->query('SELECT version FROM versioninfo WHERE module = "Main"', PDO::FETCH_COLUMN, 0);
+    return getDatabase()->query('SELECT version FROM versioninfo WHERE module = "Main"')->fetchColumn();
 }
 
 
