@@ -36,7 +36,7 @@ clean-binPROGRAMS:
 	echo "  RM     $(bin_PROGRAMS)"; \
 	rm -f $(bin_PROGRAMS) )
 
-binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
+#binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	test -z "$(bindir)" || $(mkdir_p) "$(DESTDIR)$(bindir)"
