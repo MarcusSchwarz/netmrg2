@@ -23,6 +23,7 @@ AC_INIT(NetMRG, 0.22)
 AC_CONFIG_SRCDIR(src/netmrg.cpp)
 AC_CANONICAL_HOST
 AM_INIT_AUTOMAKE([foreign])
+AM_MAINTAINER_MODE([disable])
 AM_CONFIG_HEADER(src/include/config.h)
 AC_PROG_MAKE_SET
 
