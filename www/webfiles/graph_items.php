@@ -112,7 +112,7 @@ function doedit() {
         $s = getDatabase()->prepare('INSERT INTO graph_ds (mon_id, color, type, graph_id, label, alignment, stats, position, multiplier, start_time, end_time, cf) VALUES (:mon_id, :color, :type, :graph_id, :label, :alignment, :stats, :position, :multiplier, :start_time, :end_time, :cf)');
     }
     else {
-        $s = getDatabase()->prepare('UPDATE graph_ds SET mon_id = :mon_id, color = :color, type = :type, graph_id = :graph_id, label = :label, alignment = :alignment, stats = :stats, position = :position, multiplier = :multiplier, start_time = :start_time, end_time = :end_time, cf = :cf) WHERE id = :id');
+        $s = getDatabase()->prepare('UPDATE graph_ds SET mon_id = :mon_id, color = :color, type = :type, graph_id = :graph_id, label = :label, alignment = :alignment, stats = :stats, position = :position, multiplier = :multiplier, start_time = :start_time, end_time = :end_time, cf = :cf WHERE id = :id');
         $s->bindValue(':id', $_REQUEST['id']);
     }
 
