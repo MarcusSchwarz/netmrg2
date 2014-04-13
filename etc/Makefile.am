@@ -7,6 +7,8 @@ netmrg_etcdir=$(sysconfdir)
 netmrg_etc_DATA = netmrg.xml netmrg.conf
 
 # override the default netmrg_etc install
+# The following line should be created automagically, but it isn't :(
+netmrg_etcDATA_INSTALL = $(INSTALL_DATA)
 install-netmrg_etcDATA: $(netmrg_etc_DATA)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(netmrg_etcdir)

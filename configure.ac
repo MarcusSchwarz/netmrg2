@@ -20,13 +20,15 @@
 
 AC_PREREQ(2.53)
 AC_INIT(NetMRG, 0.22)
-#AC_REVISION($Revision:1281 $)
 AC_CONFIG_SRCDIR(src/netmrg.cpp)
 AC_CANONICAL_HOST
 AM_INIT_AUTOMAKE([foreign])
-AM_CONFIG_HEADER(src/include/config.h)
 AM_MAINTAINER_MODE([disable])
+AM_CONFIG_HEADER(src/include/config.h)
 AC_PROG_MAKE_SET
+
+WANT_AUTOCONF="latest"
+WANT_AUTOMAKE="latest"
 
 # We wanna use C++, not that silly C language ;)
 AC_LANG(C++)
@@ -349,9 +351,6 @@ if test "$HAVE_NET_SNMP" = "no"; then
   AC_CHECK_LIB(snmp, snmp_timeout,,
 	AC_MSG_ERROR(Cannot find UCD-SNMP libraries))
 fi
-
-# Internationalization support
-# AM_GNU_GETTEXT([external])
 
 #
 #  Run configure in directories

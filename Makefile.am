@@ -52,6 +52,8 @@ distclean: distclean-recursive
 	@echo "  RM     Makefile"
 	@rm -f Makefile
 
+# The following line should be created automagically, but it isn't :(
+netmrg_libexecSCRIPT_INSTALL = $(INSTALL_SCRIPT)
 install-netmrg_libexecSCRIPTS: $(netmrg_libexec_SCRIPTS)
 	@$(NORMAL_INSTALL)
 	test -z "$(netmrg_libexecdir)" || $(mkdir_p) "$(DESTDIR)$(netmrg_libexecdir)"
@@ -64,6 +66,8 @@ install-netmrg_libexecSCRIPTS: $(netmrg_libexec_SCRIPTS)
 	  else :; fi; \
 	done
 
+# The following line should be created automagically, but it isn't :(
+binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
 install-binSCRIPTS: $(bin_SCRIPTS)
 	@$(NORMAL_INSTALL)
 	test -z "$(bindir)" || $(mkdir_p) "$(DESTDIR)$(bindir)"
@@ -76,6 +80,8 @@ install-binSCRIPTS: $(bin_SCRIPTS)
 	  else :; fi; \
 	done
 
+# The following line should be created automagically, but it isn't :(
+netmrg_share_imagesDATA_INSTALL = $(INSTALL_DATA)
 install-netmrg_share_imagesDATA: $(netmrg_share_images_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(netmrg_share_imagesdir)" || $(mkdir_p) "$(DESTDIR)$(netmrg_share_imagesdir)"
@@ -86,6 +92,8 @@ install-netmrg_share_imagesDATA: $(netmrg_share_images_DATA)
 	  $(netmrg_share_imagesDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(netmrg_share_imagesdir)/$$f"; \
 	done
 
+# The following line should be created automagically, but it isn't :(
+netmrg_share_dbDATA_INSTALL = $(INSTALL_DATA)
 install-netmrg_share_dbDATA: $(netmrg_share_db_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(netmrg_share_dbdir)" || $(mkdir_p) "$(DESTDIR)$(netmrg_share_dbdir)"
@@ -96,6 +104,8 @@ install-netmrg_share_dbDATA: $(netmrg_share_db_DATA)
 	  $(netmrg_share_dbDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(netmrg_share_dbdir)/$$f"; \
 	done
 
+# The following line should be created automagically, but it isn't :(
+netmrg_share_bindstatsDATA_INSTALL = $(INSTALL_DATA)
 install-netmrg_share_bindstatsDATA: $(netmrg_share_bindstats_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(netmrg_share_bindstatsdir)" || $(mkdir_p) "$(DESTDIR)$(netmrg_share_bindstatsdir)"
@@ -106,6 +116,8 @@ install-netmrg_share_bindstatsDATA: $(netmrg_share_bindstats_DATA)
 	  $(netmrg_share_bindstatsDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(netmrg_share_bindstatsdir)/$$f"; \
 	done
 
+# The following line should be created automagically, but it isn't :(
+netmrg_share_docDATA_INSTALL = $(INSTALL_DATA)
 install-netmrg_share_docDATA: $(netmrg_share_doc_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(netmrg_share_docdir)" || $(mkdir_p) "$(DESTDIR)$(netmrg_share_docdir)"
@@ -116,6 +128,8 @@ install-netmrg_share_docDATA: $(netmrg_share_doc_DATA)
 	  $(netmrg_share_docDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(netmrg_share_docdir)/$$f"; \
 	done
 
+# The following line should be created automagically, but it isn't :(
+netmrg_share_htmlDATA_INSTALL = $(INSTALL_DATA)
 install-netmrg_share_htmlDATA: $(netmrg_share_html_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(netmrg_share_htmldir)" || $(mkdir_p) "$(DESTDIR)$(netmrg_share_htmldir)"
@@ -126,6 +140,8 @@ install-netmrg_share_htmlDATA: $(netmrg_share_html_DATA)
 	  $(netmrg_share_htmlDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(netmrg_share_htmldir)/$$f"; \
 	done
 
+# The following line should be created automagically, but it isn't :(
+netmrg_man1DATA_INSTALL = $(INSTALL_DATA)
 install-netmrg_man1DATA: $(netmrg_man1_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(netmrg_man1dir)" || $(mkdir_p) "$(DESTDIR)$(netmrg_man1dir)"
@@ -135,4 +151,3 @@ install-netmrg_man1DATA: $(netmrg_man1_DATA)
 	  f="`echo $$p | sed -e 's|^.*/||'`"; \
 	  $(netmrg_man1DATA_INSTALL) "$$d$$p" "$(DESTDIR)$(netmrg_man1dir)/$$f"; \
 	done
-

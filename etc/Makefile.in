@@ -256,6 +256,10 @@ AM_MAKEFLAGS = \
 # options to install files in the etc directory
 netmrg_etcdir = $(sysconfdir)
 netmrg_etc_DATA = netmrg.xml netmrg.conf
+
+# override the default netmrg_etc install
+# The following line should be created automagically, but it isn't :(
+netmrg_etcDATA_INSTALL = $(INSTALL_DATA)
 all: all-am
 
 .SUFFIXES:
@@ -459,8 +463,6 @@ uninstall-am: uninstall-netmrg_etcDATA
 	uninstall-netmrg_etcDATA
 
 @SET_MAKE@
-
-# override the default netmrg_etc install
 install-netmrg_etcDATA: $(netmrg_etc_DATA)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(netmrg_etcdir)
