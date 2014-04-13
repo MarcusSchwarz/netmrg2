@@ -7,7 +7,8 @@ netmrg_wwwdir=@WWWDIR@
 nobase_netmrg_www_DATA = include lib webfiles
 
 # override the default netmrg_www install
-#nobase_netmrg_wwwDATA_INSTALL = $(install_sh_DATA)
+# The following line should be created automagically, but it isn't :(
+nobase_netmrg_wwwDATA_INSTALL = $(install_sh_DATA)
 install-nobase_netmrg_wwwDATA: $(nobase_netmrg_www_DATA)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(netmrg_wwwdir)

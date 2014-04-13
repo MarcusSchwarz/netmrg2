@@ -2312,7 +2312,6 @@ ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
-#AC_REVISION($Revision:1281 $)
 
 ac_aux_dir=
 for ac_dir in "$srcdir" "$srcdir/.." "$srcdir/../.."; do
@@ -2953,7 +2952,6 @@ am__tar='$${TAR-tar} chof - "$$tardir"' am__untar='$${TAR-tar} xf -'
 
 ac_config_headers="$ac_config_headers src/include/config.h"
 
-#AM_MAINTAINER_MODE([disable])
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether ${MAKE-make} sets \$(MAKE)" >&5
 $as_echo_n "checking whether ${MAKE-make} sets \$(MAKE)... " >&6; }
 set x ${MAKE-make}
@@ -2985,9 +2983,6 @@ $as_echo "no" >&6; }
   SET_MAKE="MAKE=${MAKE-make}"
 fi
 
-
-WANT_AUTOCONF="latest"
-WANT_AUTOMAKE="latest"
 
 # We wanna use C++, not that silly C language ;)
 ac_ext=cpp
@@ -6228,9 +6223,6 @@ else
 fi
 
 fi
-
-# Internationalization support
-# AM_GNU_GETTEXT([external])
 
 #
 #  Run configure in directories
