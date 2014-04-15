@@ -27,7 +27,7 @@
  ********************************************/
 
 require_once "../include/config.php";
-check_auth($GLOBALS['PERMIT']["ReadAll"]);
+$auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadAll"]);
 
 switch ($_REQUEST['action']) {
     case "view":
@@ -35,12 +35,12 @@ switch ($_REQUEST['action']) {
         break;
 
     case "graph":
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
         make_graph();
         break;
 
     case "graphmultiint":
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
         if (isset($_REQUEST["iface"])) {
             while (list($key, $value) = each($_REQUEST["iface"])) {
                 make_interface_graph($_REQUEST["dev_id"], $key);
@@ -51,7 +51,7 @@ switch ($_REQUEST['action']) {
         exit;
 
     case "graphmultidisk":
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
         if (isset($_REQUEST["dindex"])) {
             while (list($key, $value) = each($_REQUEST["dindex"])) {
                 make_disk_graph($_REQUEST["dev_id"], $key);

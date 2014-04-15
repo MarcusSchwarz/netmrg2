@@ -28,7 +28,7 @@
 
 
 require_once "../include/config.php";
-check_auth($GLOBALS['PERMIT']["ReadAll"]);
+$auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadAll"]);
 
 if (!isset($_REQUEST['action'])) {
     $_REQUEST['action'] = "";
@@ -36,25 +36,25 @@ if (!isset($_REQUEST['action'])) {
 
 switch ($_REQUEST["action"]) {
     case "doedit":
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
         doedit();
         break;
 
     case "multidodelete":
     case "dodelete":
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
         dodelete();
         break;
 
     case "add":
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
     case "edit":
         displayedit();
         break;
 
     case "multiduplicate":
     case "duplicate":
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
         doduplicate();
         break;
 

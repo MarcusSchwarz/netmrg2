@@ -28,11 +28,11 @@
 
 
 require_once "../include/config.php";
-check_auth($GLOBALS['PERMIT']["ReadAll"]);
+$auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadAll"]);
 
 
 if ((!isset($_REQUEST["action"])) || ($_REQUEST["action"] == "doedit") || ($_REQUEST["action"] == "dodelete") || ($_REQUEST["action"] == "doadd")) {
-    check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+    $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
 
     if (!empty($_REQUEST["action"]) && $_REQUEST["action"] == "doedit") {
         if ($_REQUEST["id"] == 0) {
@@ -92,7 +92,7 @@ if ((!isset($_REQUEST["action"])) || ($_REQUEST["action"] == "doedit") || ($_REQ
 
 if (!empty($_REQUEST["action"]) && ($_REQUEST["action"] == "edit" || $_REQUEST["action"] == "add")) {
     // Display editing screen
-    check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+    $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
     begin_page("Device Types");
 
     $id = ($_REQUEST["action"] == "add") ? 0 : $_REQUEST["id"];

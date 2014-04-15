@@ -28,27 +28,25 @@
 
 
 require_once "../include/config.php";
-check_auth($GLOBALS['PERMIT']["SingleViewOnly"]);
+$auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["SingleViewOnly"]);
 
 if (empty($_REQUEST['action'])) {
     $_REQUEST["action"] = "edit";
 }
 
 if (empty($_REQUEST["uid"])) {
-    $_REQUEST["uid"] = GetUserID();
+    $_REQUEST["uid"] = $auth->GetUserID();
 }
 
 // check that user is the same as the one they want to edit
 // or we're an admin
-if ($_SESSION["netmrgsess"]["permit"] != 3 && $_REQUEST["uid"] !== false && GetUserID() != $_REQUEST["uid"]) {
-    header("Location: {$GLOBALS['netmrg']['webroot']}/error.php?action=denied");
-    exit;
+if ($_SESSION["netmrgsess"]["permit"] != 3 && $_REQUEST["uid"] !== false && $auth->GetUserID() != $_REQUEST["uid"]) {
+    $auth->redirectErrorDenied();
 }
 
 // check that user is not the default map user
 if ($_SESSION["netmrgsess"]["username"] == $GLOBALS["netmrg"]["defaultMapUser"]) {
-    header("Location: {$GLOBALS['netmrg']['webroot']}/error.php?action=denied");
-    exit;
+    $auth->redirectErrorDenied();
 }
 
 // check what to do
@@ -102,6 +100,7 @@ function edit($uid) {
  * update's a user's info
  */
 function update($uid) {
+    global $auth;
     $username = GetUsername($uid);
 
     begin_page("User Preferences ($username)");
@@ -121,9 +120,10 @@ function update($uid) {
     }
 
     // update password
+    // todo should be pushed to auth
     if (!empty($_REQUEST["password"])) {
         $s = getDatabase()->prepare('UPDATE user SET pass = :pass WHERE id = :id');
-        $s->bindValue(':pass', generate_password_hash($_REQUEST['password']));
+        $s->bindValue(':pass', $auth->generate_password_hash($_REQUEST['password']));
         $s->bindValue(':id', $uid);
         $s->execute();
         array_push($results, "Password updated successfully.");

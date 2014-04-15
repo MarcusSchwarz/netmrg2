@@ -28,7 +28,7 @@
 
 
 require_once "../include/config.php";
-check_auth($GLOBALS['PERMIT']["ReadAll"]);
+$auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadAll"]);
 
 // set default action
 if (empty($_REQUEST["action"])) {
@@ -37,13 +37,13 @@ if (empty($_REQUEST["action"])) {
 
 switch ($_REQUEST["action"]) {
     case "doedit":
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
         do_edit();
         redirect();
         break;
 
     case "dodelete":
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
         $_REQUEST['prop_id'] *= 1;
         $s = getDatabase()->prepare('DELETE FROM dev_props WHERE id = :id');
         $s->bindValue(':id', $_REQUEST['prop_id']);
@@ -55,7 +55,7 @@ switch ($_REQUEST["action"]) {
         break;
 
     case "multidodelete":
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
         $s = getDatabase()->prepare('DELETE FROM dev_props WHERE id = :id');
         while (list($key, $value) = each($_REQUEST["devprop"])) {
             $s->bindValue(':id', $key);
@@ -65,7 +65,7 @@ switch ($_REQUEST["action"]) {
         break;
 
     case "add":
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
     case "edit":
         edit();
         break;

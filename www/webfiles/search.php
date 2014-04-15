@@ -28,7 +28,7 @@
 
 
 require_once "../include/config.php";
-check_auth($GLOBALS['PERMIT']["SingleViewOnly"]);
+$auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["SingleViewOnly"]);
 
 if (empty($_REQUEST["action"])) {
     $_REQUEST["action"] = "search";
@@ -148,7 +148,7 @@ function display_result($object_type, $object_id, $object_value, $object_groups,
  * @returns array
  */
 function perform_search($query) {
-    global $SEARCH_ITEMS;
+    global $SEARCH_ITEMS, $auth;
     $result = array();
 
     while (list($sname, $sitem) = each($SEARCH_ITEMS)) {
@@ -170,7 +170,7 @@ function perform_search($query) {
                 case "device" :
                 case "subdevice" :
                 default :
-                    $allowed_to_view = viewCheckAuth($sitem["id"], $obj_type);
+                    $allowed_to_view = $auth->viewCheckAuth($sitem["id"], $obj_type);
                     break;
             }
 
@@ -185,7 +185,7 @@ function perform_search($query) {
                 $result[$obj_type][$key]["groups"] = array();
                 foreach ($group_ids as $group_id) {
                     if ($group_id != 0) {
-                        if (viewCheckAuth($group_id, "group")) {
+                        if ($auth->viewCheckAuth($group_id, "group")) {
                             $result[$obj_type][$key]["groups"][$group_id] = get_group_name($group_id);
                         }
                     }
@@ -194,7 +194,7 @@ function perform_search($query) {
                 // get the device name for the subdevice
                 if ($obj_type == "subdevice") {
                     $parent_id = GetSubdeviceParent($sitem["id"]);
-                    if (viewCheckAuth("device", $parent_id)) {
+                    if ($auth->viewCheckAuth("device", $parent_id)) {
                         $parent_name                       = get_device_name($parent_id);
                         $result[$obj_type][$key]["parent"] = array(
                             "id"   => $parent_id,

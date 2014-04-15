@@ -66,8 +66,8 @@ $classLoader = new SplClassLoader('Netmrg', $GLOBALS['netmrg']['libdir']);
 $classLoader->register();
 
 /***** SESSION *****/
-new Netmrg\Session();
-
+$session = new Netmrg\Session();
+$auth = new Netmrg\Auth($session);
 
 /***** INCLUDES *****/
 require_once($GLOBALS["netmrg"]["libdir"]."/lib/xml_to_array.php");

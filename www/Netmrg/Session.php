@@ -61,7 +61,7 @@ class Session {
         }
     }
 
-    private function reset() {
+    public function reset() {
         $_SESSION['netmrgsess'] = array();
         $this->set('prettyname', '');
         $this->set('username', '');

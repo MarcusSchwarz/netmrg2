@@ -53,22 +53,22 @@ else {
 // we need to auth different ways depending on type of graph
 switch ($_REQUEST["type"]) {
     case "template" :
-        GraphCheckAuth($_REQUEST["type"], $_REQUEST["subdev_id"]);
+        $auth->GraphCheckAuth($_REQUEST["type"], $_REQUEST["subdev_id"]);
         break;
 
     case "template_item" :
-        GraphCheckAuth($_REQUEST["type"], $_REQUEST["subdev_id"]);
+        $auth->GraphCheckAuth($_REQUEST["type"], $_REQUEST["subdev_id"]);
         break;
 
     case "custom_item" :
         $q = getDatabase()->query('SELECT graph_id FROM graph_ds WHERE id = '.intval($_REQUEST['id']));
         $r = $q->fetch(PDO::FETCH_ASSOC);
 
-        GraphCheckAuth($_REQUEST["type"], $r['graph_id']);
+        $auth->GraphCheckAuth($_REQUEST["type"], $r['graph_id']);
         break;
 
     default :
-        GraphCheckAuth($_REQUEST["type"], $_REQUEST["id"]);
+        $auth->GraphCheckAuth($_REQUEST["type"], $_REQUEST["id"]);
         break;
 }
 

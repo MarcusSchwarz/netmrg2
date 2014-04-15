@@ -28,7 +28,7 @@
 
 
 require_once "../include/config.php";
-check_auth($GLOBALS['PERMIT']["Admin"]);
+$auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["Admin"]);
 
 if (empty($_REQUEST["action"])) {
     $_REQUEST["action"] = "";
@@ -90,7 +90,9 @@ function do_edit() {
     }
 
     if (!empty($_REQUEST["pass"])) {
-        $s->bindValue(':pass', generate_password_hash($_REQUEST['pass']));
+        global $auth;
+        // todo everything here should be pushed to auth
+        $s->bindValue(':pass', $auth->generate_password_hash($_REQUEST['pass']));
     }
 
     if (empty($_REQUEST["group_id"])) {
@@ -168,6 +170,7 @@ document.editform.group_id.value=0; // Root Group
 }
 
 function display_page() {
+    global $auth;
     begin_page("User Management");
     js_checkbox_utils();
     ?>
@@ -196,7 +199,7 @@ function display_page() {
                 array("checkboxname" => "user", "checkboxid" => $user_id),
                 array("text" => $user_row["user"]),
                 array("text" => $user_row["fullname"]),
-                array("text" => (get_permit($user_row["user"]) == $GLOBALS['PERMIT']["Disabled"]) ? 'Disabled' : $GLOBALS['PERMIT_TYPES'][$user_row['permit']]),
+                array("text" => ($auth->getUsersPermissionLevel($user_row["user"]) == $GLOBALS['PERMIT']["Disabled"]) ? 'Disabled' : $GLOBALS['PERMIT_TYPES'][$user_row['permit']]),
                 array("text" => formatted_link("Prefs", "user_prefs.php?uid=$user_id")."&nbsp;".
                                 formatted_link("Edit", "{$_SERVER['PHP_SELF']}?action=edit&user_id=$user_id", "", "edit")."&nbsp;".
                                 formatted_link("Delete", "javascript:del('".addslashes($user_row['user'])."', '{$user_row['id']}')", "", "delete")
