@@ -357,108 +357,8 @@ $TIMEFRAMES = array($TIMEFRAME_DAILY, $TIMEFRAME_WEEKLY, $TIMEFRAME_MONTHLY, $TI
 
 // Return the path to an image based on the internal name of the image.
 function get_image_by_name($img_name) {
-    $image = "";
 
     switch ($img_name) {
-        // graphics
-        case "applytemplate" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['applytemplate']}";
-            break;
-        case "edit" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['edit']}";
-            break;
-        case "logo" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['logo']}";
-            break;
-        case "delete" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['delete']}";
-            break;
-        case "disk" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['disk']}";
-            break;
-        case "duplicate" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['duplicate']}";
-            break;
-        case "parameters" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['parameters']}";
-            break;
-        case "arrow-up" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['arrow-up']}";
-            break;
-        case "arrow-right" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['arrow-right']}";
-            break;
-        case "arrow-down" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['arrow-down']}";
-            break;
-        case "arrow-left" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['arrow-left']}";
-            break;
-        case "arrow-up-disabled" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['arrow-up-disabled']}";
-            break;
-        case "arrow-right-disabled" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['arrow-right-disabled']}";
-            break;
-        case "arrow-down-disabled" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['arrow-down-disabled']}";
-            break;
-        case "arrow-left-disabled" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['arrow-left-disabled']}";
-            break;
-        case "arrow_limit-up" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['arrow_limit-up']}";
-            break;
-        case "arrow_limit-right" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['arrow_limit-right']}";
-            break;
-        case "arrow_limit-down" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['arrow_limit-down']}";
-            break;
-        case "arrow_limit-left" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['arrow_limit-left']}";
-            break;
-        case "arrow_limit-up-disabled" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['arrow_limit-up-disabled']}";
-            break;
-        case "arrow_limit-right-disabled" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['arrow_limit-right-disabled']}";
-            break;
-        case "arrow_limit-down-disabled" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['arrow_limit-down-disabled']}";
-            break;
-        case "arrow_limit-left-disabled" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['arrow_limit-left-disabled']}";
-            break;
-        case "slideshow" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['slideshow']}";
-            break;
-        case "recachedisk" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['recachedisk']}";
-            break;
-        case "recacheproperties" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['recacheproperties']}";
-            break;
-        case "viewdisk" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['viewdisk']}";
-            break;
-        case "recacheinterface" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['recacheinterface']}";
-            break;
-        case "viewinterface" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['viewinterface']}";
-            break;
-        case "view" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['view']}";
-            break;
-        case "viewgraph-on" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['viewgraph-on']}";
-            break;
-        case "viewgraph-off" :
-            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['viewgraph-off']}";
-            break;
-
-
         // LEDs
         case "blue_led_on" :
             $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec']['status-unknown-trig']}";
@@ -492,6 +392,9 @@ function get_image_by_name($img_name) {
         case "show"  :
             $image = "{$GLOBALS['netmrg']['staticimagedir']}/show.gif";
             break;
+
+        default:
+            $image = "{$GLOBALS['netmrg']['imagedir']}/{$GLOBALS['netmrg']['imagespec'][$img_name]}";
     }
 
     return $image;
