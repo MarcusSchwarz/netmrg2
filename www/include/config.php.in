@@ -60,21 +60,13 @@ if (is_readable("../include/config_site.php"))
 } // end if site config
 
 
+/** Autoloader **/
+require_once '../include/SplClassLoader.php';
+$classLoader = new SplClassLoader('Netmrg', $GLOBALS['netmrg']['libdir']);
+$classLoader->register();
 
 /***** SESSION *****/
-session_start();
-if (!isset($_SESSION["netmrgsess"]) || !is_array($_SESSION["netmrgsess"]))
-{
-	$_SESSION["netmrgsess"] = array();
-	$_SESSION["netmrgsess"]["prettyname"] = "";
-	$_SESSION["netmrgsess"]["username"] = "";
-	$_SESSION["netmrgsess"]["password"] = "";
-	$_SESSION["netmrgsess"]["accessTime"] = "";
-	$_SESSION["netmrgsess"]["remote_addr"] = "";
-	$_SESSION["netmrgsess"]["permit"] = "";
-	$_SESSION["netmrgsess"]["group_id"] = "";
-} // end if the netmrg session array doesn't exist yet, make it
-
+new Netmrg\Session();
 
 
 /***** INCLUDES *****/
@@ -85,9 +77,9 @@ require_once($GLOBALS["netmrg"]["libdir"]."/lib/processing.php");
 
 /***** XML CONFIG *****/
 GetXMLConfig();
-    $GLOBALS["netmrg"]["binary"]         = "@exec_prefix@/bin/netmrg-gatherer";
-    $GLOBALS["netmrg"]["staticimagedir"] = "{$GLOBALS['netmrg']['webroot']}/img";
-    $GLOBALS["netmrg"]["imagebasedir"]   = "{$GLOBALS['netmrg']['fileroot']}/webfiles/images/default";
+$GLOBALS["netmrg"]["binary"]         = "@exec_prefix@/bin/netmrg-gatherer";
+$GLOBALS["netmrg"]["staticimagedir"] = "{$GLOBALS['netmrg']['webroot']}/img";
+$GLOBALS["netmrg"]["imagebasedir"]   = "{$GLOBALS['netmrg']['fileroot']}/webfiles/images/default";
 
 
 
