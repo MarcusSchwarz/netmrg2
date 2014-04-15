@@ -30,7 +30,7 @@
 require_once "../include/config.php";
 
 // require at least read
-check_auth($GLOBALS['PERMIT']["SingleViewOnly"]);
+$auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["SingleViewOnly"]);
 
 
 // setup cookies

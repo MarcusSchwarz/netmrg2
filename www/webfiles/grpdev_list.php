@@ -28,7 +28,7 @@
 
 
 require_once "../include/config.php";
-check_auth($GLOBALS['PERMIT']["ReadAll"]);
+$auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadAll"]);
 
 if (empty($_REQUEST["action"])) {
     $_REQUEST["action"] = "list";

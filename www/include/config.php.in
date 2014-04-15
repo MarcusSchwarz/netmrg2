@@ -66,8 +66,7 @@ $classLoader = new SplClassLoader('Netmrg', $GLOBALS['netmrg']['libdir']);
 $classLoader->register();
 
 /***** SESSION *****/
-new Netmrg\Session();
-
+$session = new Netmrg\Session();
 
 /***** INCLUDES *****/
 require_once($GLOBALS["netmrg"]["libdir"]."/lib/xml_to_array.php");
@@ -99,3 +98,4 @@ require_once $GLOBALS["netmrg"]["libdir"]."/lib/DB.php";
 /***** STARTUP *****/
 initDatabaseConnection();
 $GLOBALS["netmrg"]["dbversion"] = GetDBVersion();
+$auth = new Netmrg\Auth($session);

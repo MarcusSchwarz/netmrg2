@@ -28,7 +28,7 @@
 
 
 require_once "../include/config.php";
-check_auth($GLOBALS['PERMIT']["ReadAll"]);
+$auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadAll"]);
 
 if (!isset($_REQUEST['action'])) {
     $_REQUEST['action'] = "";
@@ -36,35 +36,35 @@ if (!isset($_REQUEST['action'])) {
 
 switch ($_REQUEST['action']) {
     case 'doedit':
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
         doedit();
         break;
 
     case 'dodelete':
     case 'multidodelete':
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
         dodelete();
         break;
 
     case 'duplicate':
     case 'multiduplicate':
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
         duplicate();
         break;
 
     case 'add':
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
     case 'edit':
         edit();
         break;
 
     case 'applytemplates':
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
         applytemplates();
         break;
 
     case 'doapplytemplates':
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
         doapplytemplates();
         break;
 

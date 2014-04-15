@@ -27,23 +27,23 @@
  ********************************************/
 
 require_once "../include/config.php";
-check_auth($GLOBALS['PERMIT']["ReadAll"]);
+$auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadAll"]);
 
 switch ($_REQUEST['action']) {
     case "add":
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
     case "edit":
         display_edit();
         break;
 
     case "doedit":
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
         do_edit();
         break;
 
     case "multidodelete":
     case "dodelete":
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
         do_delete();
         break;
 

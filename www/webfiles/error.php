@@ -29,7 +29,7 @@
 
 require_once "../include/config.php";
 
-if (!$GLOBALS["netmrg"]["externalAuth"] && !IsLoggedIn()) {
+if (!$GLOBALS["netmrg"]["externalAuth"] && !$auth->userIsLoggedIn()) {
     header("Location: {$GLOBALS['netmrg']['webroot']}/login.php");
     exit;
 }
@@ -47,7 +47,7 @@ if (!empty($_REQUEST["action"])) {
     }
 }
 else {
-    view_redirect();
+    $auth->view_redirect();
 }
 
 begin_page("Error");

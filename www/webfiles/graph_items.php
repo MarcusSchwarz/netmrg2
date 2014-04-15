@@ -28,44 +28,44 @@
 
 
 require_once "../include/config.php";
-check_auth($GLOBALS['PERMIT']["ReadAll"]);
+$auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadAll"]);
 
 switch ($_REQUEST['action']) {
     case 'doedit':
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
         doedit();
         break;
 
     case 'move_up':
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
         move("up");
         break;
 
     case 'move_down':
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
         move("down");
         break;
 
     case 'dodelete':
     case 'multidodelete':
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
         dodelete();
         break;
 
     case 'duplicate':
     case 'multiduplicate':
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
         duplicate();
         break;
 
     case 'add':
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
     case 'edit':
         edit();
         break;
 
     case 'gradient':
-        check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+        $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
         gradient();
         break;
 

@@ -28,7 +28,7 @@
 
 
 require_once "../include/config.php";
-check_auth($GLOBALS['PERMIT']["Admin"]);
+$auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["Admin"]);
 
 /***** CONFIG *****/
 

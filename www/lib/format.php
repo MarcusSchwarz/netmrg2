@@ -47,6 +47,7 @@
  * @internal param string $pagename page that this is
  */
 function begin_page($prettyname = "", $refresh = false, $bodytags = "", $javascript_files = array()) {
+    global $auth;
     // gather errors from prerequisits being met or not
     $prereqs_errors = PrereqsMet();
 
@@ -60,7 +61,7 @@ function begin_page($prettyname = "", $refresh = false, $bodytags = "", $javascr
     $javascript_files    = array_merge($javascript_files, $extra_jscript_files);
 
     // determine if we should display the menu or not
-    $display_menu = (IsLoggedIn() && !UpdaterNeedsRun() && count($prereqs_errors) == 0);
+    $display_menu = ($auth->userIsLoggedIn() && !UpdaterNeedsRun() && count($prereqs_errors) == 0);
 
     DisplayPageHeader($prettyname, $refresh, $display_menu, $bodytags, $javascript_files);
     ?>
@@ -109,6 +110,7 @@ function end_page() {
  * @internal param string $pagename page that this is
  */
 function DisplayPageHeader($prettyname = "", $refresh = false, $display_menu = false, $bodytags = "", $javascript_files = array()) {
+    global $auth;
     ?>
     <!DOCTYPE html>
 
@@ -139,7 +141,7 @@ function DisplayPageHeader($prettyname = "", $refresh = false, $display_menu = f
                 <?php echo GetLoginInfo(); ?>
             </div>
             <div id="search">
-                <?php if (IsLoggedIn()) { ?>
+                <?php if ($auth->userIsLoggedIn()) { ?>
                     <form name="searchform" action="search.php" method="GET">
                         <input type="text" name="query" default="[search]" size="15"/>
                     </form>
@@ -398,7 +400,8 @@ function GetPageTitle($prettyname = "") {
 function GetLoginInfo() {
     $logintext = "";
 
-    if (IsLoggedIn()) {
+    global $auth;
+    if ($auth->userIsLoggedIn()) {
         $logintext .= '<span class="loggedintext">Logged&nbsp;in&nbsp;as&nbsp;</span>';
         $logintext .= '<span class="loggedinuser">';
         $logintext .= space_to_nbsp($_SESSION["netmrgsess"]["prettyname"]);
@@ -422,10 +425,10 @@ function GetLoginInfo() {
  * @param array array of errors returned by prerequisite checks
  */
 function CheckInstallState($prereqs_errors = array()) {
-    global $PERMIT;
+    global $PERMIT, $auth;
 
     // if we need to run the updater, don't do anything else
-    if (IsLoggedIn() && (UpdaterNeedsRun() || count($prereqs_errors))) {
+    if ($auth->userIsLoggedIn() && (UpdaterNeedsRun() || count($prereqs_errors))) {
         if (UpdaterNeedsRun()) {
             if (strpos($_SERVER["PHP_SELF"], "updater.php") !== false) {
                 echo "<!-- updater needs run -->\n";

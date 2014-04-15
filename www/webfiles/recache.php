@@ -28,7 +28,7 @@
 
 require_once "../include/config.php";
 
-check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+$auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
 
 if (isset($_REQUEST['type']) && isset($_REQUEST['dev_id'])) {
     $_REQUEST['dev_id'] = intval($_REQUEST['dev_id']);

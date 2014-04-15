@@ -28,7 +28,7 @@
 
 
 require_once "../include/config.php";
-check_auth($GLOBALS['PERMIT']["ReadAll"]);
+$auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadAll"]);
 
 if (empty($_REQUEST["action"])) {
     // Display the list of sub-devices for a particular device.
@@ -89,7 +89,7 @@ if (empty($_REQUEST["action"])) {
     end_page();
 }
 elseif ($_REQUEST["action"] == "doedit") {
-    check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+    $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
     if ($_REQUEST["type"] == "add") {
         $s = getDatabase()->prepare('INSERT INTO sub_dev_variables (name, value, sub_dev_id) VALUES (:name, :value, :sub_dev_id)');
     }
@@ -105,7 +105,7 @@ elseif ($_REQUEST["action"] == "doedit") {
     header("Location: ".$_SERVER["PHP_SELF"]."?sub_dev_id={$_REQUEST['sub_dev_id']}&tripid={$_REQUEST['tripid']}");
 }
 elseif (($_REQUEST["action"] == "edit") || ($_REQUEST["action"] == "add")) {
-    check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+    $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
     begin_page("Add/Edit Sub Device Parameter");
     make_edit_table("Sub-Device Parameter");
 
@@ -137,7 +137,7 @@ elseif (($_REQUEST["action"] == "edit") || ($_REQUEST["action"] == "add")) {
 
 }
 elseif ($_REQUEST["action"] == "dodelete") {
-    check_auth($GLOBALS['PERMIT']["ReadWrite"]);
+    $auth->userHasAtLeastPermissionLevel($GLOBALS['PERMIT']["ReadWrite"]);
     $s = getDatabase()->prepare('DELETE FROM sub_dev_variables WHERE sub_dev_id = :sub_dev_id AND name = :name AND type = "static"');
     $s->bindValue(':sub_dev_id', $_REQUEST['sub_dev_id']);
     $s->bindValue(':name', $_REQUEST['name']);
