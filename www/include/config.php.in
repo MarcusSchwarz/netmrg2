@@ -85,7 +85,6 @@ $GLOBALS["netmrg"]["imagebasedir"]   = "{$GLOBALS['netmrg']['fileroot']}/webfile
 /***** INCLUDES *****/
 require_once $GLOBALS["netmrg"]["libdir"]."/lib/static.php";
 require_once $GLOBALS["netmrg"]["libdir"]."/lib/format.php";
-require_once $GLOBALS["netmrg"]["libdir"]."/lib/auth.php";
 require_once $GLOBALS["netmrg"]["libdir"]."/lib/misc.php";
 require_once $GLOBALS["netmrg"]["libdir"]."/lib/graphing.php";
 require_once $GLOBALS["netmrg"]["libdir"]."/lib/xajax/xajax.inc.php";
