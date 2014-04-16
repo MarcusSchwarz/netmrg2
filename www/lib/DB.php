@@ -24,49 +24,12 @@
  * @author Marcus Schwarz <msspamfang@gmx.de>
  */
 
-
-class MyPDO extends PDO {
-
-    /**
-     * Quotes a table name or field name
-     *
-     * @param  string $field the name of the field or table
-     *
-     * @return string        the quotes string
-     */
-    public function quoteIdent($field) {
-        return "`".str_replace("`","``",$field)."`";
-    }
-}
-
-
 /**
- * @return \MyPDO
+ * @return Netmrg\Database
  */
 function getDatabase() {
     if (isset($GLOBALS['netmrg']['__pdoconn'])) {
         return $GLOBALS['netmrg']['__pdoconn'];
     }
     return null;
-}
-
-/**
- *
- */
-function initDatabaseConnection() {
-    if ($GLOBALS["netmrg"]["dbsock"] != "") {
-        $dbhost = $GLOBALS["netmrg"]["dbhost"].":".$GLOBALS["netmrg"]["dbsock"];
-    }
-    elseif ($GLOBALS["netmrg"]["dbport"] > 0) {
-        $dbhost = $GLOBALS["netmrg"]["dbhost"].":".$GLOBALS["netmrg"]["dbport"];
-    }
-    else {
-        $dbhost = $GLOBALS["netmrg"]["dbhost"];
-    }
-
-    $dsn      = 'mysql:dbname='.$GLOBALS["netmrg"]["dbname"].';host='.$dbhost;
-    $user     = $GLOBALS["netmrg"]["dbuser"];
-    $password = $GLOBALS["netmrg"]["dbpass"];
-
-    $GLOBALS['netmrg']['__pdoconn'] = new MyPDO($dsn, $user, $password);
 }

@@ -36,7 +36,7 @@ class Auth
 {
 
     /**
-     * @var \MyPDO|null
+     * @var Database|null
      */
     private $db = null;
     /**
@@ -46,9 +46,9 @@ class Auth
 
     /**
      * @param Session|null $session
-     * @param \MyPDO|null  $databaseHandler
+     * @param Database|null  $databaseHandler
      */
-    public function __construct(Session $session, \MyPDO $databaseHandler = null)
+    public function __construct(Session $session, Database $databaseHandler = null)
     {
         if (!empty($databaseHandler)) {
             $this->db = $databaseHandler;
@@ -466,7 +466,7 @@ class Auth
      */
     public function view_redirect()
     {
-        $redir = $this->session->get('redir'); // 5.3 does not empty(func())
+        $redir = $this->session->get('redir'); // 5.3 does not allow empty(func())
         if (empty($redir) || ($this->session->get('permit') == 0)) {
             header("Location: {$GLOBALS['netmrg']['webroot']}/device_tree.php");
             exit;

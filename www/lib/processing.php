@@ -1164,22 +1164,12 @@ function SetUserPref($uid, $module, $pref, $value) {
 
 
 /**
- * GetDBVersion()
- *
- * returns the version the database thinks we are
- */
-function GetDBVersion() {
-    return getDatabase()->query('SELECT version FROM versioninfo WHERE module = "Main"')->fetchColumn();
-}
-
-
-/**
  * UpdaterNeedsRun()
  *
  * returns true if the updater needs run
  */
 function UpdaterNeedsRun() {
-    return ($GLOBALS["netmrg"]["verhist"][$GLOBALS["netmrg"]["version"]] > $GLOBALS["netmrg"]["verhist"][$GLOBALS["netmrg"]["dbversion"]]);
+    return ($GLOBALS["netmrg"]["verhist"][$GLOBALS["netmrg"]["version"]] > $GLOBALS["netmrg"]["verhist"][getDatabase()->getDBVersion()]);
 } // end UpdaterNeedsRun();
 
 

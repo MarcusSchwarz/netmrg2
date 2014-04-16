@@ -312,7 +312,7 @@ switch ($_REQUEST['action']) {
 function prompt() {
     begin_page("Updater");
 
-    $dbver = $GLOBALS["netmrg"]["dbversion"];
+    $dbver = getDatabase()->getDBVersion();
 
     if ($dbver != $GLOBALS["netmrg"]["version"]) {
         ?>
@@ -356,7 +356,7 @@ function prompt() {
 function Updater($dbupdates, $version = "", $which_update = "", $force = false) {
     begin_page("Updater");
 
-    $dbver = $GLOBALS["netmrg"]["dbversion"];
+    $dbver = getDatabase()->getDBVersion();
 
     // make sure we're good to run
     PrepUpdater($dbupdates);
@@ -455,7 +455,7 @@ function Updater($dbupdates, $version = "", $which_update = "", $force = false) 
  * by making sure the table exists and old updates are marked as 'applied'
  */
 function PrepUpdater($dbupdates) {
-    $dbver = $GLOBALS["netmrg"]["dbversion"];
+    $dbver = getDatabase()->getDBVersion();
 
     $res = getDatabase()
            ->query('SHOW TABLES LIKE "updates"')

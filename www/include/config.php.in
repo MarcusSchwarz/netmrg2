@@ -95,6 +95,15 @@ require_once $GLOBALS["netmrg"]["libdir"]."/lib/DB.php";
 
 
 /***** STARTUP *****/
-initDatabaseConnection();
-$GLOBALS["netmrg"]["dbversion"] = GetDBVersion();
+if ($GLOBALS["netmrg"]["dbsock"] != "") {
+    $dbhost = $GLOBALS["netmrg"]["dbhost"].":".$GLOBALS["netmrg"]["dbsock"];
+}
+elseif ($GLOBALS["netmrg"]["dbport"] > 0) {
+    $dbhost = $GLOBALS["netmrg"]["dbhost"].":".$GLOBALS["netmrg"]["dbport"];
+}
+else {
+    $dbhost = $GLOBALS["netmrg"]["dbhost"];
+}
+
+$db   = new Netmrg\Database($dbhost, $GLOBALS['netmrg']['dbname'], $GLOBALS['netmrg']['dbuser'], $GLOBALS['netmrg']['dbpass']);
 $auth = new Netmrg\Auth($session);
