@@ -61,6 +61,16 @@ class Session {
         }
     }
 
+    public function setSessionParameters(Auth $auth, $prettyusername, $user, $password = '') {
+        $this->set('prettyname', $prettyusername);
+        $this->set('username', $user);
+        $this->set('password', $password);
+        $this->set('accessTime', time());
+        $this->set('remote_addr', $_SERVER['REMOTE_ADDR']);
+        $this->set('permit', $auth->getUsersPermissionLevel($user));
+        $this->set('group_id', $auth->getUserGroupId($user));
+    }
+
     public function reset() {
         $_SESSION['netmrgsess'] = array();
         $this->set('prettyname', '');

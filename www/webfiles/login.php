@@ -37,48 +37,27 @@ if ($auth->userIsLoggedIn()) {
 }
 
 /***** EXTERNAL AUTH *****/
-// if external auth
-if ($GLOBALS["netmrg"]["externalAuth"] && !empty($_SERVER["PHP_AUTH_USER"]) && $auth->userExists($_SERVER['PHP_AUTH_USER'])) {
-    $_SESSION["netmrgsess"]["prettyname"]  = $_SERVER["PHP_AUTH_USER"];
-    $_SESSION["netmrgsess"]["username"]    = $_SERVER["PHP_AUTH_USER"];
-    $_SESSION["netmrgsess"]["password"]    = "";
-    $_SESSION["netmrgsess"]["accessTime"]  = time();
-    $_SESSION["netmrgsess"]["remote_addr"] = $_SERVER["REMOTE_ADDR"];
-    $_SESSION["netmrgsess"]["permit"]      = $auth->getUsersPermissionLevel();
-    $_SESSION["netmrgsess"]["group_id"]    = $auth->getUserGroupId();
-
-    $auth->view_redirect();
-}
-// if external auth and default user exists
-else {
-    if ($GLOBALS["netmrg"]["externalAuth"] && !empty($_SERVER["PHP_AUTH_USER"]) && $auth->defaultUserExists()) {
-        $_SESSION["netmrgsess"]["prettyname"]  = $_SERVER["PHP_AUTH_USER"];
-        $_SESSION["netmrgsess"]["username"]    = $GLOBALS["netmrg"]["defaultMapUser"];
-        $_SESSION["netmrgsess"]["password"]    = "";
-        $_SESSION["netmrgsess"]["accessTime"]  = time();
-        $_SESSION["netmrgsess"]["remote_addr"] = $_SERVER["REMOTE_ADDR"];
-        $_SESSION["netmrgsess"]["permit"]      = $auth->getUsersPermissionLevel($GLOBALS["netmrg"]["defaultMapUser"]);
-        $_SESSION["netmrgsess"]["group_id"]    = $auth->getUserGroupId($GLOBALS["netmrg"]["defaultMapUser"]);
-
+if ($GLOBALS["netmrg"]["externalAuth"] && !empty($_SERVER["PHP_AUTH_USER"])) {
+    if ($auth->userExists($_SERVER['PHP_AUTH_USER'])) {
+        $session->setSessionParameters($auth, $_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_USER']);
         $auth->view_redirect();
     }
-    else {
-        if ($GLOBALS["netmrg"]["externalAuth"] && !empty($_SERVER["PHP_AUTH_USER"]) && !$auth->userExists($_SERVER["PHP_AUTH_USER"])) {
-            $auth->redirectErrorDenied();
-        }
+
+    if ($auth->defaultUserExists()) {
+        $session->setSessionParameters($auth, $_SERVER["PHP_AUTH_USER"], $GLOBALS["netmrg"]["defaultMapUser"]);
+        $auth->view_redirect();
+    }
+
+    if (!$auth->userExists($_SERVER["PHP_AUTH_USER"])) {
+        $auth->redirectErrorDenied();
     }
 }
 
 // if we need to login
 if (!empty($_REQUEST["user_name"])) {
     if (!$GLOBALS["netmrg"]["externalAuth"] && $auth->userHasCorrectPassword($_REQUEST["user_name"], $_REQUEST["password"])) {
-        $_SESSION["netmrgsess"]["prettyname"]  = $_REQUEST["user_name"];
-        $_SESSION["netmrgsess"]["username"]    = $_REQUEST["user_name"];
-        $_SESSION["netmrgsess"]["password"]    = $_REQUEST["password"];
-        $_SESSION["netmrgsess"]["accessTime"]  = time();
-        $_SESSION["netmrgsess"]["remote_addr"] = $_SERVER["REMOTE_ADDR"];
-        $_SESSION["netmrgsess"]["permit"]      = $auth->getUsersPermissionLevel();
-        $_SESSION["netmrgsess"]["group_id"]    = $auth->getUserGroupId();
+        $session->setSessionParameters($auth, $_REQUEST['user_name'], $_REQUEST['user_name'], $_REQUEST['password']);
+
         $auth->view_redirect();
     }
     else {

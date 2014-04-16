@@ -214,7 +214,7 @@ function DisplayTopMenu() {
  * $id = <id of type you are in>
  */
 function PrepGroupNavHistory($type, $id) {
-    global $BC_TYPES;
+    global $BC_TYPES, $session;
 
     // default trip id
     if (empty($_REQUEST["tripid"])) {
@@ -224,11 +224,15 @@ function PrepGroupNavHistory($type, $id) {
     $tripid = $_REQUEST["tripid"];
 
     // setup array to hold group nav
-    if (!isset($_SESSION["netmrgsess"]["grpnav"])) {
-        $_SESSION["netmrgsess"]["grpnav"] = array();
+    $grpnav = $session->get('grpnav');
+    if (empty($grpnav)) {
+        $grpnav = array();
+        $session->set('grpnav', $grpnav);
     } // end if no group nav array
-    if (!isset($_SESSION["netmrgsess"]["grpnav"][$tripid])) {
-        $_SESSION["netmrgsess"]["grpnav"][$tripid] = array();
+
+    if (!isset($grpnav[$tripid])) {
+        $grpnav[$tripid] = array();
+        $session->set('grpnav', $grpnav);
     } // end if no group nav trip array
 
     // push type onto breadcrumbs
@@ -240,11 +244,11 @@ function PrepGroupNavHistory($type, $id) {
      */
     $last_type = "";
     $last_id   = "";
-    if (count($_SESSION["netmrgsess"]["grpnav"][$tripid]) != 0) {
-        $last_type = $_SESSION["netmrgsess"]["grpnav"][$tripid][count($_SESSION["netmrgsess"]["grpnav"][$tripid]) - 1]["type"];
-        $last_id   = $_SESSION["netmrgsess"]["grpnav"][$tripid][count($_SESSION["netmrgsess"]["grpnav"][$tripid]) - 1]["id"];
+    if (count($grpnav[$tripid]) != 0) {
+        $last_type = $grpnav[$tripid][count($grpnav[$tripid]) - 1]["type"];
+        $last_id   = $grpnav[$tripid][count($grpnav[$tripid]) - 1]["id"];
     } // end if we have some bread crumbs already
-    if (count($_SESSION["netmrgsess"]["grpnav"][$tripid]) == 0
+    if (count($grpnav[$tripid]) == 0
         || $BC_TYPES[$last_type] <= $BC_TYPES[$type]
     ) {
         if (($type == $last_type && $id != $last_id)
@@ -252,14 +256,15 @@ function PrepGroupNavHistory($type, $id) {
             || ($type != $last_type && $id != $last_id)
         ) {
             $found = false;
-            foreach ($_SESSION["netmrgsess"]["grpnav"][$tripid] as $triparr) {
+            foreach ($grpnav[$tripid] as $triparr) {
                 if ($triparr["type"] == $type && $triparr["id"] == $id) {
                     $found = true;
                     break;
                 } // end if found our trip info
             } // end foreach trip breadcrumb
             if (!$found) {
-                array_push($_SESSION["netmrgsess"]["grpnav"][$tripid], array("type" => $type, "id" => $id));
+                $grpnav[$tripid][] = array("type" => $type, "id" => $id);
+                $session->set('grpnav', $grpnav);
             } // end if we haven't already pushed this item on
         } // end if type and id are different from last
     } // end if we can push the breadcrumb onto our history
