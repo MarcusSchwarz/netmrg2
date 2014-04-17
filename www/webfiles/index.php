@@ -30,13 +30,32 @@
 
 require_once "../include/config.php";
 
-if (isset($_GET['var'])) {
-    // da sollte die umleitung ankommen
-    var_dump($_GET);
-    require_once '../lib/mustache.php';
-    $m = new Mustache_Engine();
-    $tpl = $m->loadTemplate('about');
-    echo $tpl->render(array('var1' => 'Hooray'));
+if (isset($_GET['controller'])) {
+    $classname = 'Netmrg\Controller\\'.ucfirst($_GET['controller']).'Controller';  // todo test for remote file inclusion!
+
+    try {
+        $controller = new $classname($mustache, true); // todo true activates the debug mode
+    }
+    catch (Exception $e) {
+        throw new \Netmrg\Netmrg404Exception;
+    }
+
+    if (!isset($_GET['action']) || empty($_GET['action'])) {
+        $desiredAction = 'index';
+    }
+    else {
+        $desiredAction = strtolower($_GET['action']);
+    }
+
+    $action = $desiredAction.'Action';
+
+    if (is_callable(array($controller, $action))) {
+        $controller->$action();
+    }
+    else {
+        throw new \Netmrg\Netmrg404Exception();
+    }
+
 }
 else {
     header("Location: login.php");

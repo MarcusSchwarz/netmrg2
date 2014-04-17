@@ -1,0 +1,21 @@
+<div id="footer">
+    <div class="container">
+        <p class="text-muted text-center">{{#image}}netmrg-logo-small.png{{/image}} <a href="https://github.com/MarcusSchwarz/netmrg2" target="_blank">NetMRG2</a> &copy; 2003 - 2014</p>
+    </div>
+</div>
+
+<script src="{{__tpl_webroot}}/js/jquery-1.11.0.min.js"></script>
+<script src="{{__tpl_webroot}}/js/bootstrap.min.js"></script>
+
+{{#debug}}
+    <hr>
+    <pre>
+        <b>DEBUG-MESSAGES:</b><br>
+    {{#messages}}
+        *{{.}}
+    {{/messages}}
+    </pre>
+{{/debug}}
+
+</body>
+</html>
