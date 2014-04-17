@@ -106,4 +106,4 @@ else {
 }
 
 $db   = new Netmrg\Database($dbhost, $GLOBALS['netmrg']['dbname'], $GLOBALS['netmrg']['dbuser'], $GLOBALS['netmrg']['dbpass']);
-$auth = new Netmrg\Auth($session);
+$auth = new Netmrg\Auth($session, $db);
