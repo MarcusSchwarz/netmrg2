@@ -1,2 +1,2 @@
 RewriteEngine on
-RewriteRule index/(.*)$ /index.php?var=$1
+RewriteRule ^index/(.*)$ ../index.php?var=$1 [QSA,L] # This does not look right to me, but it works...

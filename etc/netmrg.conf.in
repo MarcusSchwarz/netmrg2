@@ -1,7 +1,7 @@
 Alias /netmrg "@localstatedir@/www/netmrg/webfiles"
 <Directory "@localstatedir@/www/netmrg/webfiles">
-    Options Indexes
-    AllowOverride None
+    Options Indexes FollowSymLinks
+    AllowOverride All
     Order allow,deny
     Allow from all
 </Directory>
