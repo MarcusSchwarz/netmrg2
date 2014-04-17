@@ -26,18 +26,19 @@
 
 namespace Netmrg;
 
-class Database extends \PDO {
+class Database extends \PDO
+{
 
     private $dbversion = null;
 
-    public function __construct($host, $dbname, $user, $password) {
+    public function __construct($host, $dbname, $user, $password)
+    {
 
-        $dsn      = 'mysql:dbname='.$dbname.';host='.$host.';charset=UTF8';
+        $dsn = 'mysql:dbname=' . $dbname . ';host=' . $host . ';charset=UTF8';
 
         try {
             parent::__construct($dsn, $user, $password);
-        }
-        catch (\PDOException $e) {
+        } catch (\PDOException $e) {
             throw new NetmrgException($e->getMessage());
         }
 
@@ -53,11 +54,13 @@ class Database extends \PDO {
      *
      * @return string        the quotes string
      */
-    public function quoteIdent($field) {
-        return "`".str_replace("`","``",$field)."`";
+    public function quoteIdent($field)
+    {
+        return "`" . str_replace("`", "``", $field) . "`";
     }
 
-    public function getDBVersion() {
+    public function getDBVersion()
+    {
         if (empty($this->dbversion)) {
             $this->dbversion = $this->query('SELECT version FROM versioninfo WHERE module = "Main"')->fetchColumn();
         }
