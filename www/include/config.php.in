@@ -91,6 +91,7 @@ require_once $GLOBALS["netmrg"]["libdir"]."/lib/xajax/xajax.inc.php";
 require_once $GLOBALS["netmrg"]["libdir"]."/lib/ajax.php";
 require_once $GLOBALS["netmrg"]["imagebasedir"]."/imagespec.php";
 require_once $GLOBALS["netmrg"]["libdir"]."/lib/DB.php";
+require_once $GLOBALS["netmrg"]["libdir"]."/lib/mustache.php";
 
 
 
@@ -107,3 +108,7 @@ else {
 
 $db   = new Netmrg\Database($dbhost, $GLOBALS['netmrg']['dbname'], $GLOBALS['netmrg']['dbuser'], $GLOBALS['netmrg']['dbpass']);
 $auth = new Netmrg\Auth($session, $db);
+$mustache = new Mustache_Engine(array(
+    'loader'          => new Mustache_Loader_FilesystemLoader($GLOBALS["netmrg"]["libdir"].'/views'),
+    'partials_loader' => new Mustache_Loader_FilesystemLoader($GLOBALS["netmrg"]["libdir"].'/views/partials'),
+));
