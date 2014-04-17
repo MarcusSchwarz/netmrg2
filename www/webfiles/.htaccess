@@ -1,0 +1,2 @@
+RewriteEngine on
+RewriteRule index/(.*)$ /index.php?var=$1

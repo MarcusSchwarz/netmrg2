@@ -5,10 +5,11 @@
  * index.php
  * Site Index Page
  *
- * Copyright (C) 2001-2008
+ * Copyright (C) 2001-2014
  *   Brady Alleman <brady@thtech.net>
  *   Douglas E. Warner <silfreed@silfreed.net>
  *   Kevin Bonner <keb@nivek.ws>
+ *   Marcus Schwarz <msspamfang@gmx.de>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,4 +29,15 @@
 
 
 require_once "../include/config.php";
-header("Location: login.php");
+
+if (isset($_GET['var'])) {
+    // da sollte die umleitung ankommen
+    var_dump($_GET);
+    require_once '../lib/mustache.php';
+    $m = new Mustache_Engine();
+    $tpl = $m->loadTemplate('about');
+    echo $tpl->render(array('var1' => 'Hooray'));
+}
+else {
+    header("Location: login.php");
+}
