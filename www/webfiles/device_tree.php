@@ -160,7 +160,7 @@ begin_page("Device Tree", 1);
         <?php
 
         $rowcount = 0;
-        draw_group($_SESSION["netmrgsess"]["group_id"], 0, $rowcount, true);
+        draw_group($session->get('group_id'), 0, $rowcount, true);
         ?>
     </table>
 <?php
@@ -172,6 +172,7 @@ end_page();
 
 /***** FUCTIONS *****/
 function draw_group($grp_id, $depth, &$rowcount, $init = false) {
+    global $session;
     // for each group
     if ($init && $grp_id != 0) {
         $s = getDatabase()->prepare('SELECT * FROM groups WHERE id = :id ORDER BY name');
@@ -185,7 +186,7 @@ function draw_group($grp_id, $depth, &$rowcount, $init = false) {
 
     while ($grp_row = $s->fetch(PDO::FETCH_ASSOC)) {
         $grp_id    = $grp_row["id"];
-        $editgroup = ($_SESSION["netmrgsess"]["permit"] > 0) ? '<a class="editfield'.($rowcount % 2).'" href="grpdev_list.php?parent_id='.$grp_id.'">'.
+        $editgroup = ($session->get('permit') > 0) ? '<a class="editfield'.($rowcount % 2).'" href="grpdev_list.php?parent_id='.$grp_id.'">'.
                                                                '<img src="'.get_image_by_name("edit").'" width="15" height="15" border="0" alt="edit" title="edit" align="middle" />'.
                                                                '</a>'."\n" : "";
 
@@ -261,7 +262,7 @@ function draw_group($grp_id, $depth, &$rowcount, $init = false) {
 
             while ($dev_row = $grp_s->fetch(PDO::FETCH_ASSOC)) {
                 $device_id  = $dev_row["id"];
-                $editdevice = ($_SESSION["netmrgsess"]["permit"] > 0) ? '<a class="editfield'.($rowcount % 2).'" href="sub_devices.php?dev_id='.$device_id.'">'.
+                $editdevice = ($session->get('permit') > 0) ? '<a class="editfield'.($rowcount % 2).'" href="sub_devices.php?dev_id='.$device_id.'">'.
                                                                         '<img src="'.get_image_by_name("edit").'" width="15" height="15" border="0" alt="edit" title="edit" align="middle" />'.
                                                                         '</a>'."\n" : "";
 
@@ -329,7 +330,7 @@ function draw_group($grp_id, $depth, &$rowcount, $init = false) {
 
                     while ($subdev_row = $dev_s->fetch(PDO::FETCH_ASSOC)) {
                         $subdev_id     = $subdev_row["id"];
-                        $editsubdevice = ($_SESSION["netmrgsess"]["permit"] > 0) ? '<a class="editfield'.($rowcount % 2).'" href="monitors.php?sub_dev_id='.$subdev_id.'">'.
+                        $editsubdevice = ($session->get('permit') > 0) ? '<a class="editfield'.($rowcount % 2).'" href="monitors.php?sub_dev_id='.$subdev_id.'">'.
                                                                                    '<img src="'.get_image_by_name("edit").'" width="15" height="15" border="0" alt="edit" title="edit" align="middle" />'.
                                                                                    '</a>'."\n" : "";
 
@@ -397,7 +398,7 @@ function draw_group($grp_id, $depth, &$rowcount, $init = false) {
                             // while we have monitors
                             while ($mon_row = $subdev_s->fetch(PDO::FETCH_ASSOC)) {
                                 $mon_id      = $mon_row["id"];
-                                $editmonitor = ($_SESSION["netmrgsess"]["permit"] > 0) ? '<a class="editfield'.($rowcount % 2).'" href="events.php?mon_id='.$mon_id.'">'.
+                                $editmonitor = ($session->get('permit') > 0) ? '<a class="editfield'.($rowcount % 2).'" href="events.php?mon_id='.$mon_id.'">'.
                                                                                          '<img src="'.get_image_by_name("edit").'" width="15" height="15" border="0" alt="edit" title="edit" align="middle" />'.
                                                                                          '</a>'."\n" : "";
 

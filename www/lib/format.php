@@ -281,7 +281,7 @@ function PrepGroupNavHistory($type, $id) {
  * $id = <id of type you are in>
  */
 function DrawGroupNavHistory($type, $id) {
-    global $BC_TYPES;
+    global $BC_TYPES, $session;
     $tripid = $_REQUEST["tripid"];
 
     // loop through each breadcrumb and display it
@@ -292,10 +292,11 @@ function DrawGroupNavHistory($type, $id) {
                 History
                 <?php
                 $count = 0;
-                foreach ($_SESSION["netmrgsess"]["grpnav"][$tripid] as $breadcrumb) {
+                $grpnav = $session->get('grpnav');
+                foreach ($grpnav[$tripid] as $breadcrumb) {
                     // skip to the end if we've past where we should be
                     if ($BC_TYPES[$breadcrumb["type"]] > $BC_TYPES[$type]) {
-                        $_SESSION["netmrgsess"]["grpnav"][$tripid] = array_slice($_SESSION["netmrgsess"]["grpnav"][$tripid], 0, $count);
+                        $grpnav[$tripid] = array_slice($grpnav[$tripid], 0, $count);
                         continue;
                     } // end if we're past our current type
                     // cut of extra groups
@@ -303,7 +304,7 @@ function DrawGroupNavHistory($type, $id) {
                         && $breadcrumb["id"] != $id
                         && !in_array($breadcrumb["id"], GetGroupParents($id))
                     ) {
-                        $_SESSION["netmrgsess"]["grpnav"][$tripid] = array_slice($_SESSION["netmrgsess"]["grpnav"][$tripid], 0, $count);
+                        $grpnav[$tripid] = array_slice($grpnav[$tripid], 0, $count);
                         break;
                     } // end if group and not our parent or ourself
 
@@ -367,6 +368,7 @@ function DrawGroupNavHistory($type, $id) {
                     } // end switch type
                     $count++;
                 } // end foreach breadcrumb
+                $session->set('grpnav', $grpnav);
                 ?>
             </td>
         </tr>
@@ -405,11 +407,11 @@ function GetPageTitle($prettyname = "") {
 function GetLoginInfo() {
     $logintext = "";
 
-    global $auth;
+    global $auth, $session;
     if ($auth->userIsLoggedIn()) {
         $logintext .= '<span class="loggedintext">Logged&nbsp;in&nbsp;as&nbsp;</span>';
         $logintext .= '<span class="loggedinuser">';
-        $logintext .= space_to_nbsp($_SESSION["netmrgsess"]["prettyname"]);
+        $logintext .= space_to_nbsp($session->get('prettyname'));
         $logintext .= "</span>\n";
     }
     else {
@@ -430,14 +432,14 @@ function GetLoginInfo() {
  * @param array array of errors returned by prerequisite checks
  */
 function CheckInstallState($prereqs_errors = array()) {
-    global $PERMIT, $auth;
+    global $PERMIT, $auth, $session;
 
     // if we need to run the updater, don't do anything else
     if ($auth->userIsLoggedIn() && (UpdaterNeedsRun() || count($prereqs_errors))) {
         if (UpdaterNeedsRun()) {
             if (strpos($_SERVER["PHP_SELF"], "updater.php") !== false) {
                 echo "<!-- updater needs run -->\n";
-                if ($_SESSION["netmrgsess"]["permit"] != $PERMIT['Admin']) {
+                if ($session->get('permit') != $PERMIT['Admin']) {
                     ?>
                     <!-- updater needs run and on updater page -->
                     This installation is currently unusable due to a recent upgrade.  Please contact

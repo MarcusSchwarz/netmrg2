@@ -1084,7 +1084,7 @@ function update_group($id, $grp_name, $grp_comment, $parent_id) {
  * creates a local version of the menu w/ only the user's authorized items
  */
 function CreateLocalMenu() {
-    global $MENU, $LOCAL_MENU, $LOCAL_MENU_CURTREE, $LOCAL_MENU_CURITEM;
+    global $MENU, $LOCAL_MENU, $LOCAL_MENU_CURTREE, $LOCAL_MENU_CURITEM, $session;
 
     while (list($menuname, $menuitems) = each($MENU)) {
         // foreach menu item
@@ -1095,7 +1095,7 @@ function CreateLocalMenu() {
                 $LOCAL_MENU_CURITEM = $menuitem["link"];
             } // end if we're in this group, display its menu items
 
-            if ($_SESSION["netmrgsess"]["permit"] >= $menuitem["authLevelRequired"]
+            if ($session->get('permit') >= $menuitem["authLevelRequired"]
                 && $menuitem["display"] !== false
             ) {
                 array_push($authorized_subitems, $menuitem);

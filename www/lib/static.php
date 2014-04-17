@@ -104,12 +104,13 @@ $MENU = array(
 
 // add a dynamic 'resume slide show' link
 $rss_action = (!empty($_REQUEST["action"]) && $_REQUEST["action"] == "slideshow") ? "slideshow" : "";
-if (!empty($_SESSION["netmrgsess"]["slideshow"])
-    && count($_SESSION["netmrgsess"]["slideshow"]["views"]) != $_SESSION["netmrgsess"]["slideshow"]["current"]
-    && $_SESSION["netmrgsess"]["slideshow"]["current"] != 0
+$slideshow = $session->get('slideshow');
+if (!empty($slideshow)
+    && count($slideshow["views"]) != $slideshow["current"]
+    && $slideshow["current"] != 0
     && $rss_action != "slideshow"
 ) {
-    $rss_jump = $_SESSION["netmrgsess"]["slideshow"]["current"] - 1;
+    $rss_jump = $slideshow["current"] - 1;
     array_push($MENU["Reporting"], array("name" => "&nbsp&nbsp;Resume Slide Show", "link" => "view.php?action=slideshow&jump=$rss_jump", "descr" => "Resumes slide show in progress.", "authLevelRequired" => 1));
 } // end if in the middle of a slide show
 

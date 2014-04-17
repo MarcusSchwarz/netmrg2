@@ -258,14 +258,20 @@ function do_move($direction) {
 }
 
 function ss_random_all() {
+    global $session;
     $myq = getDatabase()->query('SELECT object_type, object_id FROM view LEFT JOIN devices ON view.object_id = devices.id WHERE object_type = "device" AND devices.disabled = 0 GROUP BY object_type, object_id ORDER BY RAND()');
 
+    $slideshow = $session->get('slideshow');
+
     while ($myr = $myq->fetch(PDO::FETCH_ASSOC)) {
-        array_push($_SESSION["netmrgsess"]["slideshow"]["views"], array("object_type" => $myr['object_type'], "object_id" => $myr['object_id']));
+        $slideshow["views"][] = array("object_type" => $myr['object_type'], "object_id" => $myr['object_id']);
     }
+    $session->set('slideshow', $slideshow);
 }
 
 function ss_descendants($group) {
+    global $session;
+
     $s = getDatabase()->prepare('SELECT id FROM groups WHERE parent_id = :group ORDER BY name');
     $s->bindValue(':group', $group);
     $s->execute();
@@ -276,18 +282,23 @@ function ss_descendants($group) {
     $s = getDatabase()->prepare('SELECT dev.id AS id, count(view.id) AS view_items FROM dev_parents dp LEFT JOIN devices dev ON dp.dev_id = dev.id LEFT JOIN view ON dev.id = view.object_id WHERE grp_id = :group AND object_type = "device" AND dev.disabled = 0 GROUP BY dev.id ORDER BY dev.name');
     $s->bindValue(':group', $group);
     $s->execute();
+    $slideshow = $session->get('slideshow');
     while ($r = $s->fetch(PDO::FETCH_ASSOC)) {
         if ($r['view_items'] > 0) {
-            array_push($_SESSION["netmrgsess"]["slideshow"]["views"], array("object_type" => "device", "object_id" => $r['id']));
+            $slideshow["views"][] = array("object_type" => "device", "object_id" => $r['id']);
         }
     }
+    $session->set('slideshow', $slideshow);
 }
 
 function do_slideshow() {
+    global $session;
+    $slideshow = $session->get('slideshow');
     if (isset($_REQUEST["type"])) {
-        $_SESSION["netmrgsess"]["slideshow"]["views"]   = array();
-        $_SESSION["netmrgsess"]["slideshow"]["current"] = 0;
-        $_SESSION["netmrgsess"]["slideshow"]["type"]    = $_REQUEST['type'];
+
+        $slideshow["views"]   = array();
+        $slideshow["current"] = 0;
+        $slideshow["type"]    = $_REQUEST['type'];
 
         switch ($_REQUEST['type']) {
             case 0:
@@ -298,11 +309,12 @@ function do_slideshow() {
                 break;
         }
 
+        $session->set('slideshow', $slideshow);
         header("Location: {$_SERVER['PHP_SELF']}?action=slideshow");
         exit;
     }
 
-    if (count($_SESSION["netmrgsess"]["slideshow"]["views"]) == 0) {
+    if (count($slideshow["views"]) == 0) {
         $object_name = get_view_name();
         if (!empty($object_name)) {
             $object_name .= ' - ';
@@ -314,25 +326,26 @@ function do_slideshow() {
     }
 
     if (isset($_REQUEST['jump'])) {
-        $_SESSION["netmrgsess"]["slideshow"]["current"] = $_REQUEST['jump'];
+        $slideshow["current"] = $_REQUEST['jump'];
     }
 
     $GLOBALS["slideshow"]                 = true;
     $_REQUEST['action']                   = "view";
-    $view                                 = $_SESSION["netmrgsess"]["slideshow"]["views"][$_SESSION["netmrgsess"]["slideshow"]["current"]];
+    $view                                 = $slideshow["views"][$slideshow["current"]];
     $_REQUEST['object_type']              = $view['object_type'];
     $_REQUEST['object_id']                = $view['object_id'];
-    $GLOBALS["slide_show_formatted_link"] = cond_formatted_link($_SESSION["netmrgsess"]["slideshow"]["current"] > 0, "Previous Slide", "{$_SERVER['PHP_SELF']}?action=slideshow&jump=".($_SESSION["netmrgsess"]["slideshow"]["current"] - 1));
-    $_SESSION["netmrgsess"]["slideshow"]["current"]++;
+    $GLOBALS["slide_show_formatted_link"] = cond_formatted_link($slideshow["current"] > 0, "Previous Slide", "{$_SERVER['PHP_SELF']}?action=slideshow&jump=".($slideshow["current"] - 1));
+    $slideshow["current"]++;
 
-    if (count($_SESSION["netmrgsess"]["slideshow"]["views"]) == $_SESSION["netmrgsess"]["slideshow"]["current"]) {
-        $_SESSION["netmrgsess"]["slideshow"]["current"] = 0;
+    if (count($slideshow["views"]) == $slideshow["current"]) {
+        $slideshow["current"] = 0;
         $GLOBALS["slide_show_formatted_link"] .= formatted_link("Restart Slideshow", "{$_SERVER['PHP_SELF']}?action=slideshow");
     }
     else {
         $GLOBALS["slide_show_formatted_link"] .= formatted_link("Next Slide", "{$_SERVER['PHP_SELF']}?action=slideshow");
     }
 
+    $session->set('slideshow', $slideshow);
     ?>
     <script language="javascript">
         <!--
@@ -379,7 +392,7 @@ function do_slideshow() {
 } // end do_slideshow();
 
 function do_view() {
-    global $auth;
+    global $auth, $session;
     $object_name = get_view_name();
     if (!empty($object_name)) {
         $object_name .= ' - ';
@@ -521,7 +534,7 @@ function do_view() {
         }
         print("<br>");
 
-        if ($_SESSION["netmrgsess"]["permit"] > 1) {
+        if ($session->get('permit') > 1) {
             print(formatted_link("Edit", "{$_SERVER['PHP_SELF']}?action=list&object_type={$_REQUEST['object_type']}&object_id={$_REQUEST['object_id']}"));
         }
 

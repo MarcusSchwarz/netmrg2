@@ -40,12 +40,12 @@ if (empty($_REQUEST["uid"])) {
 
 // check that user is the same as the one they want to edit
 // or we're an admin
-if ($_SESSION["netmrgsess"]["permit"] != 3 && $_REQUEST["uid"] !== false && $auth->GetUserID() != $_REQUEST["uid"]) {
+if ($session->get('permit') != 3 && $_REQUEST["uid"] !== false && $auth->GetUserID() != $_REQUEST["uid"]) {
     $auth->redirectErrorDenied();
 }
 
 // check that user is not the default map user
-if ($_SESSION["netmrgsess"]["username"] == $GLOBALS["netmrg"]["defaultMapUser"]) {
+if ($session->get('username') == $GLOBALS["netmrg"]["defaultMapUser"]) {
     $auth->redirectErrorDenied();
 }
 

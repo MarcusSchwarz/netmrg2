@@ -145,6 +145,7 @@ function duplicate() {
 }
 
 function applytemplates() {
+    global $session;
     begin_page("Apply Templates");
     js_checkbox_utils("edit");
     make_edit_table("Apply Templates");
@@ -172,7 +173,8 @@ function applytemplates() {
             $return = $_SERVER['HTTP_REFERER'];
         }
         else {
-            foreach ($_SESSION["netmrgsess"]["grpnav"][$_REQUEST['tripid']] as $breadcrumb) {
+            $grpnav = $session->get('grpnav');
+            foreach ($grpnav[$_REQUEST['tripid']] as $breadcrumb) {
                 if ($breadcrumb['type'] == "device") {
                     $return = "sub_devices.php?dev_id={$breadcrumb['id']}&tripid={$_REQUEST['tripid']}";
                     break;
