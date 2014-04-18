@@ -36,7 +36,8 @@ class SettingsController extends BaseController
         $this->render();
     }
 
-    public function devicesAction() {
+    public function devicesAction()
+    {
         $this->minPermission(Auth::RIGHT_READALL);
 
         $this->add('menu', 'settingsdevices');
@@ -46,9 +47,28 @@ class SettingsController extends BaseController
     }
 
 
-    public function updateAction()
+    public function usersAction()
     {
-        $this->redirect('/preferences');
+        $this->minPermission(Auth::RIGHT_ADMIN);
+        $this->add('menu', 'settingsusers');
+
+
+        $users = getDatabase()->query('SELECT id, user, fullname, permit  FROM user ORDER BY user')->fetchAll(\PDO::FETCH_ASSOC);
+
+        $users = $this->mapPermissions($users);
+
+        $this->load('settings/users');
+        $this->render(array('users' => $users));
+    }
+
+    private function mapPermissions(array $users) {
+        $tmp = array();
+        foreach ($users as $key => $val) {
+            $val['permit'] = $GLOBALS['PERMIT_TYPES'][$val['permit']];
+            $tmp[$key] = $val;
+        }
+
+        return $tmp;
     }
 
 }

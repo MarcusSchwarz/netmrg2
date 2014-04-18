@@ -89,7 +89,7 @@ class BaseController
             if (isset($this->debug['messages']) && count($this->debug['messages']) > 0) {
                 $variables['debug'] = $this->debug;
             }
-            $variables['debug']['sessiondata'] = $this->dump($_SESSION);
+            //$variables['debug']['sessiondata'] = $this->dump($_SESSION);
         }
         $variables += $this->getDefaults();
         $variables += $this->getVariables();
@@ -104,6 +104,10 @@ class BaseController
         $tpl = $this->mustache->loadTemplate($this->templateName);
 
         echo $tpl->render($variables);
+    }
+
+    protected function debug($what) {
+        $this->debug['messages'][] = $this->dump($what);
     }
 
     private function dump($what)

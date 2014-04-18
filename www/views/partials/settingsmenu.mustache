@@ -6,15 +6,15 @@
         <li{{#menu.settingsnotifications}} class="active"{{/menu.settingsnotifications}}><a href="{{#route}}/settings/notifications{{/route}}">Notifications</a></li>
     </ul>
     <ul class="nav nav-sidebar">
-        <li><a href="{{#route}}/settings/customgraphs{{/route}}">Custom Graphs</a></li>
-        <li><a href="{{#route}}/settings/templategraphs{{/route}}">Template Graphs</a></li>
+        <li{{#menu.settingscustomgraphs}} class="active"{{/menu.settingscustomgraphs}}><a href="{{#route}}/settings/customgraphs{{/route}}">Custom Graphs</a></li>
+        <li{{#menu.settingstemplategraphs}} class="active"{{/menu.settingstemplategraphs}}><a href="{{#route}}/settings/templategraphs{{/route}}">Template Graphs</a></li>
     </ul>
     <ul class="nav nav-sidebar">
-        <li><a href="{{#route}}/settings/script{{/route}}">Script</a></li>
-        <li><a href="{{#route}}/settings/snmp{{/route}}">SNMP</a></li>
-        <li><a href="{{#route}}/settings/sql{{/route}}">SQL</a></li>
+        <li{{#menu.settingsscript}} class="active"{{/menu.settingsscript}}><a href="{{#route}}/settings/script{{/route}}">Script</a></li>
+        <li{{#menu.settingssnmp}} class="active"{{/menu.settingssnmp}}><a href="{{#route}}/settings/snmp{{/route}}">SNMP</a></li>
+        <li{{#menu.settingssql}} class="active"{{/menu.settingssql}}><a href="{{#route}}/settings/sql{{/route}}">SQL</a></li>
     </ul>
     <ul class="nav nav-sidebar">
-        <li><a href="{{#route}}/settings/users{{/route}}">Users</a></li>
+        <li{{#menu.settingsusers}} class="active"{{/menu.settingsusers}}><a href="{{#route}}/settings/users{{/route}}">Users</a></li>
     </ul>
 </div>

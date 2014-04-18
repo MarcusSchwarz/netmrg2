@@ -162,7 +162,8 @@ $PERMIT_TYPES = array(
     $PERMIT["SingleViewOnly"] => "Single View Only",
     $PERMIT["ReadAll"]        => "Read All",
     $PERMIT["ReadWrite"]      => "Read/Write",
-    $PERMIT["Admin"]          => "Read/Write/User Admin"
+    $PERMIT["Admin"]          => "Read/Write/User Admin",
+    $PERMIT['Disabled']       => 'Disabled'
 ); // end PERMIT_TYPES
 
 $SUB_DEVICE_TYPES = array(

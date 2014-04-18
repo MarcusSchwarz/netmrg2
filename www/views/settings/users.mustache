@@ -1,0 +1,21 @@
+{{>settingsheader}}
+            <h1 class="page-header">Settings - Users</h1>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+        <tr><th>[*] [0] [-]</th><th>User ID</th><th>Name</th><th>Permissions</th><th class="text-right">add</th></tr>
+
+        </thead>
+        <tbody>
+        {{#users}}
+            <tr><td><input type="checkbox" name="checkboxes[]"></td><td>{{user}}</td><td>{{fullname}}</td><td>{{permit}}</td><td class="text-right"><span class="glyphicon glyphicon-folder-open"></span> <span class="glyphicon glyphicon-pencil"></span> <span class="glyphicon glyphicon-remove"></span></td></tr>
+        {{/users}}
+
+
+        </tbody>
+
+    </table>
+</div>
+
+{{>settingsfooter}}
