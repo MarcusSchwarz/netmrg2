@@ -444,7 +444,7 @@ function CheckInstallState($prereqs_errors = array()) {
                     <!-- updater needs run and on updater page -->
                     This installation is currently unusable due to a recent upgrade.  Please contact
                     your administrator to have the rest of the upgrade performed. <br/>
-                    <a href="logout.php">logout</a><br/>
+                    <a href="index/login/logout">logout</a><br/>
                     <?php
                     end_page();
                     exit();
@@ -455,7 +455,7 @@ function CheckInstallState($prereqs_errors = array()) {
                 <!-- updater needs run and not on updater page -->
                 Your installation is currently in an unusable state; please proceed to update
                 your installation <a href="updater.php">here</a><br/>
-                <a href="logout.php">logout</a><br/>
+                <a href="index/login/logout">logout</a><br/>
                 <?php
                 end_page();
                 exit();
