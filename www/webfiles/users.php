@@ -200,7 +200,7 @@ function display_page() {
                 array("text" => $user_row["user"]),
                 array("text" => $user_row["fullname"]),
                 array("text" => ($auth->getUsersPermissionLevel($user_row["user"]) == $GLOBALS['PERMIT']["Disabled"]) ? 'Disabled' : $GLOBALS['PERMIT_TYPES'][$user_row['permit']]),
-                array("text" => formatted_link("Prefs", "user_prefs.php?uid=$user_id")."&nbsp;".
+                array("text" => formatted_link("Prefs", "index/preferences?uid=$user_id")."&nbsp;".
                                 formatted_link("Edit", "{$_SERVER['PHP_SELF']}?action=edit&user_id=$user_id", "", "edit")."&nbsp;".
                                 formatted_link("Delete", "javascript:del('".addslashes($user_row['user'])."', '{$user_row['id']}')", "", "delete")
                 )
