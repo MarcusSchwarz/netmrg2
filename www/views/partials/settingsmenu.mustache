@@ -1,0 +1,20 @@
+<div class="col-sm-3 col-md-2 sidebar">
+    <ul class="nav nav-sidebar">
+        <li{{#menu.settingsindex}} class="active"{{/menu.settingsindex}}><a href="{{#route}}/settings{{/route}}">Overview</a></li>
+        <li{{#menu.settingsdevices}} class="active"{{/menu.settingsdevices}}><a href="{{#route}}/settings/devices{{/route}}">Devices</a></li>
+        <li{{#menu.settingsdevicetypes}} class="active"{{/menu.settingsdevicetypes}}><a href="{{#route}}/settings/devicetypes{{/route}}">Device Types</a></li>
+        <li{{#menu.settingsnotifications}} class="active"{{/menu.settingsnotifications}}><a href="{{#route}}/settings/notifications{{/route}}">Notifications</a></li>
+    </ul>
+    <ul class="nav nav-sidebar">
+        <li><a href="{{#route}}/settings/customgraphs{{/route}}">Custom Graphs</a></li>
+        <li><a href="{{#route}}/settings/templategraphs{{/route}}">Template Graphs</a></li>
+    </ul>
+    <ul class="nav nav-sidebar">
+        <li><a href="{{#route}}/settings/script{{/route}}">Script</a></li>
+        <li><a href="{{#route}}/settings/snmp{{/route}}">SNMP</a></li>
+        <li><a href="{{#route}}/settings/sql{{/route}}">SQL</a></li>
+    </ul>
+    <ul class="nav nav-sidebar">
+        <li><a href="{{#route}}/settings/users{{/route}}">Users</a></li>
+    </ul>
+</div>

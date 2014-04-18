@@ -31,6 +31,7 @@ class BaseController
     private $debugmode = false;
     protected $auth = null;
     protected $session = null;
+    private $variables = array();
 
     public function __construct(
         \Mustache_Engine $mustache,
@@ -91,6 +92,7 @@ class BaseController
             $variables['debug']['sessiondata'] = $this->dump($_SESSION);
         }
         $variables += $this->getDefaults();
+        $variables += $this->getVariables();
         $variables += $this->getErrors();
         $variables += $this->getSuccess();
 
@@ -152,6 +154,14 @@ class BaseController
     {
         $classString = strtolower(array_pop(explode('\\', get_class($this))));
         return str_replace('controller', '', $classString);
+    }
+
+    protected function add($key, $value) {
+        $this->variables[$key] = array($value => $value);
+    }
+
+    private function getVariables() {
+        return $this->variables;
     }
 
     protected function redirect($target = null)

@@ -1,0 +1,13 @@
+{{#debug}}
+    <hr>
+    <pre>
+        <b>DEBUG-MESSAGES:</b><br>
+        {{#messages}}
+            *{{.}}
+        {{/messages}}
+        <b>SESSION-DATA:</b>
+        {{#sessiondata}}
+            {{{.}}}
+        {{/sessiondata}}
+    </pre>
+{{/debug}}

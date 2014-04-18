@@ -31,7 +31,7 @@
             <ul class="nav navbar-nav navbar-right">
                 {{#__tpl_isloggedin}}
                 <li><a href="../device_tree.php">Dashboard</a></li>
-                <li><a href="#">Settings</a></li>
+                <li><a href="{{#route}}/settings{{/route}}">Settings</a></li>
                 <li><a href="{{#route}}/preferences{{/route}}"><bold class="username">{{__tpl_username}}'s</bold> Profile</a></li>
                 {{/__tpl_isloggedin}}
                 <li><a href="https://github.com/marcusschwarz/netmrg2/wiki" target="_blank">Help</a></li>
