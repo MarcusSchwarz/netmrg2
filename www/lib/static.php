@@ -86,7 +86,7 @@ $MENU = array(
         array("name" => "Web Updater", "link" => "updater.php", "descr" => "", "authLevelRequired" => 0, "display" => false)
     ),
     "Prefs"     => array(
-        array("name" => "Prefs", "link" => "user_prefs.php", "descr" => "Personal Preferences", "authLevelRequired" => 0)
+        array("name" => "Prefs", "link" => "index/preferences", "descr" => "Personal Preferences", "authLevelRequired" => 0)
     ),
     "Logout"    => array(
         array("name" => "Logout", "link" => "index/login/logout", "descr" => "End your NetMRG Session.", "authLevelRequired" => 0),

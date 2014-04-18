@@ -1,6 +1,7 @@
 <?php
 /**
- * Part of NetMRG2
+ * NetmrgException.php
+ * NetMRG's own Exception Type
  * Copyright (c) 2014
  *   Marcus Schwarz <msspamfang@gmx.de>
  * This program is free software; you can redistribute it and/or modify
@@ -17,27 +18,20 @@
  * @author Marcus Schwarz <msspamfang@gmx.de>
  */
 
-namespace Netmrg\Controller;
+namespace Netmrg;
 
 
-use Netmrg\BaseController;
-
-class ErrorController extends BaseController
+class NetmrgMissingException extends NetmrgException
 {
 
-    public function notfoundAction()
+    public function __construct($errormessage = null)
     {
-        $this->render(array('errorcode' => 404));
-    }
-
-    public function permissionAction()
-    {
-        $this->render();
-    }
-
-    public function missingAction($errormessage = null)
-    {
-        $this->render(array('errors' => $errormessage));
-        //$this->render();
+        global $mustache, $auth; // todo ouch!
+        $controller = new Controller\ErrorController($mustache, $auth);
+        $controller->load(
+            'exceptions/missing'
+        ); // todo I think this actually should be part of the controller itself
+        $controller->missingAction($errormessage);
+        exit;
     }
 } 

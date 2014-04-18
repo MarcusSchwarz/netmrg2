@@ -1160,6 +1160,7 @@ function SetUserPref($uid, $module, $pref, $value) {
         $s->bindValue(':pref', $pref);
     } // end no result
     $s->execute();
+    return $s->rowCount();
 } // end SetUserPref();
 
 

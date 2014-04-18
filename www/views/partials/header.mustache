@@ -32,12 +32,12 @@
                 {{#__tpl_isloggedin}}
                 <li><a href="#">Dashboard</a></li>
                 <li><a href="#">Settings</a></li>
-                <li><a href="#"><bold class="username">{{__tpl_username}}'s</bold> Profile</a></li>
+                <li><a href="{{#route}}/preferences{{/route}}"><bold class="username">{{__tpl_username}}'s</bold> Profile</a></li>
                 {{/__tpl_isloggedin}}
                 <li><a href="#">Help</a></li>
                 <li><a href="{{#route}}/about{{/route}}">About</a></li>
                 {{#__tpl_isloggedin}}
-                    <li><a href="{{#route}}/logout{{/route}}">Logout</a></li>
+                    <li><a href="{{#route}}/login/logout{{/route}}">Logout</a></li>
                 {{/__tpl_isloggedin}}
                 {{^__tpl_isloggedin}}
                     <li><a href="{{#route}}/login{{/route}}">Login</a></li>
@@ -58,3 +58,8 @@
     {{ . }}<br>
 </div>
 {{/errors}}
+{{#success}}
+<div class="alert alert-success">
+    {{ . }}<br>
+</div>
+{{/success}}
