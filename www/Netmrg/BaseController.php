@@ -30,13 +30,24 @@ class BaseController
     protected $templateName = null;
     protected $mustache = null;
     protected $debug = array('debug' => array());
+    protected $errors = null;
 
     private $debugmode = false;
+    protected $auth   = null;
+    protected $session = null;
 
-    public function __construct(\Mustache_Engine $mustache, $debugmode = false)
+    public function __construct(
+        \Mustache_Engine $mustache,
+        Auth $auth,
+        Session $session = null,
+        $debugmode = false
+    )
     {
         $this->mustache = $mustache;
         $this->debugmode = $debugmode;
+        $this->auth = $auth;
+        $this->session = $session;
+        $this->errors = new \ArrayObject(array());
     }
 
     public function load($templateName = null)
@@ -58,7 +69,16 @@ class BaseController
         $tmp['__tpl_companylink'] = $GLOBALS['netmrg']['companylink'];
         $tmp['__tpl_companyname'] = $GLOBALS['netmrg']['company'];
 
+        $tmp['__tpl_isloggedin'] = $this->auth->userIsLoggedIn();
+        $tmp['__tpl_username'] = $this->auth->getUsername();
         return $tmp;
+    }
+
+    private function getErrors() {
+        if ($this->errors->count() > 0) {
+            return array('errors' => $this->errors->getArrayCopy());
+        }
+        return array();
     }
 
     protected function render(array $variables = null)
@@ -69,6 +89,7 @@ class BaseController
             $variables['debug'] = $this->debug;
         }
         $variables += $this->getDefaults();
+        $variables += $this->getErrors();
 
         $this->addMustacheFilters();
 
@@ -76,7 +97,6 @@ class BaseController
             $this->load();
         }
         $tpl = $this->mustache->loadTemplate($this->templateName);
-
 
         echo $tpl->render($variables);
     }
@@ -114,5 +134,24 @@ class BaseController
     {
         $classString = strtolower(array_pop(explode('\\', get_class($this))));
         return str_replace('controller', '', $classString);
+    }
+
+    protected function redirect($target = null) {
+        $redir = $this->session->get('redir'); // 5.3 does not allow empty(func())
+        if (empty($redir)) { // removed permission, this should not be handled here  || ($this->session->get('permit') == 0)
+            if (stripos($target, '.php') !== false) {
+                $location = $GLOBALS['netmrg']['webroot'].'/'.$target;
+            }
+            else {
+                #todo ./index for testing purposes right now
+                $location = $GLOBALS['netmrg']['webroot'] . '/index' . $target;
+            }
+
+        } else {
+            $this->session->set('redir', null);
+            $location = $redir;
+        }
+        header('Location: '.$location);
+        exit;
     }
 } 

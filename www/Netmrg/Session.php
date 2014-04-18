@@ -62,6 +62,7 @@ class Session {
     }
 
     public function setSessionParameters(Auth $auth, $prettyusername, $user, $password = '') {
+        $auth->resetLoggedInState();
         $this->set('prettyname', $prettyusername);
         $this->set('username', $user);
         $this->set('password', $password);

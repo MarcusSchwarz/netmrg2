@@ -1,8 +1,6 @@
 <?php
 /**
- * NetmrgException.php
- *
- * NetMRG's own Exception Type
+ * Part of NetMRG2
  * Copyright (c) 2014
  *   Marcus Schwarz <msspamfang@gmx.de>
  *
@@ -24,16 +22,30 @@
  * @author Marcus Schwarz <msspamfang@gmx.de>
  */
 
-namespace Netmrg;
+namespace Netmrg\Controller;
+use Netmrg\BaseController;
 
+class LoginController extends BaseController {
 
-class Netmrg404Exception extends NetmrgException {
-
-    public function __construct() {
-        global $mustache, $auth; // todo ouch!
-        $controller = new Controller\ErrorController($mustache, $auth);
-        $controller->load('notfound'); // todo I think this actually should be part of the controller itself
-        $controller->notfoundAction();
-        exit;
+    public function indexAction() {
+        if (!empty($_POST['username'])) {
+            if (
+                !$GLOBALS["netmrg"]["externalAuth"] &&
+                $this->auth->userHasCorrectPassword($_POST['username'], $_POST['password'])
+            ) {
+                $this->session->setSessionParameters($this->auth, $_POST['username'], $_POST['username'], $_POST['password']);
+                $this->redirect('device_tree.php');
+            }
+            else {
+                $this->errors->append('Invalid username or password');
+            }
+        }
+        $this->render(array());
     }
-} 
+
+    public function logoutAction() {
+        $this->auth->logoutAndResetSession();
+        $this->redirect('/login');
+    }
+
+}

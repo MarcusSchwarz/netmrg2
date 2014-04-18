@@ -45,6 +45,10 @@ class Auth
     private $session = null;
 
     /**
+     * @var bool|null
+     */
+    private $isLoggedIn = null;
+    /**
      * @param Session|null $session
      * @param Database|null  $databaseHandler
      */
@@ -130,6 +134,14 @@ class Auth
         return true;
     }
 
+    public function getUsername() {
+        return $this->session->get('prettyname');
+    }
+
+    public function resetLoggedInState() {
+        $this->isLoggedIn = null;
+    }
+
     /**
      * IsLoggedIn();
      *
@@ -140,6 +152,9 @@ class Auth
      */
     public function userIsLoggedIn()
     {
+        if (!is_null($this->isLoggedIn)) {
+            return $this->isLoggedIn;
+        }
         if ((
                 ($GLOBALS["netmrg"]["externalAuth"] && ($this->userExists() || $this->defaultUserExists()))
                 ||
@@ -148,10 +163,12 @@ class Auth
             && $this->session->get('remote_addr') == $_SERVER["REMOTE_ADDR"]
             && time() - $this->session->get('accessTime') <= $GLOBALS["netmrg"]["authTimeout"]
         ) {
-            return true;
+            $this->isLoggedIn = true;
         }
-
-        return false;
+        else {
+            $this->isLoggedIn = false;
+        }
+        return $this->isLoggedIn;
     }
 
     /**

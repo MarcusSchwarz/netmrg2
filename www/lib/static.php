@@ -89,11 +89,11 @@ $MENU = array(
         array("name" => "Prefs", "link" => "user_prefs.php", "descr" => "Personal Preferences", "authLevelRequired" => 0)
     ),
     "Logout"    => array(
-        array("name" => "Logout", "link" => "logout.php", "descr" => "End your NetMRG Session.", "authLevelRequired" => 0),
-        array("name" => "Login", "link" => "login.php", "descr" => "", "authLevelRequired" => 0, "display" => false)
+        array("name" => "Logout", "link" => "index/login/logout", "descr" => "End your NetMRG Session.", "authLevelRequired" => 0),
+        array("name" => "Login", "link" => "index/login", "descr" => "", "authLevelRequired" => 0, "display" => false)
     ),
     "Help"      => array(
-        array("name" => "About", "link" => "about.php", "descr" => "", "authLevelRequired" => 0),
+        array("name" => "About", "link" => "index/about", "descr" => "", "authLevelRequired" => 0),
         array("name" => "Manual", "link" => "http://wiki.netmrg.net/wiki/Users_Manual", "descr" => "", "authLevelRequired" => 0),
         array("name" => "Forum", "link" => "http://lists.netmrg.net/", "descr" => "Benefit from the NetMRG Community.", "authLevelRequired" => 0),
         array("name" => "Bugs", "link" => "http://bugs.netmrg.net/", "descr" => "Report bugs and request features.", "authLevelRequired" => 0),
