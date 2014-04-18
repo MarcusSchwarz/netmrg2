@@ -58,5 +58,5 @@ if (isset($_GET['controller'])) {
 
 }
 else {
-    header("Location: login.php");
+    header("Location: index/login");
 }

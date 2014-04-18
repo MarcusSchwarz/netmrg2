@@ -30,7 +30,7 @@
 require_once "../include/config.php";
 
 if (!$GLOBALS["netmrg"]["externalAuth"] && !$auth->userIsLoggedIn()) {
-    header("Location: {$GLOBALS['netmrg']['webroot']}/login.php");
+    header("Location: {$GLOBALS['netmrg']['webroot']}/index/login");
     exit;
 }
 

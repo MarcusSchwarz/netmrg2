@@ -117,7 +117,7 @@ class Auth
         if (!$this->userIsLoggedIn()) {
             $this->session->set('redir', $_SERVER['REQUEST_URI']);
             if ($GLOBALS["netmrg"]["externalAuth"]) {
-                header("Location: {$GLOBALS['netmrg']['webroot']}/login.php");
+                header("Location: {$GLOBALS['netmrg']['webroot']}/index/login");
                 exit;
             }
             $this->redirectErrorInvalid();
