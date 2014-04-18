@@ -87,7 +87,7 @@ function end_page() {
             <img src="<?php echo get_image_by_name("logo"); ?>" alt="logo"/>
             NetMRG
         </a>
-        <a href="about.php">&copy; 2003-2007</a>
+        <a href="index/about">&copy; 2003-2007</a>
     </div> <!-- end #footer -->
 
     </body>

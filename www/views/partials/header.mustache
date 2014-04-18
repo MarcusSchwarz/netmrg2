@@ -30,11 +30,11 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
                 {{#__tpl_isloggedin}}
-                <li><a href="#">Dashboard</a></li>
+                <li><a href="../device_tree.php">Dashboard</a></li>
                 <li><a href="#">Settings</a></li>
                 <li><a href="{{#route}}/preferences{{/route}}"><bold class="username">{{__tpl_username}}'s</bold> Profile</a></li>
                 {{/__tpl_isloggedin}}
-                <li><a href="#">Help</a></li>
+                <li><a href="https://github.com/marcusschwarz/netmrg2/wiki" target="_blank">Help</a></li>
                 <li><a href="{{#route}}/about{{/route}}">About</a></li>
                 {{#__tpl_isloggedin}}
                     <li><a href="{{#route}}/login/logout{{/route}}">Logout</a></li>
