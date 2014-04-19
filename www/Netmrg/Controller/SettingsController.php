@@ -53,7 +53,7 @@ class SettingsController extends BaseController
         $this->add('menu', 'settingsusers');
 
 
-        $users = getDatabase()->query('SELECT id, user, fullname, permit  FROM user ORDER BY user')->fetchAll(\PDO::FETCH_ASSOC);
+        $users = getDatabase()->query('SELECT id, user, fullname, IF(disabled = 0, permit, '.Auth::RIGHT_DISABLED.') AS permit FROM user ORDER BY user')->fetchAll(\PDO::FETCH_ASSOC);
 
         $users = $this->mapPermissions($users);
 
