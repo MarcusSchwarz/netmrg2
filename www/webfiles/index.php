@@ -29,7 +29,8 @@
 
 
 require_once "../include/config.php";
-
+//var_Dump($_GET);
+//exit;
 if (isset($_GET['controller'])) {
     $classname = 'Netmrg\Controller\\'.ucfirst($_GET['controller']).'Controller';  // todo test for remote file inclusion!
 
@@ -44,7 +45,7 @@ if (isset($_GET['controller'])) {
         $desiredAction = 'index';
     }
     else {
-        $desiredAction = strtolower($_GET['action']);
+        $desiredAction = str_replace('/', '_', strtolower($_GET['action']));
     }
 
     $action = $desiredAction.'Action';

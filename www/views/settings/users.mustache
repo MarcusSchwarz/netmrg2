@@ -9,13 +9,57 @@
         </thead>
         <tbody>
         {{#users}}
-            <tr><td><input type="checkbox" name="checkboxes[]"></td><td>{{user}}</td><td>{{fullname}}</td><td>{{permit}}</td><td class="text-right"><span class="glyphicon glyphicon-folder-open"></span> <span class="glyphicon glyphicon-pencil"></span> <span class="glyphicon glyphicon-remove"></span></td></tr>
+            <tr>
+                <td>
+                    <input type="checkbox" name="checkboxes[]">
+                </td>
+                <td>
+                    {{user}}
+                </td>
+                <td>
+                    {{fullname}}
+                </td>
+                <td>
+                    {{permit}}
+                </td>
+                <td class="text-right">
+                    <a href="{{#route}}/preferences?uid={{id}}{{/route}}"><span class="glyphicon glyphicon-folder-open" title="edit preferences"></span></a>
+                    <span class="glyphicon glyphicon-pencil"></span>
+                    <a href="{{#route}}/settings/users/delete?uid={{id}}{{/route}}" data-csrftoken="{{csrftoken}}" data-confirmButton="Yes, delete" data-cancelButton="no" data-text="Do you really want to delete <strong>{{user}}</strong>?" data-okButtonClass="btn-danger" class="confirm"><span class="glyphicon glyphicon-remove alert-danger" title="delete user"></span></a>
+                </td>
+            </tr>
         {{/users}}
-
+ <!--       <tr>
+            <td>
+                <input type="checkbox" name="checkboxes[]">
+            </td>
+            <td>
+                foobar
+            </td>
+            <td>
+                foobar
+            </td>
+            <td>
+                1
+            </td>
+            <td class="text-right">
+                <a href="{{#route}}/preferences?uid=3{{/route}}"><span class="glyphicon glyphicon-folder-open" title="edit preferences"></span></a>
+                <span class="glyphicon glyphicon-pencil"></span>
+                <a href="{{#route}}/settings/users/delete?uid=3{{/route}}" data-csrftoken="{{csrftoken}}" data-cancelButton="no" data-text="Do you really want to delete <strong>foobar</strong>?" data-okButtonClass="btn-danger" class="confirm"><span class="glyphicon glyphicon-remove alert-danger" title="delete user"></span></a>
+            </td>
+        </tr>
+-->
 
         </tbody>
 
     </table>
 </div>
+
+<script>
+    $(".confirm").confirm({
+        title: 'Confirmation',
+        post: true
+    });
+</script>
 
 {{>settingsfooter}}

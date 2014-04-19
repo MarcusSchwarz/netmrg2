@@ -440,6 +440,11 @@ class Auth
         return $PERMIT['Disabled'];
     }
 
+    public function deleteUser($userid) {
+        getDatabase()->exec('DELETE FROM user WHERE id = '.intval($userid));
+        getDatabase()->exec('DELETE FROM user_prefs WHERE uid = '.intval($userid));
+    }
+
     public function updatePassword($uid, $newpass)
     {
         $s = getDatabase()->prepare('UPDATE user SET pass = :pass WHERE id = :id');

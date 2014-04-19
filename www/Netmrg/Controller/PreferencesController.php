@@ -39,15 +39,13 @@ class PreferencesController extends BaseController
             ? $_GET['uid']
             : $this->auth->getUserID();
         $username = $this->auth->getUsername($userid);
-        $crsftoken = uniqid();
-        $this->session->set('crsftoken', $crsftoken);
         $setting = GetUserPref($userid, 'SlideShow', 'AutoScroll');
         $checked = (!empty($setting)) ? 'checked' : '';
         $this->render(
             array(
                 'username' => $username,
                 'userid' => $userid,
-                'crsftoken' => $crsftoken,
+                'csrftoken' => $this->csrfToken(),
                 'checked' => $checked
             )
         );
@@ -58,14 +56,14 @@ class PreferencesController extends BaseController
         $changePassword = true;
         $this->minPermission(Auth::RIGHT_SINGLEVIEWONLY);
         $this->testForPresence(
-            array('post' => array('crsftoken', 'userid', 'password1', 'password2'))
+            array('post' => array('csrftoken', 'userid', 'password1', 'password2'))
         );
 
         if ($this->session->get('username') == $GLOBALS['netmrg']['defaultMapUser']) {
             throw new NetmrgPermissionException();
         }
 
-        if ($this->session->get('crsftoken') != $_POST['crsftoken']) {
+        if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
             $this->errors->append('Token mismatch');
         }
 

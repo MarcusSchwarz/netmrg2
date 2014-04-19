@@ -58,7 +58,25 @@ class SettingsController extends BaseController
         $users = $this->mapPermissions($users);
 
         $this->load('settings/users');
-        $this->render(array('users' => $users));
+        $this->render(array('users' => $users, 'csrftoken' => $this->csrfToken()));
+    }
+
+    public function users_deleteAction() {
+        $this->minPermission(Auth::RIGHT_ADMIN);
+        $this->testForPresence(
+            array(
+                'post' => array('csrftoken'),
+                'get' => array('uid')
+            )
+        );
+
+        if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
+            throw new NetmrgPermissionException();
+        }
+        else {
+            $this->auth->deleteUser($_GET['uid']);
+            $this->redirect('/settings/users');
+        }
     }
 
     private function mapPermissions(array $users) {

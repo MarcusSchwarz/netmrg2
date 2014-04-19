@@ -106,6 +106,18 @@ class BaseController
         echo $tpl->render($variables);
     }
 
+    protected function csrfToken() {
+        $crsftoken = uniqid();
+        $this->session->set('csrftoken', $crsftoken);
+        return $crsftoken;
+    }
+
+    protected function isValidCsrfToken($token) {
+        $tmp = $this->session->get('csrftoken');
+        $this->csrfToken(); // token should not remain valid no matter whether the test was correct or not
+        return ($tmp == $token);
+    }
+
     protected function debug($what) {
         $this->debug['messages'][] = $this->dump($what);
     }
@@ -142,7 +154,7 @@ class BaseController
             'route',
             function ($value) {
                 #todo ./index for testing purposes right now
-                return $GLOBALS['netmrg']['webroot'] . '/index' . $value; // todo $this is not available in 5.3
+                return $GLOBALS['netmrg']['webroot'] . '/index' . $value;
             }
         );
         $this->mustache->addHelper(
@@ -177,7 +189,7 @@ class BaseController
             $this->session->set('success', $this->success);
         }
 
-        $redir = $this->session->get('redir'); // 5.3 does not allow empty(func())
+        $redir = $this->session->get('redir');
         if (empty($redir)) { // removed permission, this should not be handled here  || ($this->session->get('permit') == 0)
             if (stripos($target, '.php') !== false) {
                 $location = $GLOBALS['netmrg']['webroot'] . '/' . $target;
