@@ -25,19 +25,38 @@ use Netmrg\BaseController;
 class ErrorController extends BaseController
 {
 
-    public function notfoundAction()
+    public function notfoundAction($errormessage = null)
     {
-        $this->render(array('errorcode' => 404));
+        $this->renderErrorTemplate('exceptions/404notfound', $errormessage);
     }
 
-    public function permissionAction()
+    /**
+     * @param $template
+     * @param $errormessage
+     */
+    private function renderErrorTemplate($template, $errormessage)
     {
-        $this->render();
+        $this->load($template);
+        $this->render(array('errors' => $errormessage));
+    }
+
+    public function forbiddenAction($errormessage = null)
+    {
+        $this->renderErrorTemplate('exceptions/403forbidden', $errormessage);
     }
 
     public function missingAction($errormessage = null)
     {
-        $this->render(array('errors' => $errormessage));
-        //$this->render();
+        $this->renderErrorTemplate('exceptions/400badrequest', $errormessage);
+    }
+
+    public function databaseAction($errormessage = null)
+    {
+        $this->renderErrorTemplate('exceptions/500database', $errormessage);
+    }
+
+    public function internalerrorAction($errormessage = null)
+    {
+        $this->renderErrorTemplate('exceptions/500error', $errormessage);
     }
 } 

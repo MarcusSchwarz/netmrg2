@@ -20,6 +20,8 @@
 
 namespace Netmrg;
 
+use Netmrg\Exception\InternalErrorException;
+
 class Session
 {
 
@@ -39,7 +41,7 @@ class Session
     public function get($field)
     {
         if (!isset($_SESSION['netmrgsess'])) {
-            throw new NetmrgException('trying to access an uninitialized session');
+            throw new InternalErrorException('trying to access an uninitialized session');
         }
         return ((isset($_SESSION['netmrgsess'][$field])) ? $_SESSION['netmrgsess'][$field] : null);
     }
@@ -47,7 +49,7 @@ class Session
     public function set($field, $value = null)
     {
         if (empty($field) || is_array($field) || is_object($field)) {
-            throw new NetmrgException('invalid session field type');
+            throw new InternalErrorException('invalid session field type');
         }
         $_SESSION['netmrgsess'][$field] = $value;
     }

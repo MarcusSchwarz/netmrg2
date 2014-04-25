@@ -20,6 +20,9 @@
 
 namespace Netmrg;
 
+use Netmrg\Exception\FileNotFoundException;
+use Netmrg\Exception\InternalErrorException;
+
 
 /**
  * Class Auth
@@ -142,7 +145,7 @@ class Auth
         if ($tmp->rowCount() == 1) {
             return $tmp->fetchColumn();
         }
-        throw new Netmrg404Exception();
+        throw new InternalErrorException('user not found');
 
 
     }
@@ -292,7 +295,7 @@ class Auth
 
             return $pass;
         }
-        throw new NetmrgException('this password hash is not invented yet');
+        throw new InternalErrorException('this password hash is not invented yet');
     }
 
     /**

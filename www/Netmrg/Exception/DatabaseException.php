@@ -1,7 +1,6 @@
 <?php
 /**
- * NetmrgException.php
- * NetMRG's own Exception Type
+ * Part of NetMRG2
  * Copyright (c) 2014
  *   Marcus Schwarz <msspamfang@gmx.de>
  * This program is free software; you can redistribute it and/or modify
@@ -18,20 +17,18 @@
  * @author Marcus Schwarz <msspamfang@gmx.de>
  */
 
-namespace Netmrg;
+namespace Netmrg\Exception;
+use Netmrg\BaseException;
+use Netmrg\Controller\ErrorController;
 
-
-class NetmrgMissingException extends NetmrgException
+class DatabaseException extends BaseException
 {
 
     public function __construct($errormessage = null)
     {
         global $mustache, $auth; // todo ouch!
-        $controller = new Controller\ErrorController($mustache, $auth);
-        $controller->load(
-            'exceptions/missing'
-        ); // todo I think this actually should be part of the controller itself
-        $controller->missingAction($errormessage);
+        $controller = new ErrorController($mustache, $auth);
+        $controller->databaseAction($errormessage);
         exit;
     }
 } 

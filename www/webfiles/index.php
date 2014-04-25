@@ -29,16 +29,15 @@
 
 
 require_once "../include/config.php";
-//var_Dump($_GET);
-//exit;
+
 if (isset($_GET['controller'])) {
     $classname = 'Netmrg\Controller\\'.ucfirst($_GET['controller']).'Controller';  // todo test for remote file inclusion!
 
     try {
-        $controller = new $classname($mustache, $auth, $session, true); // todo true activates the debug mode
+        $controller = new $classname($mustache, $auth, $session, false); // todo true activates the debug mode
     }
     catch (Exception $e) {
-        throw new \Netmrg\Netmrg404Exception;
+        throw new \Netmrg\Exception\FileNotFoundException;
     }
 
     if (!isset($_GET['action']) || empty($_GET['action'])) {
@@ -54,7 +53,7 @@ if (isset($_GET['controller'])) {
         $controller->$action();
     }
     else {
-        throw new \Netmrg\Netmrg404Exception();
+        throw new \Netmrg\Exception\FileNotFoundException;
     }
 
 }

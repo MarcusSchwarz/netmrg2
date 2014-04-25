@@ -24,9 +24,16 @@
  * @author Marcus Schwarz <msspamfang@gmx.de>
  */
 
-namespace Netmrg;
+namespace Netmrg\Exception;
+use Netmrg\BaseException;
+use Netmrg\Controller\ErrorController;
 
+class FileNotFoundException extends BaseException {
 
-class NetmrgException extends \Exception {
-
+    public function __construct($errormessage = null) {
+        global $mustache, $auth; // todo ouch!
+        $controller = new ErrorController($mustache, $auth);
+        $controller->notfoundAction($errormessage);
+        exit;
+    }
 } 

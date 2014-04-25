@@ -26,6 +26,8 @@
 
 namespace Netmrg;
 
+use Netmrg\Exception\DatabaseException;
+
 class Database extends \PDO
 {
 
@@ -39,7 +41,7 @@ class Database extends \PDO
         try {
             parent::__construct($dsn, $user, $password);
         } catch (\PDOException $e) {
-            throw new NetmrgException($e->getMessage());
+            throw new DatabaseException($e->getMessage());
         }
 
         $GLOBALS['netmrg']['__pdoconn'] = $this; //todo active while rewriting the whole thing

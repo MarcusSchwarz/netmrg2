@@ -19,6 +19,8 @@
 
 namespace Netmrg;
 
+use Netmrg\Exception\BadRequestException;
+use Netmrg\Exception\ForbiddenException;
 
 /**
  * Class BaseController
@@ -88,7 +90,7 @@ class BaseController
      *
      * @return string
      */
-    protected function load($templateName = null)
+    public function load($templateName = null)
     {
         $this->templateName = (empty($templateName)) ? $this->getClassName() : $templateName;
         return $this->templateName;
@@ -207,12 +209,12 @@ class BaseController
 
     /**
      * @param  int $permission
-     * @throws NetmrgPermissionException
+     * @throws ForbiddenException
      */
     protected function minPermission($permission)
     {
         if ($this->session->get('permit') < $permission) {
-            throw new NetmrgPermissionException();
+            throw new ForbiddenException();
         }
     }
 
@@ -306,7 +308,7 @@ class BaseController
     /**
      * @param array $values
      * @return bool
-     * @throws NetmrgMissingException
+     * @throws BadRequestException
      */
     protected function testForPresence(array $values)
     {
@@ -316,14 +318,14 @@ class BaseController
         if (isset($values['post'])) {
             foreach ($values['post'] as $test) {
                 if (!isset($_POST[$test])) {
-                    throw new NetmrgMissingException($test);
+                    throw new BadRequestException('variable '.$test. ' not found');
                 }
             }
         }
         if (isset($values['get'])) {
             foreach ($values['get'] as $test) {
                 if (!isset($_GET[$test])) {
-                    throw new NetmrgMissingException($test);
+                    throw new BadRequestException('variable '.$test. ' not found');
                 }
             }
         }
