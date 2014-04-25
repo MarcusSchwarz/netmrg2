@@ -20,22 +20,58 @@
 namespace Netmrg;
 
 
+/**
+ * Class BaseController
+ * @package Netmrg
+ */
 class BaseController
 {
+    /**
+     * @var string|null
+     */
     protected $templateName = null;
+    /**
+     * @var \Mustache_Engine|null
+     */
     protected $mustache = null;
+    /**
+     * @var array
+     */
     protected $debug = array('debug' => array());
+    /**
+     * @var \ArrayObject|null
+     */
     protected $errors = null;
+    /**
+     * @var \ArrayObject|null
+     */
     protected $success = null;
-
+    /**
+     * @var bool
+     */
     private $debugmode = false;
+    /**
+     * @var Auth|null
+     */
     protected $auth = null;
+    /**
+     * @var Session|null
+     */
     protected $session = null;
+    /**
+     * @var array
+     */
     private $variables = array();
 
+    /**
+     * @param \Mustache_Engine $mustache
+     * @param Auth $auth
+     * @param Session $session
+     * @param bool $debugmode
+     */
     public function __construct(
-        \Mustache_Engine $mustache,
-        Auth $auth,
+        \Mustache_Engine $mustache = null,
+        Auth $auth = null,
         Session $session = null,
         $debugmode = false
     ) {
@@ -47,17 +83,29 @@ class BaseController
         $this->success = new \ArrayObject(array());
     }
 
-    public function load($templateName = null)
+    /**
+     * @param null|string $templateName
+     *
+     * @return string
+     */
+    protected function load($templateName = null)
     {
         $this->templateName = (empty($templateName)) ? $this->getClassName() : $templateName;
+        return $this->templateName;
     }
 
-    public function addDebugMessage($newMessage)
+    /**
+     * @param string $newMessage
+     */
+    protected function addDebugMessage($newMessage)
     {
         $this->debug['messages'][] = $newMessage;
 
     }
 
+    /**
+     * @return array
+     */
     private function getDefaults()
     {
         $tmp = array();
@@ -71,16 +119,25 @@ class BaseController
         return $tmp;
     }
 
+    /**
+     * @return array
+     */
     private function getErrors()
     {
         return $this->getMessages('errors');
     }
 
+    /**
+     * @return array
+     */
     private function getSuccess()
     {
         return $this->getMessages('success');
     }
 
+    /**
+     * @param array $variables
+     */
     protected function render(array $variables = null)
     {
         $variables = (empty($variables)) ? array() : $variables;
@@ -106,22 +163,40 @@ class BaseController
         echo $tpl->render($variables);
     }
 
-    protected function csrfToken() {
+    /**
+     * @return string
+     */
+    protected function csrfToken()
+    {
         $crsftoken = uniqid();
         $this->session->set('csrftoken', $crsftoken);
         return $crsftoken;
     }
 
-    protected function isValidCsrfToken($token) {
+    /**
+     * @param  string $token
+     * @return bool
+     */
+    protected function isValidCsrfToken($token)
+    {
         $tmp = $this->session->get('csrftoken');
-        $this->csrfToken(); // token should not remain valid no matter whether the test was correct or not
+        $this->csrfToken(
+        ); // token should not remain valid no matter whether the test was correct or not
         return ($tmp == $token);
     }
 
-    protected function debug($what) {
+    /**
+     * @param mixed $what
+     */
+    protected function debug($what)
+    {
         $this->debug['messages'][] = $this->dump($what);
     }
 
+    /**
+     * @param mixed $what
+     * @return string
+     */
     private function dump($what)
     {
         ob_start();
@@ -130,6 +205,10 @@ class BaseController
         return $result;
     }
 
+    /**
+     * @param  int $permission
+     * @throws NetmrgPermissionException
+     */
     protected function minPermission($permission)
     {
         if ($this->session->get('permit') < $permission) {
@@ -137,6 +216,9 @@ class BaseController
         }
     }
 
+    /**
+     *
+     */
     private function addMustacheFilters()
     {
         $this->mustache->addHelper(
@@ -166,20 +248,35 @@ class BaseController
         );
     }
 
+    /**
+     * @return mixed
+     */
     private function getClassName()
     {
         $classString = strtolower(array_pop(explode('\\', get_class($this))));
         return str_replace('controller', '', $classString);
     }
 
-    protected function add($key, $value) {
+    /**
+     * @param string|int $key
+     * @param mixed $value
+     */
+    protected function add($key, $value)
+    {
         $this->variables[$key] = array($value => $value);
     }
 
-    private function getVariables() {
+    /**
+     * @return array
+     */
+    private function getVariables()
+    {
         return $this->variables;
     }
 
+    /**
+     * @param string|null $target
+     */
     protected function redirect($target = null)
     {
         if ($this->errors->count() > 0) {
@@ -206,6 +303,11 @@ class BaseController
         exit;
     }
 
+    /**
+     * @param array $values
+     * @return bool
+     * @throws NetmrgMissingException
+     */
     protected function testForPresence(array $values)
     {
         if (empty($values)) {
@@ -230,7 +332,7 @@ class BaseController
     }
 
     /**
-     * @param $type
+     * @param string $type
      * @return array
      */
     private function getMessages($type)
