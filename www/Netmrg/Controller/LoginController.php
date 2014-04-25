@@ -20,7 +20,7 @@
 namespace Netmrg\Controller;
 
 use Netmrg\BaseController;
-use Netmrg\NetmrgPermissionException;
+use Netmrg\Exception\ForbiddenException;
 
 class LoginController extends BaseController
 {
@@ -52,7 +52,7 @@ class LoginController extends BaseController
             // If we don't know the user, and there was no generic user
             // don't let him in
             if (!$this->auth->userExists($_SERVER["PHP_AUTH_USER"])) {
-                throw new NetmrgPermissionException();
+                throw new ForbiddenException();
             }
         }
 

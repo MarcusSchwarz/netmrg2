@@ -21,7 +21,7 @@ namespace Netmrg\Controller;
 
 use Netmrg\BaseController;
 use Netmrg\Auth;
-use Netmrg\NetmrgPermissionException;
+use Netmrg\Exception\ForbiddenException;
 
 class PreferencesController extends BaseController
 {
@@ -30,10 +30,10 @@ class PreferencesController extends BaseController
     {
         $this->minPermission(Auth::RIGHT_SINGLEVIEWONLY);
         if (isset($_GET['uid']) && !$this->auth->userHasAtLeastPermissionLevel(Auth::RIGHT_ADMIN)) {
-            throw new NetmrgPermissionException();
+            throw new ForbiddenException();
         }
         if ($this->session->get('username') == $GLOBALS['netmrg']['defaultMapUser']) {
-            throw new NetmrgPermissionException();
+            throw new ForbiddenException();
         }
         $userid = (isset($_GET['uid']) && intval($_GET['uid']) == $_GET['uid'])
             ? $_GET['uid']
@@ -60,7 +60,7 @@ class PreferencesController extends BaseController
         );
 
         if ($this->session->get('username') == $GLOBALS['netmrg']['defaultMapUser']) {
-            throw new NetmrgPermissionException();
+            throw new ForbiddenException();
         }
 
         if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
@@ -78,7 +78,7 @@ class PreferencesController extends BaseController
 
         if (intval($_POST['userid']) != $this->auth->getUserId()) {
             if (!$this->auth->userHasAtLeastPermissionLevel(Auth::RIGHT_ADMIN)) {
-                throw new NetmrgPermissionException();
+                throw new ForbiddenException();
             }
         }
 

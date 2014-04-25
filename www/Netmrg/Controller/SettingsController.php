@@ -21,7 +21,7 @@ namespace Netmrg\Controller;
 
 use Netmrg\BaseController;
 use Netmrg\Auth;
-use Netmrg\NetmrgPermissionException;
+use Netmrg\Exception\ForbiddenException;
 
 class SettingsController extends BaseController
 {
@@ -71,7 +71,7 @@ class SettingsController extends BaseController
         );
 
         if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
-            throw new NetmrgPermissionException();
+            throw new ForbiddenException();
         }
         else {
             $this->auth->deleteUser($_GET['uid']);
