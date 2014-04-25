@@ -154,6 +154,7 @@ class BaseController
         $variables += $this->getVariables();
         $variables += $this->getErrors();
         $variables += $this->getSuccess();
+        $variables += $this->setCsrfToken();
 
         $this->addMustacheFilters();
 
@@ -166,13 +167,13 @@ class BaseController
     }
 
     /**
-     * @return string
+     * @return array
      */
-    protected function csrfToken()
+    protected function setCsrfToken()
     {
         $crsftoken = uniqid();
         $this->session->set('csrftoken', $crsftoken);
-        return $crsftoken;
+        return array('csrftoken' => $crsftoken);
     }
 
     /**
@@ -182,8 +183,7 @@ class BaseController
     protected function isValidCsrfToken($token)
     {
         $tmp = $this->session->get('csrftoken');
-        $this->csrfToken(
-        ); // token should not remain valid no matter whether the test was correct or not
+        $this->setCsrfToken(/* empty it*/);
         return ($tmp == $token);
     }
 

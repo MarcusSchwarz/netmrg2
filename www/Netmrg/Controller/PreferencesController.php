@@ -45,7 +45,6 @@ class PreferencesController extends BaseController
             array(
                 'username' => $username,
                 'userid' => $userid,
-                'csrftoken' => $this->csrfToken(),
                 'checked' => $checked
             )
         );
