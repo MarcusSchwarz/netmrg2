@@ -51,7 +51,7 @@
                 'cancel-button': 'cancelButton',
                 'confirm-button-class': 'confirmButtonClass'
             };
-            $.each(dataOptionsMapping, function(attributeName, optionName) {
+            $.each(dataOptionsMapping, function (attributeName, optionName) {
                 var value = options.button.data(attributeName);
                 if (value) {
                     dataOptions[optionName] = value;
@@ -66,6 +66,11 @@
                 if (url) {
                     if (options.post) {
                         var form = $('<form method="post" class="hide" action="' + url + '"></form>');
+                        var z = options.button.data('csrftoken');
+                        if (z) {
+                            var csrf = $('<input type="hidden" name="csrftoken" value="' + z + '">');
+                            form.append(csrf);
+                        }
                         $("body").append(form);
                         form.submit();
                     } else {
@@ -84,7 +89,7 @@
             modalHeader =
                 '<div class=modal-header>' +
                     '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
-                    '<h4 class="modal-title">' + settings.title+'</h4>' +
+                    '<h4 class="modal-title">' + settings.title + '</h4>' +
                     '</div>';
         }
         var modalHTML =
