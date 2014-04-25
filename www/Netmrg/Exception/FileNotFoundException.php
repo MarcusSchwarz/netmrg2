@@ -31,8 +31,8 @@ use Netmrg\Controller\ErrorController;
 class FileNotFoundException extends BaseException {
 
     public function __construct($errormessage = null) {
-        global $mustache, $auth; // todo ouch!
-        $controller = new ErrorController($mustache, $auth);
+        global $mustache, $auth, $session; // todo ouch!
+        $controller = new ErrorController($mustache, $auth, $session);
         $controller->notfoundAction($errormessage);
         exit;
     }
