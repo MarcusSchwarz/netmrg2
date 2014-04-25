@@ -1,11 +1,12 @@
 /*!
  * jquery.confirm
  *
- * @version 2.1.0
+ * @version 2.2.0
  *
  * @author My C-Labs
  * @author Matthieu Napoli <matthieu@mnapoli.fr>
  * @author Russel Vela
+ * @author Marcus Schwarz <msspamfang@gmx.de>
  *
  * @license MIT
  * @url http://myclabs.github.io/jquery.confirm/
@@ -14,7 +15,7 @@
 
     /**
      * Confirm a link or a button
-     * @param options {title, text, confirm, cancel, confirmButton, cancelButton, post, okButtonClass}
+     * @param [options] {{title, text, confirm, cancel, confirmButton, cancelButton, post, confirmButtonClass}}
      */
     $.fn.confirm = function (options) {
         if (typeof options === 'undefined') {
@@ -36,29 +37,35 @@
 
     /**
      * Show a confirmation dialog
-     * @param options {title, text, confirm, cancel, confirmButton, cancelButton, post, okButtonClass}
+     * @param [options] {{title, text, confirm, cancel, confirmButton, cancelButton, post, confirmButtonClass}}
+     * @param [e] {Event}
      */
     $.confirm = function (options, e) {
-        var dataOptions = ['title', 'text', 'confirmButton', 'cancelButton', 'okButtonClass'];
-        var parsedDataOptions = {};
-        $.each(dataOptions, function(k, v) {
-            var z = options.button.data(v.toLowerCase());
-            if (z) {
-                parsedDataOptions[v] = z;
-            }
-        });
+        // Parse options defined with "data-" attributes
+        var dataOptions = {};
+        if (options.button) {
+            var dataOptionsMapping = {
+                'title': 'title',
+                'text': 'text',
+                'confirm-button': 'confirmButton',
+                'cancel-button': 'cancelButton',
+                'confirm-button-class': 'confirmButtonClass'
+            };
+            $.each(dataOptionsMapping, function(attributeName, optionName) {
+                var value = options.button.data(attributeName);
+                if (value) {
+                    dataOptions[optionName] = value;
+                }
+            });
+        }
+
         // Default options
-        var settings = $.extend($.confirm.options, $.confirm.options.defaults, {
-            confirm: function (o) {
+        var settings = $.extend({}, $.confirm.options, {
+            confirm: function () {
                 var url = e && (('string' === typeof e && e) || (e.currentTarget && e.currentTarget.attributes['href'].value));
                 if (url) {
                     if (options.post) {
                         var form = $('<form method="post" class="hide" action="' + url + '"></form>');
-                        var z = options.button.data('csrftoken');
-                        if (z) {
-                            var csrf = $('<input type="hidden" name="csrftoken" value="' + z + '">');
-                            form.append(csrf);
-                        }
                         $("body").append(form);
                         form.submit();
                     } else {
@@ -69,7 +76,7 @@
             cancel: function (o) {
             },
             button: null
-        }, options, parsedDataOptions);
+        }, dataOptions, options);
 
         // Modal
         var modalHeader = '';
@@ -87,7 +94,7 @@
                 modalHeader +
                 '<div class="modal-body">' + settings.text + '</div>' +
                 '<div class="modal-footer">' +
-                '<button class="confirm btn ' + settings.okButtonClass + '" type="button" data-dismiss="modal">' +
+                '<button class="confirm btn ' + settings.confirmButtonClass + '" type="button" data-dismiss="modal">' +
                 settings.confirmButton +
                 '</button>' +
                 '<button class="cancel btn btn-default" type="button" data-dismiss="modal">' +
@@ -100,10 +107,10 @@
 
         var modal = $(modalHTML);
 
-        modal.on('shown', function () {
+        modal.on('shown.bs.modal', function () {
             modal.find(".btn-primary:first").focus();
         });
-        modal.on('hidden', function () {
+        modal.on('hidden.bs.modal', function () {
             modal.remove();
         });
         modal.find(".confirm").click(function () {
@@ -120,7 +127,6 @@
 
     /**
      * Globally definable rules
-     * @type {{text: string, title: string, confirmButton: string, cancelButton: string, post: boolean, confirm: Function, cancel: Function, button: null, okButtonClass: string}}
      */
     $.confirm.options = {
         text: "Are you sure?",
@@ -128,14 +134,6 @@
         confirmButton: "Yes",
         cancelButton: "Cancel",
         post: false,
-        okButtonClass: "btn-primary",
-        defaults: {
-            text: "Are you sure?",
-            title: "",
-            confirmButton: "Yes",
-            cancelButton: "Cancel",
-            post: false,
-            okButtonClass: "btn-primary"
-        }
+        confirmButtonClass: "btn-primary"
     }
 })(jQuery);
