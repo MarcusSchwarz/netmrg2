@@ -58,7 +58,15 @@ class SettingsController extends BaseController
         $users = $this->mapPermissions($users);
 
         $this->load('settings/users');
-        $this->render(array('users' => $users, 'csrftoken' => $this->csrfToken()));
+        $this->render(array('users' => $users));
+    }
+
+    public function users_addAction() {
+        $this->minPermission(Auth::RIGHT_ADMIN);
+        $this->add('menu', 'settingsusers');
+
+        $this->load('settings/adduser');
+        $this->render();
     }
 
     public function users_deleteAction() {

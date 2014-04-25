@@ -4,8 +4,13 @@
 <div class="table-responsive">
     <table class="table table-striped table-hover">
         <thead>
-        <tr><th>[*] [0] [-]</th><th>User ID</th><th>Name</th><th>Permissions</th><th class="text-right">add</th></tr>
-
+            <tr>
+                <th>[*] [0] [-]</th>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Permissions</th>
+                <th class="text-right"><a href="{{#route}}/settings/users/add{{/route}}">add</a></th>
+            </tr>
         </thead>
         <tbody>
         {{#users}}
@@ -29,29 +34,7 @@
                 </td>
             </tr>
         {{/users}}
- <!--       <tr>
-            <td>
-                <input type="checkbox" name="checkboxes[]">
-            </td>
-            <td>
-                foobar
-            </td>
-            <td>
-                foobar
-            </td>
-            <td>
-                1
-            </td>
-            <td class="text-right">
-                <a href="{{#route}}/preferences?uid=3{{/route}}"><span class="glyphicon glyphicon-folder-open" title="edit preferences"></span></a>
-                <span class="glyphicon glyphicon-pencil"></span>
-                <a href="{{#route}}/settings/users/delete?uid=3{{/route}}" data-csrftoken="{{csrftoken}}" data-cancelButton="no" data-text="Do you really want to delete <strong>foobar</strong>?" data-okButtonClass="btn-danger" class="confirm"><span class="glyphicon glyphicon-remove alert-danger" title="delete user"></span></a>
-            </td>
-        </tr>
--->
-
         </tbody>
-
     </table>
 </div>
 

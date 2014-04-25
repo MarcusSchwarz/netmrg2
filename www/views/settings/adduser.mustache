@@ -1,0 +1,64 @@
+{{>settingsheader}}
+    <h1 class="page-header">Add user</h1>
+    <form class="form-horizontal" role="form" method="post" action="{{#route}}/settings/user/create{{/route}}">
+        <div class="form-group">
+            <label for="username" class="col-sm-2 control-label">Username</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="username" id="username" placeholder="Username" value="{{username}}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="prettyname" class="col-sm-2 control-label">Full Username</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="prettyname" id="prettyname" placeholder="Full Username" value="{{prettyname}}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputPassword" class="col-sm-2 control-label">Password</label>
+            <div class="col-sm-10">
+                <input type="password" class="form-control" name="password" id="inputPassword" placeholder="Password">
+                <span class="help-block">Leave password empty if you don't want to change it.</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="verifyPassword" class="col-sm-2 control-label">verify Password</label>
+            <div class="col-sm-10">
+                <input type="password" class="form-control" name="password2" id="verifyPassword" placeholder="verify Password">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="permit" class="col-sm-2 control-label">Permittype</label>
+            <div class="col-sm-10">
+                <select name="permit" class="form-control" id="permit">
+                    <option value="-1">Disabled</option>
+                    <option value="0">Single View Only</option>
+                    <option value="1">ReadAll</option>
+                    <option value="2">Read/Write</option>
+                    <option value="3">Read/Write/Useradmin</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="group" class="col-sm-2 control-label">Group</label>
+            <div class="col-sm-10">
+                <select name="group" class="form-control" id="group">
+                    <option value="0">Root</option>
+                    <option value="1">Template Group</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="slideshow" class="col-sm-2 control-label">Slideshow Auto Scroll</label>
+            <div class="col-sm-10">
+                <input type="checkbox" id="slideshow" name="slideshow" {{checked}}>
+            </div>
+        </div>
+        <input type="hidden" name="csrftoken" value="{{csrftoken}}">
+        <input type="hidden" name="userid" value="{{userid}}">
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Add User</button>
+    </form>
+    <p class="text-center">
+        <a href="#" onclick="history.back();return false;">Abort, go back</a>
+    </p>
+
+{{>settingsfooter}}
