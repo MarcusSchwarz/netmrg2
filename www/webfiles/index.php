@@ -31,7 +31,7 @@
 require_once "../include/config.php";
 
 if (isset($_GET['controller'])) {
-    $classname = 'Netmrg\Controller\\'.ucfirst($_GET['controller']).'Controller';  // todo test for remote file inclusion!
+    $classname = 'Netmrg\Controller\\'.ucfirst($_GET['controller']).'Controller';
 
     try {
         $controller = new $classname($mustache, $auth, $session, false); // todo true activates the debug mode

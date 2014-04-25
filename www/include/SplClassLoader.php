@@ -139,6 +139,8 @@ class SplClassLoader
      *
      * @param string $className The name of the class to load.
      * @return void
+     *
+     * @throws \Netmrg\Exception\InternalErrorException
      */
     public function loadClass($className)
     {
@@ -154,7 +156,7 @@ class SplClassLoader
             $fileWithPath = ($this->_includePath !== null ? $this->_includePath . DIRECTORY_SEPARATOR : '') . $fileName;
 
             if (!is_readable($fileWithPath)) {
-                throw new Exception('class not found');
+                throw new \Netmrg\Exception\InternalErrorException('class not found');
             }
 
             require $fileWithPath;
