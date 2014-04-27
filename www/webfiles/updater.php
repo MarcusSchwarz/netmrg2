@@ -267,6 +267,17 @@ $dbupdates = array(
             "name"  => "Password Hash Field",
             "query" => "ALTER TABLE user CHANGE pass pass VARCHAR( 140 ) DEFAULT '' NOT NULL;"
         )
+    ),
+    '0.30' => array(
+        array(
+            'name' => 'Add Root Group',
+            'query' => "INSERT INTO groups (id, name, comment, parent_id) VALUES (0,'Root','',0);"
+        ),
+        array(
+            'name' => 'Change Default Permission to "Disabled"',
+            'query' => "ALTER TABLE user CHANGE permit permit TINYINT( 4 ) NOT NULL DEFAULT '-1';"
+        ),
+
     )
 
 ); // end $dbupdates;

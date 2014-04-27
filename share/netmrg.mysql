@@ -376,6 +376,7 @@ CREATE TABLE `groups` (
 
 LOCK TABLES `groups` WRITE;
 /*!40000 ALTER TABLE `groups` DISABLE KEYS */;
+INSERT INTO `groups` (`id`, `name`, `comment`, `parent_id`) VALUES (0,'Root','',0);
 INSERT INTO `groups` (`id`, `name`, `comment`, `parent_id`) VALUES (1,'Template Group','',0);
 /*!40000 ALTER TABLE `groups` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -844,6 +845,8 @@ INSERT INTO `updates` (`update_version`, `name`, `version_applied_to`, `dateappl
 INSERT INTO `updates` (`update_version`, `name`, `version_applied_to`, `dateapplied`) VALUES ('0.21','SNMPv3','0.21','2014-04-11 00:00:00');
 INSERT INTO `updates` (`update_version`, `name`, `version_applied_to`, `dateapplied`) VALUES ('0.21','Minimum Graph Option','0.21','2014-04-11 00:00:00');
 INSERT INTO `updates` (`update_version`, `name`, `version_applied_to`, `dateapplied`) VALUES ('0.22','Password Hash Field','0.22','2014-04-11 00:00:00');
+INSERT INTO `updates` (`update_version`, `name`, `version_applied_to`, `dateapplied`) VALUES ('0.30','Add Root Group','0.30','2014-04-27 00:00:00');
+INSERT INTO `updates` (`update_version`, `name`, `version_applied_to`, `dateapplied`) VALUES ('0.30','Change Default Permission to "Disabled"','0.30','2014-04-27 00:00:00');
 /*!40000 ALTER TABLE `updates` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -856,7 +859,7 @@ CREATE TABLE `user` (
   `id` int(11) NOT NULL auto_increment,
   `user` varchar(50) NOT NULL default '',
   `pass` varchar(140) NOT NULL default '',
-  `permit` tinyint(4) NOT NULL default '0',
+  `permit` tinyint(4) NOT NULL default '-1',
   `fullname` varchar(200) default NULL,
   `group_id` int(11) NOT NULL default '0',
   `disabled` tinyint(4) NOT NULL default '0',
