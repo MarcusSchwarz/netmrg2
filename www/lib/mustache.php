@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  *
  * @source: https://github.com/bobthecow/mustache.php
+ * @forked: https://github.com/MarcusSchwarz/mustache.php
  */
 class Mustache_Engine
 {
@@ -901,7 +902,7 @@ class Mustache_HelperCollection
 class Mustache_LambdaHelper
 {
     private $mustache;
-    private $context;
+    public $context;
     public function __construct(Mustache_Engine $mustache, Mustache_Context $context)
     {
         $this->mustache = $mustache;
