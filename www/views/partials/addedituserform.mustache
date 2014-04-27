@@ -61,14 +61,17 @@
     <a href="#" onclick="history.back();return false;">Abort, go back</a>
 </p>
 <script>
-$('#permit').change(
-    function() {
-        if (this.value < 1) {
-            $('#group').prop('disabled', true);
-        }
-        else {
-            $('#group').prop('disabled', false);
-        }
-    }
-);
+
+$(function() {
+    $('#permit').change(
+            function() {
+                if (this.value == 0) {
+                    $('#group').prop('disabled', false);
+                }
+                else {
+                    $('#group').prop('disabled', true);
+                }
+            }
+    ).change();
+});
 </script>
