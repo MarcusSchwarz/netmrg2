@@ -115,12 +115,32 @@ class BaseController
         $tmp['__tpl_webroot'] = $GLOBALS['netmrg']['webroot'];
         $tmp['__tpl_companylink'] = $GLOBALS['netmrg']['companylink'];
         $tmp['__tpl_companyname'] = $GLOBALS['netmrg']['company'];
+        $tmp['__tpl_externalauth'] = $GLOBALS['netmrg']['externalAuth'];
+
+        // hack to introduce template controlled variables
+        $tmp['__tpl_vars'] = function($text, \Mustache_LambdaHelper $helper) {
+            $tmp = explode(PHP_EOL, $text);
+            if (empty($tmp)) {
+                return;
+            }
+            foreach ($tmp as $v) {
+                $v = trim($v);
+                preg_match('/^\[\[(.*)\|(.*)]]$/', $v, $parts);
+                if (!is_null($parts[1]) && !empty($parts[2])) {
+                    $helper->context->push(array($parts[1] => $parts[2]));
+                }
+            }
+            return;
+        };
 
         $tmp['__tpl_isloggedin'] = $this->auth->userIsLoggedIn();
         $tmp['__tpl_username'] = $this->auth->getUsername();
         return $tmp;
     }
 
+    protected final function hasErrors() {
+        return ($this->errors->count() > 0);
+    }
     /**
      * @return array
      */
@@ -140,7 +160,7 @@ class BaseController
     /**
      * @param array $variables
      */
-    protected function render(array $variables = null)
+    protected final function render(array $variables = null)
     {
         $variables = (empty($variables)) ? array() : $variables;
 
@@ -169,7 +189,7 @@ class BaseController
     /**
      * @return array
      */
-    protected function setCsrfToken()
+    protected final function setCsrfToken()
     {
         $crsftoken = uniqid();
         $this->session->set('csrftoken', $crsftoken);
@@ -180,7 +200,7 @@ class BaseController
      * @param  string $token
      * @return bool
      */
-    protected function isValidCsrfToken($token)
+    protected final function isValidCsrfToken($token)
     {
         $tmp = $this->session->get('csrftoken');
         $this->setCsrfToken(/* empty it*/);
