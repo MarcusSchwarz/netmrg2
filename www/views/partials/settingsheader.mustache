@@ -1,6 +1,19 @@
+{{#__tpl_vars}}
+    [[showerrors| true]]
+{{/__tpl_vars}}
 {{> header }}
 <div class="container-fluid">
     <div class="row">
         {{>settingsmenu}}
 
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+{{#errors}}
+        <div class="alert alert-danger">
+            {{ . }}<br>
+        </div>
+{{/errors}}
+{{#success}}
+        <div class="alert alert-success">
+            {{ . }}<br>
+        </div>
+{{/success}}

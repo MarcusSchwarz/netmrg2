@@ -1,0 +1,62 @@
+<h1 class="page-header">{{actiontext}}</h1>
+<form class="form-horizontal" role="form" method="post" action="{{#route}}{{actionroute}}{{/route}}">
+    <div class="form-group">
+        <label for="username" class="col-sm-2 control-label">Username</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="username" id="username" placeholder="Username" value="{{user.user}}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="prettyname" class="col-sm-2 control-label">Full Username</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="prettyname" id="prettyname" placeholder="Full Username" value="{{user.fullname}}">
+        </div>
+    </div>
+    {{^__tlp_externalauth}}
+        <div class="form-group">
+            <label for="inputPassword" class="col-sm-2 control-label">Password</label>
+            <div class="col-sm-10">
+                <input type="password" class="form-control" name="password" id="inputPassword" placeholder="Password">
+                <span class="help-block">Leave password empty if you don't want to change it.</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="verifyPassword" class="col-sm-2 control-label">verify Password</label>
+            <div class="col-sm-10">
+                <input type="password" class="form-control" name="password2" id="verifyPassword" placeholder="verify Password">
+            </div>
+        </div>
+    {{/__tlp_externalauth}}
+    <div class="form-group">
+        <label for="permit" class="col-sm-2 control-label">Permittype</label>
+        <div class="col-sm-10">
+            <select name="permit" class="form-control" id="permit">
+                {{#permittypes}}
+                    <option value="{{key}}" {{selected}}>{{name}}</option>
+                {{/permittypes}}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="group" class="col-sm-2 control-label">Group</label>
+        <div class="col-sm-10">
+            <select name="group" class="form-control" id="group">
+                {{#groups}}
+                    <option value="{{id}}" {{selected}}>{{name}}</option>
+                {{/groups}}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="slideshow" class="col-sm-2 control-label">Slideshow Auto Scroll</label>
+        <div class="col-sm-10">
+            <input type="checkbox" id="slideshow" name="slideshow" {{slideshow}}>
+        </div>
+    </div>
+    <input type="hidden" name="csrftoken" value="{{csrftoken}}">
+    <input type="hidden" name="userid" value="{{user.id}}">
+    <button class="btn btn-lg btn-primary btn-block" type="submit">{{actiontext}}</button>
+</form>
+<p class="text-center">
+    <a href="#" onclick="history.back();return false;">Abort, go back</a>
+</p>

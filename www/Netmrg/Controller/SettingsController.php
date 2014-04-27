@@ -21,7 +21,9 @@ namespace Netmrg\Controller;
 
 use Netmrg\BaseController;
 use Netmrg\Auth;
+use Netmrg\Configuration;
 use Netmrg\Exception\ForbiddenException;
+use Netmrg\User;
 
 class SettingsController extends BaseController
 {
@@ -46,7 +48,6 @@ class SettingsController extends BaseController
         $this->render();
     }
 
-
     public function usersAction()
     {
         $this->minPermission(Auth::RIGHT_ADMIN);
@@ -61,12 +62,106 @@ class SettingsController extends BaseController
         $this->render(array('users' => $users));
     }
 
+    public function users_editAction() {
+        $this->minPermission(Auth::RIGHT_ADMIN);
+        $this->add('menu', 'settingsusers');
+
+        $this->testForPresence(array('get' => array('uid')));
+
+        $user = new User($_GET['uid']);
+        $this->load('settings/edituser');
+
+        $values = array(
+            'permittypes' => Auth::getPermissionTypes($user->permit),
+            'groups' => Auth::getGroups($user->group_id),
+            'user' => $user,
+            'slideshow' => ($user->slideshow) ? 'checked="checked"' : ''
+        );
+
+        $this->render($values);
+    }
+
+    public function users_patchAction() {
+        $this->minPermission(Auth::RIGHT_ADMIN);
+        $this->testForPresence(
+            array(
+                'post' => array('csrftoken', 'username', 'prettyname', 'password', 'password2', 'permit', 'group', 'userid')
+            )
+        );
+        if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
+            throw new ForbiddenException();
+        }
+        if (!empty($_POST['password'])) {
+            if (!$_POST['password'] == $_POST['password2']) {
+                $this->errors->append('The passwords did not match');
+            }
+        }
+
+        if (!$this->hasErrors()) {
+            $user = new User($_POST['userid']);
+            $user->patch(
+                array(
+                    'user' => $_POST['username'],
+                    'fullname' => $_POST['prettyname'],
+                    'password' => $_POST['password'],
+                    'permit' => $_POST['permit'],
+                    'group_id' => $_POST['group'],
+                    'slideshow' => isset($_POST['slideshow']) ? true : false
+                )
+            );
+            $this->success->append('The user '.$_POST['prettyname'].' has been updated');
+        }
+
+        $this->redirect('/settings/users');
+    }
+
+    public function users_createAction() {
+        $this->minPermission(Auth::RIGHT_ADMIN);
+        $this->testForPresence(
+            array(
+                'post' => array('csrftoken', 'username', 'prettyname', 'password', 'password2', 'permit', 'group', 'userid')
+            )
+        );
+        if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
+            throw new ForbiddenException();
+        }
+        if (!Configuration::externalAuth() && empty($_POST['password'])) {
+            $this->errors->append('the password must not be empty unless external Auth is active');
+        }
+        if (!empty($_POST['password'])) {
+            if (!$_POST['password'] == $_POST['password2']) {
+                $this->errors->append('The passwords did not match');
+            }
+        }
+        if ($this->auth->userExists(trim($_POST['username']))) {
+            $this->errors->append('There already exists an user with the name '.$_POST['username']);
+        }
+
+        if (!$this->hasErrors()) {
+            $user = new User();
+            $user->create(
+                array(
+                    'user' => $_POST['username'],
+                    'fullname' => $_POST['prettyname'],
+                    'password' => $_POST['password'],
+                    'permit' => $_POST['permit'],
+                    'group_id' => $_POST['group'],
+                    'slideshow' => isset($_POST['slideshow']) ? true : false
+                )
+            );
+            $this->success->append('The user '.$_POST['prettyname'].' has been created');
+        }
+
+        $this->redirect('/settings/users');
+    }
+
     public function users_addAction() {
         $this->minPermission(Auth::RIGHT_ADMIN);
         $this->add('menu', 'settingsusers');
 
+
         $this->load('settings/adduser');
-        $this->render();
+        $this->render(array('permittypes' => Auth::getPermissionTypes(), 'groups' => Auth::getGroups()));
     }
 
     public function users_deleteAction() {
@@ -81,10 +176,8 @@ class SettingsController extends BaseController
         if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
             throw new ForbiddenException();
         }
-        else {
-            $this->auth->deleteUser($_GET['uid']);
-            $this->redirect('/settings/users');
-        }
+        $this->auth->deleteUser($_GET['uid']);
+        $this->redirect('/settings/users');
     }
 
     private function mapPermissions(array $users) {

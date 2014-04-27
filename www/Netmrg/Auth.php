@@ -20,7 +20,6 @@
 
 namespace Netmrg;
 
-use Netmrg\Exception\FileNotFoundException;
 use Netmrg\Exception\InternalErrorException;
 
 
@@ -66,6 +65,46 @@ class Auth
         $this->session = $session;
 
         return true;
+    }
+
+    public static function getPermissionTypes($preselectedItem = null)
+    {
+        global $PERMIT;
+        $tmp = array();
+        foreach ($PERMIT as $k => $v) {
+            if (!is_null($preselectedItem) && $preselectedItem == $v) {
+                $tmp[] = array('name' => $k, 'key' => $v, 'selected' => 'selected="selected"');
+            }
+            else {
+                $tmp[] = array('name' => $k, 'key' => $v);
+            }
+        }
+        return $tmp;
+    }
+
+    public static function getGroups($preselectedItem = null)
+    {
+        $groups = getDatabase()->query('SELECT * FROM groups ORDER BY name, id')->fetchAll(
+            \PDO::FETCH_ASSOC
+        );
+
+        return self::preselectItemForForm($preselectedItem, $groups, 'id');
+    }
+
+    private static function preselectItemForForm($preselectedItem, $elements, $matchId)
+    {
+        if (!is_null($preselectedItem) && !empty($elements)) {
+            foreach ($elements as $k => $group) {
+                if ($group[$matchId] == $preselectedItem) {
+                    $elements[$k] = array_merge(
+                        $elements[$k],
+                        array('selected' => 'selected="selected"')
+                    );
+                    break;
+                }
+            }
+        }
+        return $elements;
     }
 
     /**
@@ -132,27 +171,6 @@ class Auth
         }
 
         return true;
-    }
-
-    public function getUsername($uid = null)
-    {
-        if (is_null($uid)) {
-            return $this->session->get('prettyname');
-        }
-
-        $tmp = $this->db->query('SELECT user FROM user WHERE id = ' . intval($uid));
-
-        if ($tmp->rowCount() == 1) {
-            return $tmp->fetchColumn();
-        }
-        throw new InternalErrorException('user not found');
-
-
-    }
-
-    public function resetLoggedInState()
-    {
-        $this->isLoggedIn = null;
     }
 
     /**
@@ -276,6 +294,11 @@ class Auth
         return false;
     }
 
+    // This is a placeholder for a later rework of the generate_password_hash-method
+    public static function getPasswordHash($pass, $generation = null) {
+        return self::generate_password_hash($pass, $generation);
+    }
+
     /**
      * @param $pass
      * @param $generation
@@ -324,6 +347,27 @@ class Auth
             $this->session->set('redir', $redirectTo);
         }
         $this->redirect('denied');
+    }
+
+    public function getUsername($uid = null)
+    {
+        if (is_null($uid)) {
+            return $this->session->get('prettyname');
+        }
+
+        $tmp = $this->db->query('SELECT user FROM user WHERE id = ' . intval($uid));
+
+        if ($tmp->rowCount() == 1) {
+            return $tmp->fetchColumn();
+        }
+        throw new InternalErrorException('user not found');
+
+
+    }
+
+    public function resetLoggedInState()
+    {
+        $this->isLoggedIn = null;
     }
 
     /**
@@ -443,9 +487,10 @@ class Auth
         return $PERMIT['Disabled'];
     }
 
-    public function deleteUser($userid) {
-        getDatabase()->exec('DELETE FROM user WHERE id = '.intval($userid));
-        getDatabase()->exec('DELETE FROM user_prefs WHERE uid = '.intval($userid));
+    public function deleteUser($userid)
+    {
+        getDatabase()->exec('DELETE FROM user WHERE id = ' . intval($userid));
+        getDatabase()->exec('DELETE FROM user_prefs WHERE uid = ' . intval($userid));
     }
 
     public function updatePassword($uid, $newpass)

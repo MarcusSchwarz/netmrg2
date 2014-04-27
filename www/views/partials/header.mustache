@@ -55,7 +55,7 @@
         </div>
     </div>
 </div>
-
+{{^showerrors}}
 {{#errors}}
 <div class="alert alert-danger">
     {{ . }}<br>
@@ -66,3 +66,4 @@
     {{ . }}<br>
 </div>
 {{/success}}
+{{/showerrors}}
