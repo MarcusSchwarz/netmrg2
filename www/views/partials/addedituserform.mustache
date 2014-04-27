@@ -1,13 +1,13 @@
 <h1 class="page-header">{{actiontext}}</h1>
 <form class="form-horizontal" role="form" method="post" action="{{#route}}{{actionroute}}{{/route}}">
     <div class="form-group">
-        <label for="username" class="col-sm-2 control-label">Username</label>
+        <label for="username" class="col-sm-2 control-label">User-ID</label>
         <div class="col-sm-10">
             <input type="text" class="form-control" name="username" id="username" placeholder="Username" value="{{user.user}}">
         </div>
     </div>
     <div class="form-group">
-        <label for="prettyname" class="col-sm-2 control-label">Full Username</label>
+        <label for="prettyname" class="col-sm-2 control-label">Name</label>
         <div class="col-sm-10">
             <input type="text" class="form-control" name="prettyname" id="prettyname" placeholder="Full Username" value="{{user.fullname}}">
         </div>
@@ -28,7 +28,7 @@
         </div>
     {{/__tlp_externalauth}}
     <div class="form-group">
-        <label for="permit" class="col-sm-2 control-label">Permittype</label>
+        <label for="permit" class="col-sm-2 control-label">Permissions</label>
         <div class="col-sm-10">
             <select name="permit" class="form-control" id="permit">
                 {{#permittypes}}
