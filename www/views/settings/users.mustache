@@ -47,7 +47,7 @@
 
     $("#batchdelete").confirm({
         title: 'Confirmation',
-        callback: function() {
+        confirm: function() {
             var delids = $('.netmrg-check-user').map(
                     function(k, v) {
                         if($(v).prop('checked')) {
