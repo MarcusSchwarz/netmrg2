@@ -59,7 +59,7 @@ class SettingsController extends BaseController
         $users = $this->mapPermissions($users);
 
         $this->load('settings/users');
-        $this->render(array('users' => $users));
+        $this->render(array('users' => $users, 'sumusers' => count($users)));
     }
 
     public function users_editAction() {
