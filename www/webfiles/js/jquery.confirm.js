@@ -64,7 +64,9 @@
             confirm: function () {
                 var url = e && (('string' === typeof e && e) || (e.currentTarget && e.currentTarget.attributes['href'].value));
                 if (url) {
-                    if (options.post) {
+                    if ($.isFunction(options.callback)) {
+                        options.callback();
+                    } else if (options.post) {
                         var form = $('<form method="post" class="hide" action="' + url + '"></form>');
                         var z = options.button.data('csrftoken');
                         if (z) {
@@ -139,6 +141,7 @@
         confirmButton: "Yes",
         cancelButton: "Cancel",
         post: false,
-        confirmButtonClass: "btn-primary"
+        confirmButtonClass: "btn-primary",
+        callback: null
     }
 })(jQuery);

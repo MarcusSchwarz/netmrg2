@@ -168,15 +168,25 @@ class SettingsController extends BaseController
         $this->minPermission(Auth::RIGHT_ADMIN);
         $this->testForPresence(
             array(
-                'post' => array('csrftoken'),
-                'get' => array('uid')
+                'post' => array('csrftoken')
             )
         );
 
         if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
             throw new ForbiddenException();
         }
-        $this->auth->deleteUser($_GET['uid']);
+
+        $deleteIds = array();
+        if (isset($_GET['uid'])) {
+            $deleteIds[] = $_GET['uid'];
+        }
+        elseif (isset($_POST['delids'])) {
+            $deleteIds = explode(',', $_POST['delids']);
+        }
+
+        foreach($deleteIds as $id) {
+            $this->auth->deleteUser($id);
+        }
         $this->redirect('/settings/users');
     }
 

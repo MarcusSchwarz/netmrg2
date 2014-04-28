@@ -20,7 +20,6 @@
 namespace Netmrg;
 
 use Netmrg\Exception\BadRequestException;
-use Netmrg\Exception\ForbiddenException;
 
 /**
  * Class BaseController

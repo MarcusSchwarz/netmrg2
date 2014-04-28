@@ -5,7 +5,7 @@
     <table class="table table-striped table-hover">
         <thead>
             <tr>
-                <th>[*] [0] [-]</th>
+                <th>[<span id="selectall" class="glyphicon glyphicon-asterisk" title="select all"></span>] [<span id="selectnothing" class="glyphicon glyphicon-unchecked" title="select nothing"></span>] [<span id="selectinvert" class="glyphicon glyphicon-minus" title="invert selection"></span>]</th>
                 <th>User ID</th>
                 <th>Name</th>
                 <th>Permissions</th>
@@ -16,7 +16,7 @@
         {{#users}}
             <tr>
                 <td>
-                    <input type="checkbox" name="checkboxes[]">
+                    <input class="netmrg-check-user" type="checkbox" name="checkboxes[]" value="{{id}}" data-csrftoken="{{csrftoken}}">
                 </td>
                 <td>
                     {{user}}
@@ -35,12 +35,56 @@
         {{/users}}
         </tbody>
     </table>
+    <hr style="border-bottom: 1px solid #EEE;">
+    <a id="batchdelete" href="{{#route}}/settings/users/delete{{/route}}">Batch delete selected users</a>
 </div>
 
 <script>
     $(".confirm").confirm({
         title: 'Confirmation',
         post: true
+    });
+
+    $("#batchdelete").confirm({
+        title: 'Confirmation',
+        callback: function() {
+            var delids = $('.netmrg-check-user').map(
+                    function(k, v) {
+                        if($(v).prop('checked')) {
+                            return $(v).prop('value');
+                        }
+                    }
+            );
+            if(delids.length < 1) {
+                alert('nothing selected');
+                return false;
+            }
+            var form = $('<form method="post" class="hide" action="{{#route}}/settings/users/delete{{/route}}"></form>');
+            var z = $('.netmrg-check-user').first().data('csrftoken');
+            if (z) {
+                var csrf = $('<input type="hidden" name="csrftoken" value="' + z + '">');
+                form.append(csrf);
+            }
+            var ids = $('<input type="hidden" name="delids" value="' + delids.get().join(',') + '">');
+            form.append(ids);
+            $("body").append(form);
+
+            form.submit();
+            return false;
+        }
+    });
+
+
+    $(function() {
+        $('#selectall').click(function() {
+            $('.netmrg-check-user').prop('checked', true);
+        });
+        $('#selectnothing').click(function() {
+            $('.netmrg-check-user').prop('checked', false);
+        });
+        $('#selectinvert').click(function() {
+            $('.netmrg-check-user').click();
+        });
     });
 </script>
 
