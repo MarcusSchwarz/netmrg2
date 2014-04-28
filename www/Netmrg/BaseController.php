@@ -229,13 +229,11 @@ class BaseController
 
     /**
      * @param  int $permission
-     * @throws ForbiddenException
+     * @return bool
      */
     protected function minPermission($permission)
     {
-        if ($this->session->get('permit') < $permission) {
-            throw new ForbiddenException();
-        }
+        return $this->auth->userHasAtLeastPermissionLevel($permission);
     }
 
     /**
