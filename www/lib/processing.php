@@ -383,6 +383,9 @@ function get_group_status($grp_id) {
     $grp_results = getDatabase()->query('SELECT id FROM groups WHERE parent_id = '.intval($grp_id));
 
     while ($grp_row = $grp_results->fetch(PDO::FETCH_ASSOC)) {
+        if (intval($grp_id) == intval($grp_row['id'])) {
+            break; // avoid infinite loop; Should never happen, but, you know....
+        }
         $grp_status = get_group_status($grp_row["id"]);
         if (($grp_status > $status) && ($grp_status != 4)) {
             $status = $grp_status;

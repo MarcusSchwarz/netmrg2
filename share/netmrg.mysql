@@ -376,7 +376,7 @@ CREATE TABLE `groups` (
 
 LOCK TABLES `groups` WRITE;
 /*!40000 ALTER TABLE `groups` DISABLE KEYS */;
-INSERT INTO `groups` (`id`, `name`, `comment`, `parent_id`) VALUES (0,'Root','',0);
+INSERT INTO `groups` (`id`, `name`, `comment`, `parent_id`) VALUES (0,'Root','',-1);
 INSERT INTO `groups` (`id`, `name`, `comment`, `parent_id`) VALUES (1,'Template Group','',0);
 /*!40000 ALTER TABLE `groups` ENABLE KEYS */;
 UNLOCK TABLES;
