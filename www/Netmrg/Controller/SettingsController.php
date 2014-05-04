@@ -19,10 +19,12 @@
 
 namespace Netmrg\Controller;
 
-use Netmrg\BaseController;
 use Netmrg\Auth;
+use Netmrg\BaseController;
 use Netmrg\Configuration;
 use Netmrg\Exception\ForbiddenException;
+use Netmrg\Helper;
+use Netmrg\SQLTest;
 use Netmrg\User;
 
 class SettingsController extends BaseController
@@ -48,13 +50,208 @@ class SettingsController extends BaseController
         $this->render();
     }
 
+    public function sqlAction()
+    {
+        $this->minPermission(Auth::RIGHT_READWRITE);
+        $this->add('menu', 'settingssql');
+
+
+        $sql = getDatabase()->query(
+            'SELECT id, name, host, user, IF(LENGTH(query) > 75, CONCAT(SUBSTRING(query, 1, 70), "..."), query) AS query, query AS fullquery FROM tests_sql ORDER BY name'
+        )->fetchAll(\PDO::FETCH_ASSOC);
+
+        $this->load('settings/sql');
+        $this->render(array('sql' => $sql, 'sumsql' => count($sql)));
+    }
+
+    public function sql_deleteAction()
+    {
+        $this->minPermission(Auth::RIGHT_READWRITE);
+        $this->testForPresence(
+            array(
+                'post' => array('csrftoken')
+            )
+        );
+
+        if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
+            throw new ForbiddenException();
+        }
+
+        $deleteIds = array();
+        if (isset($_GET['id'])) {
+            $deleteIds[] = $_GET['id'];
+        } elseif (isset($_POST['delids'])) {
+            $deleteIds = explode(',', $_POST['delids']);
+        }
+
+        foreach ($deleteIds as $id) {
+            SQLTest::delete($id);
+        }
+        $this->redirect('/settings/sql');
+    }
+
+    public function sql_addAction()
+    {
+        $this->minPermission(Auth::RIGHT_READWRITE);
+        $this->add('menu', 'settingssql');
+
+        $test = ($this->hasSavedForm('SQLTest')) ? $this->formGet() : new SQLTest();
+        $this->load('settings/addsql');
+        $this->render(array('devices' => Helper::getDevices($test->sub_dev_type), 'sql' => $test));
+    }
+
+    public function sql_editAction()
+    {
+        $this->minPermission(Auth::RIGHT_READWRITE);
+        $this->add('menu', 'settingssql');
+        $this->testForPresence(array('get' => array('id')));
+
+        $test = new SQLTest(intval($_GET['id']));
+        $this->load('settings/editsql');
+        $this->render(array('devices' => Helper::getDevices($test->sub_dev_type), 'sql' => $test));
+    }
+
+    public function sql_patchAction()
+    {
+        $this->minPermission(Auth::RIGHT_READWRITE);
+        $this->testForPresence(
+            array(
+                'post' => array(
+                    'id',
+                    'csrftoken',
+                    'name',
+                    'host',
+                    'user',
+                    'password',
+                    'query',
+                    'device',
+                    'columnnumber',
+                    'timeout'
+                )
+            )
+        );
+        if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
+            throw new ForbiddenException();
+        }
+        if (empty($_POST['id']) || empty($_POST['name']) || empty($_POST['host']) || empty($_POST['user']) || empty($_POST['password']) || empty($_POST['query']) || empty($_POST['device']) || empty($_POST['columnnumber']) || empty($_POST['timeout'])) {
+            $this->errors->append('Empty fields are not allowed!');
+        }
+
+        if (mb_strlen($_POST['query'] > 255)) {
+            $this->errors->append(
+                'The SQL query must not be longer than 255 characters, detected: ',
+                mb_strlen($_POST['query'])
+            );
+        }
+
+        if (!is_numeric($_POST['columnnumber'])) {
+            $this->errors->append('Column Number must be a positive int');
+        } else {
+            $_POST['columnnumber'] = abs($_POST['columnnumber']);
+        }
+        if (!is_numeric($_POST['timeout'])) {
+            $this->errors->append('Timeout must be a positive int');
+        } else {
+            $_POST['timeout'] = abs($_POST['timeout']);
+        }
+
+        // more tests omitted....
+
+        $test = new SQLTest(array(
+            'id' => $_POST['id'],
+            'name' => $_POST['name'],
+            'sub_dev_type' => $_POST['device'],
+            'password' => $_POST['password'],
+            'host' => $_POST['host'],
+            'user' => $_POST['user'],
+            'query' => $_POST['query'],
+            'column_num' => $_POST['columnnumber'],
+            'timeout' => $_POST['timeout']
+        ));
+        if (!$this->hasErrors()) {
+            $test->save();
+            $this->success->append('The SQL Test ' . $_POST['name'] . ' has been created');
+            $this->redirect('/settings/sql');
+        } else {
+            $this->formSave($test);
+            $this->redirect('/settings/sql/edit?id='.intval($_POST['id']));
+        }
+    }
+
+    public function sql_createAction()
+    {
+        $this->minPermission(Auth::RIGHT_READWRITE);
+        $this->testForPresence(
+            array(
+                'post' => array(
+                    'csrftoken',
+                    'name',
+                    'host',
+                    'user',
+                    'password',
+                    'query',
+                    'device',
+                    'columnnumber',
+                    'timeout'
+                )
+            )
+        );
+        if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
+            throw new ForbiddenException();
+        }
+        if (empty($_POST['name']) || empty($_POST['host']) || empty($_POST['user']) || empty($_POST['password']) || empty($_POST['query']) || empty($_POST['device']) || empty($_POST['columnnumber']) || empty($_POST['timeout'])) {
+            $this->errors->append('Empty fields are not allowed!');
+        }
+
+        if (mb_strlen($_POST['query'] > 255)) {
+            $this->errors->append(
+                'The SQL query must not be longer than 255 characters, detected: ',
+                mb_strlen($_POST['query'])
+            );
+        }
+
+        if (!is_numeric($_POST['columnnumber'])) {
+            $this->errors->append('Column Number must be a positive int');
+        } else {
+            $_POST['columnnumber'] = abs($_POST['columnnumber']);
+        }
+        if (!is_numeric($_POST['timeout'])) {
+            $this->errors->append('Timeout must be a positive int');
+        } else {
+            $_POST['timeout'] = abs($_POST['timeout']);
+        }
+
+        // more tests omitted....
+
+        $test = new SQLTest(array(
+            'name' => $_POST['name'],
+            'sub_dev_type' => $_POST['device'],
+            'password' => $_POST['password'],
+            'host' => $_POST['host'],
+            'user' => $_POST['user'],
+            'query' => $_POST['query'],
+            'column_num' => $_POST['columnnumber'],
+            'timeout' => $_POST['timeout']
+        ));
+        if (!$this->hasErrors()) {
+            $test->save();
+            $this->success->append('The SQL Test ' . $_POST['name'] . ' has been created');
+            $this->redirect('/settings/sql');
+        } else {
+            $this->formSave($test);
+            $this->redirect('/settings/sql/add');
+        }
+    }
+
     public function usersAction()
     {
         $this->minPermission(Auth::RIGHT_ADMIN);
         $this->add('menu', 'settingsusers');
 
 
-        $users = getDatabase()->query('SELECT id, user, fullname, IF(disabled = 0, permit, '.Auth::RIGHT_DISABLED.') AS permit FROM user ORDER BY user')->fetchAll(\PDO::FETCH_ASSOC);
+        $users = getDatabase()->query(
+            'SELECT id, user, fullname, IF(disabled = 0, permit, ' . Auth::RIGHT_DISABLED . ') AS permit FROM user ORDER BY user'
+        )->fetchAll(\PDO::FETCH_ASSOC);
 
         $users = $this->mapPermissions($users);
 
@@ -62,13 +259,25 @@ class SettingsController extends BaseController
         $this->render(array('users' => $users, 'sumusers' => count($users)));
     }
 
-    public function users_editAction() {
+    private function mapPermissions(array $users)
+    {
+        $tmp = array();
+        foreach ($users as $key => $val) {
+            $val['permit'] = $GLOBALS['PERMIT_TYPES'][$val['permit']];
+            $tmp[$key] = $val;
+        }
+
+        return $tmp;
+    }
+
+    public function users_editAction()
+    {
         $this->minPermission(Auth::RIGHT_ADMIN);
         $this->add('menu', 'settingsusers');
 
-        $this->testForPresence(array('get' => array('uid')));
+        $this->testForPresence(array('get' => array('id')));
 
-        $user = new User($_GET['uid']);
+        $user = new User($_GET['id']);
         $this->load('settings/edituser');
 
         $values = array(
@@ -81,11 +290,21 @@ class SettingsController extends BaseController
         $this->render($values);
     }
 
-    public function users_patchAction() {
+    public function users_patchAction()
+    {
         $this->minPermission(Auth::RIGHT_ADMIN);
         $this->testForPresence(
             array(
-                'post' => array('csrftoken', 'username', 'prettyname', 'password', 'password2', 'permit', 'group', 'userid')
+                'post' => array(
+                    'csrftoken',
+                    'username',
+                    'prettyname',
+                    'password',
+                    'password2',
+                    'permit',
+                    'group',
+                    'userid'
+                )
             )
         );
         if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
@@ -109,17 +328,27 @@ class SettingsController extends BaseController
                     'slideshow' => isset($_POST['slideshow']) ? true : false
                 )
             );
-            $this->success->append('The user '.$_POST['prettyname'].' has been updated');
+            $this->success->append('The user ' . $_POST['prettyname'] . ' has been updated');
         }
 
         $this->redirect('/settings/users');
     }
 
-    public function users_createAction() {
+    public function users_createAction()
+    {
         $this->minPermission(Auth::RIGHT_ADMIN);
         $this->testForPresence(
             array(
-                'post' => array('csrftoken', 'username', 'prettyname', 'password', 'password2', 'permit', 'group', 'userid')
+                'post' => array(
+                    'csrftoken',
+                    'username',
+                    'prettyname',
+                    'password',
+                    'password2',
+                    'permit',
+                    'group',
+                    'userid'
+                )
             )
         );
         if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
@@ -134,7 +363,9 @@ class SettingsController extends BaseController
             }
         }
         if ($this->auth->userExists(trim($_POST['username']))) {
-            $this->errors->append('There already exists an user with the name '.$_POST['username']);
+            $this->errors->append(
+                'There already exists an user with the name ' . $_POST['username']
+            );
         }
 
         if (!$this->hasErrors()) {
@@ -149,22 +380,26 @@ class SettingsController extends BaseController
                     'slideshow' => isset($_POST['slideshow']) ? true : false
                 )
             );
-            $this->success->append('The user '.$_POST['prettyname'].' has been created');
+            $this->success->append('The user ' . $_POST['prettyname'] . ' has been created');
         }
 
         $this->redirect('/settings/users');
     }
 
-    public function users_addAction() {
+    public function users_addAction()
+    {
         $this->minPermission(Auth::RIGHT_ADMIN);
         $this->add('menu', 'settingsusers');
 
 
         $this->load('settings/adduser');
-        $this->render(array('permittypes' => Auth::getPermissionTypes(), 'groups' => Auth::getGroups()));
+        $this->render(
+            array('permittypes' => Auth::getPermissionTypes(), 'groups' => Auth::getGroups())
+        );
     }
 
-    public function users_deleteAction() {
+    public function users_deleteAction()
+    {
         $this->minPermission(Auth::RIGHT_ADMIN);
         $this->testForPresence(
             array(
@@ -177,27 +412,16 @@ class SettingsController extends BaseController
         }
 
         $deleteIds = array();
-        if (isset($_GET['uid'])) {
-            $deleteIds[] = $_GET['uid'];
-        }
-        elseif (isset($_POST['delids'])) {
+        if (isset($_GET['id'])) {
+            $deleteIds[] = $_GET['id'];
+        } elseif (isset($_POST['delids'])) {
             $deleteIds = explode(',', $_POST['delids']);
         }
 
-        foreach($deleteIds as $id) {
+        foreach ($deleteIds as $id) {
             $this->auth->deleteUser($id);
         }
         $this->redirect('/settings/users');
-    }
-
-    private function mapPermissions(array $users) {
-        $tmp = array();
-        foreach ($users as $key => $val) {
-            $val['permit'] = $GLOBALS['PERMIT_TYPES'][$val['permit']];
-            $tmp[$key] = $val;
-        }
-
-        return $tmp;
     }
 
 }

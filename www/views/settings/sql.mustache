@@ -1,43 +1,47 @@
 {{>settingsheader}}
-            <h1 class="page-header">Settings - Users</h1>
+            <h1 class="page-header">Settings - SQL</h1>
 
 <div class="table-responsive">
     <table class="table table-striped table-hover">
         <thead>
             <tr>
                 <th class="nowrap">[<span id="selectall" class="glyphicon glyphicon-asterisk" title="select all"></span>] [<span id="selectnothing" class="glyphicon glyphicon-unchecked" title="select nothing"></span>] [<span id="selectinvert" class="glyphicon glyphicon-minus" title="invert selection"></span>]</th>
-                <th>User ID</th>
                 <th>Name</th>
-                <th>Permissions</th>
-                <th class="text-right"><a href="{{#route}}/settings/users/add{{/route}}">add</a></th>
+                <th>Host</th>
+                <th>User</th>
+                <th>Query</th>
+                <th class="text-right"><a href="{{#route}}/settings/sql/add{{/route}}">add</a></th>
             </tr>
         </thead>
         <tbody>
-        {{#users}}
+        {{#sql}}
             <tr>
                 <td>
-                    <input class="netmrg-check-user" type="checkbox" name="checkboxes[]" value="{{id}}" data-csrftoken="{{csrftoken}}">
+                    <input class="netmrg-check-sql" type="checkbox" name="checkboxes[]" value="{{id}}" data-csrftoken="{{csrftoken}}">
+                </td>
+                <td>
+                    {{name}}
+                </td>
+                <td>
+                    {{host}}
                 </td>
                 <td>
                     {{user}}
                 </td>
-                <td>
-                    {{fullname}}
+                <td title="{{fullquery}}" style="cursor: help;">
+                    {{query}}
                 </td>
-                <td>
-                    {{permit}}
-                </td>
-                <td class="text-right" class="nowrap">
-                    <a href="{{#route}}/settings/users/edit?id={{id}}{{/route}}" style="margin-right:10px;"><span class="glyphicon glyphicon-pencil" title="edit user"></span></a>
-                    <a href="{{#route}}/settings/users/delete?id={{id}}{{/route}}" data-csrftoken="{{csrftoken}}" data-confirmButton="Yes, delete" data-cancelButton="no" data-text="Do you really want to delete <strong>{{user}}</strong>?" data-okButtonClass="btn-danger" class="confirm"><span class="glyphicon glyphicon-remove alert-danger" title="delete user"></span></a>
+                <td class="text-right nowrap">
+                    <a href="{{#route}}/settings/sql/edit?id={{id}}{{/route}}" style="margin-right:10px;"><span class="glyphicon glyphicon-pencil" title="edit sql"></span></a>
+                    <a href="{{#route}}/settings/sql/delete?id={{id}}{{/route}}" data-csrftoken="{{csrftoken}}" data-confirmButton="Yes, delete" data-cancelButton="no" data-text="Do you really want to delete <strong>{{fullquery}}</strong>?" data-okButtonClass="btn-danger" class="confirm"><span class="glyphicon glyphicon-remove alert-danger" title="delete sql"></span></a>
                 </td>
             </tr>
-        {{/users}}
+        {{/sql}}
         </tbody>
     </table>
-    {{sumusers}} Users
+    {{sumsql}} SQL Statements
     <hr style="border-bottom: 1px solid #EEE;">
-    <a id="batchdelete" href="{{#route}}/settings/users/delete{{/route}}">Batch delete selected users</a>
+    <a id="batchdelete" href="{{#route}}/settings/sql/delete{{/route}}">Batch delete selected SQL Statements</a>
 </div>
 
 <script>
@@ -50,7 +54,7 @@
     $("#batchdelete").confirm({
         title: 'Confirmation',
         confirm: function() {
-            var delids = $('.netmrg-check-user').map(
+            var delids = $('.netmrg-check-sql').map(
                     function(k, v) {
                         if($(v).prop('checked')) {
                             return $(v).prop('value');
@@ -61,8 +65,8 @@
                 alert('nothing selected');
                 return false;
             }
-            var form = $('<form method="post" class="hide" action="{{#route}}/settings/users/delete{{/route}}"></form>');
-            var z = $('.netmrg-check-user').first().data('csrftoken');
+            var form = $('<form method="post" class="hide" action="{{#route}}/settings/sql/delete{{/route}}"></form>');
+            var z = $('.netmrg-check-sql').first().data('csrftoken');
             if (z) {
                 var csrf = $('<input type="hidden" name="csrftoken" value="' + z + '">');
                 form.append(csrf);
@@ -79,13 +83,13 @@
 
     $(function() {
         $('#selectall').click(function() {
-            $('.netmrg-check-user').prop('checked', true);
+            $('.netmrg-check-sql').prop('checked', true);
         });
         $('#selectnothing').click(function() {
-            $('.netmrg-check-user').prop('checked', false);
+            $('.netmrg-check-sql').prop('checked', false);
         });
         $('#selectinvert').click(function() {
-            $('.netmrg-check-user').click();
+            $('.netmrg-check-sql').click();
         });
     });
 </script>

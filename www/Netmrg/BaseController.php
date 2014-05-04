@@ -48,10 +48,6 @@ class BaseController
      */
     protected $success = null;
     /**
-     * @var bool
-     */
-    private $debugmode = false;
-    /**
      * @var Auth|null
      */
     protected $auth = null;
@@ -60,9 +56,17 @@ class BaseController
      */
     protected $session = null;
     /**
+     * @var bool
+     */
+    private $debugmode = false;
+    /**
      * @var array
      */
     private $variables = array();
+    /**
+     * @var mixed
+     */
+    private $savedForm = null;
 
     /**
      * @param \Mustache_Engine $mustache
@@ -85,17 +89,6 @@ class BaseController
     }
 
     /**
-     * @param null|string $templateName
-     *
-     * @return string
-     */
-    public function load($templateName = null)
-    {
-        $this->templateName = (empty($templateName)) ? $this->getClassName() : $templateName;
-        return $this->templateName;
-    }
-
-    /**
      * @param string $newMessage
      */
     protected function addDebugMessage($newMessage)
@@ -104,56 +97,9 @@ class BaseController
 
     }
 
-    /**
-     * @return array
-     */
-    private function getDefaults()
+    protected final function hasErrors()
     {
-        $tmp = array();
-
-        $tmp['__tpl_webroot'] = $GLOBALS['netmrg']['webroot'];
-        $tmp['__tpl_companylink'] = $GLOBALS['netmrg']['companylink'];
-        $tmp['__tpl_companyname'] = $GLOBALS['netmrg']['company'];
-        $tmp['__tpl_externalauth'] = $GLOBALS['netmrg']['externalAuth'];
-
-        // hack to introduce template controlled variables
-        $tmp['__tpl_vars'] = function($text, \Mustache_LambdaHelper $helper) {
-            $tmp = explode(PHP_EOL, $text);
-            if (empty($tmp)) {
-                return;
-            }
-            foreach ($tmp as $v) {
-                $v = trim($v);
-                preg_match('/^\[\[(.*)\|(.*)]]$/', $v, $parts);
-                if (!is_null($parts[1]) && !empty($parts[2])) {
-                    $helper->context->push(array($parts[1] => $parts[2]));
-                }
-            }
-            return;
-        };
-
-        $tmp['__tpl_isloggedin'] = $this->auth->userIsLoggedIn();
-        $tmp['__tpl_username'] = $this->auth->getUsername();
-        return $tmp;
-    }
-
-    protected final function hasErrors() {
         return ($this->errors->count() > 0);
-    }
-    /**
-     * @return array
-     */
-    private function getErrors()
-    {
-        return $this->getMessages('errors');
-    }
-
-    /**
-     * @return array
-     */
-    private function getSuccess()
-    {
-        return $this->getMessages('success');
     }
 
     /**
@@ -188,51 +134,88 @@ class BaseController
     /**
      * @return array
      */
+    private function getDefaults()
+    {
+        $tmp = array();
+
+        $tmp['__tpl_webroot'] = $GLOBALS['netmrg']['webroot'];
+        $tmp['__tpl_companylink'] = $GLOBALS['netmrg']['companylink'];
+        $tmp['__tpl_companyname'] = $GLOBALS['netmrg']['company'];
+        $tmp['__tpl_externalauth'] = $GLOBALS['netmrg']['externalAuth'];
+
+        // hack to introduce template controlled variables
+        $tmp['__tpl_vars'] = function ($text, \Mustache_LambdaHelper $helper) {
+            $tmp = explode(PHP_EOL, $text);
+            if (empty($tmp)) {
+                return;
+            }
+            foreach ($tmp as $v) {
+                $v = trim($v);
+                preg_match('/^\[\[(.*)\|(.*)]]$/', $v, $parts);
+                if (!is_null($parts[1]) && !empty($parts[2])) {
+                    $helper->context->push(array($parts[1] => $parts[2]));
+                }
+            }
+            return;
+        };
+
+        $tmp['__tpl_isloggedin'] = $this->auth->userIsLoggedIn();
+        $tmp['__tpl_username'] = $this->auth->getUsername();
+        return $tmp;
+    }
+
+    /**
+     * @return array
+     */
+    private function getVariables()
+    {
+        return $this->variables;
+    }
+
+    /**
+     * @return array
+     */
+    private function getErrors()
+    {
+        return $this->getMessages('errors');
+    }
+
+    /**
+     * @param string $type
+     * @return array
+     */
+    private function getMessages($type)
+    {
+        $result = array();
+        if (!empty($this->session)) {
+            $sessionErrors = $this->session->get($type);
+            if (!empty($sessionErrors) && $sessionErrors->count() > 0) {
+                $this->session->set($type, null);
+                $result += $sessionErrors->getArrayCopy();
+            }
+        }
+        if ($this->$type->count() > 0) {
+            $result += $this->$type->getArrayCopy();
+        }
+        return array($type => $result);
+    }
+
+    /**
+     * @return array
+     */
+    private function getSuccess()
+    {
+        return $this->getMessages('success');
+    }
+
+    /**
+     * @return array
+     */
     protected final function setCsrfToken()
     {
         $crsftoken = uniqid();
         $this->session->set('csrftoken', $crsftoken);
         return array('csrftoken' => $crsftoken);
-    }
-
-    /**
-     * @param  string $token
-     * @return bool
-     */
-    protected final function isValidCsrfToken($token)
-    {
-        $tmp = $this->session->get('csrftoken');
-        $this->setCsrfToken(/* empty it*/);
-        return ($tmp == $token);
-    }
-
-    /**
-     * @param mixed $what
-     */
-    protected function debug($what)
-    {
-        $this->debug['messages'][] = $this->dump($what);
-    }
-
-    /**
-     * @param mixed $what
-     * @return string
-     */
-    private function dump($what)
-    {
-        ob_start();
-        var_dump($what);
-        $result = ob_get_clean();
-        return $result;
-    }
-
-    /**
-     * @param  int $permission
-     * @return bool
-     */
-    protected function minPermission($permission)
-    {
-        return $this->auth->userHasAtLeastPermissionLevel($permission);
     }
 
     /**
@@ -268,6 +251,16 @@ class BaseController
     }
 
     /**
+     * @param null|string $templateName
+     * @return string
+     */
+    public function load($templateName = null)
+    {
+        $this->templateName = (empty($templateName)) ? $this->getClassName() : $templateName;
+        return $this->templateName;
+    }
+
+    /**
      * @return mixed
      */
     private function getClassName()
@@ -277,20 +270,52 @@ class BaseController
     }
 
     /**
+     * @param  string $token
+     * @return bool
+     */
+    protected final function isValidCsrfToken($token)
+    {
+        $tmp = $this->session->get('csrftoken');
+        $this->setCsrfToken( /* empty it*/);
+        return ($tmp == $token);
+    }
+
+    /**
+     * @param mixed $what
+     */
+    protected function debug($what)
+    {
+        $this->debug['messages'][] = $this->dump($what);
+    }
+
+    /**
+     * @param mixed $what
+     * @return string
+     */
+    private function dump($what)
+    {
+        ob_start();
+        var_dump($what);
+        $result = ob_get_clean();
+        return $result;
+    }
+
+    /**
+     * @param  int $permission
+     * @return bool
+     */
+    protected function minPermission($permission)
+    {
+        return $this->auth->userHasAtLeastPermissionLevel($permission);
+    }
+
+    /**
      * @param string|int $key
      * @param mixed $value
      */
     protected function add($key, $value)
     {
         $this->variables[$key] = array($value => $value);
-    }
-
-    /**
-     * @return array
-     */
-    private function getVariables()
-    {
-        return $this->variables;
     }
 
     /**
@@ -322,6 +347,30 @@ class BaseController
         exit;
     }
 
+    protected final function hasSavedForm($className)
+    {
+        $tmp = $this->session->get('savedform');
+        if (empty($tmp)) {
+            return false;
+        }
+        $class = get_class($tmp);
+        $class = explode('\\', $class);
+        $class = array_pop($class);
+        return ($class == $className);
+    }
+
+    protected final function formGet()
+    {
+        $tmp = $this->session->get('savedform');
+        $this->session->set('savedform', null);
+        return $tmp;
+    }
+
+    protected final function formSave($variable)
+    {
+        $this->session->set('savedform', $variable);
+    }
+
     /**
      * @param array $values
      * @return bool
@@ -335,38 +384,18 @@ class BaseController
         if (isset($values['post'])) {
             foreach ($values['post'] as $test) {
                 if (!isset($_POST[$test])) {
-                    throw new BadRequestException('variable '.$test. ' not found');
+                    throw new BadRequestException('variable ' . $test . ' not found');
                 }
             }
         }
         if (isset($values['get'])) {
             foreach ($values['get'] as $test) {
                 if (!isset($_GET[$test])) {
-                    throw new BadRequestException('variable '.$test. ' not found');
+                    throw new BadRequestException('variable ' . $test . ' not found');
                 }
             }
         }
         return true;
 
-    }
-
-    /**
-     * @param string $type
-     * @return array
-     */
-    private function getMessages($type)
-    {
-        $result = array();
-        if (!empty($this->session)) {
-            $sessionErrors = $this->session->get($type);
-            if (!empty($sessionErrors) && $sessionErrors->count() > 0) {
-                $this->session->set($type, null);
-                $result += $sessionErrors->getArrayCopy();
-            }
-        }
-        if ($this->$type->count() > 0) {
-            $result += $this->$type->getArrayCopy();
-        }
-        return array($type => $result);
     }
 } 

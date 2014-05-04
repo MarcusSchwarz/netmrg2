@@ -68,7 +68,7 @@ $MENU = array(
         array("name" => "Template Graphs", "link" => "graphs.php?type=template", "descr" => "", "authLevelRequired" => 1),
         array("name" => "Script", "link" => "tests_script.php", "descr" => "External Programs", "authLevelRequired" => 2),
         array("name" => "SNMP", "link" => "tests_snmp.php", "descr" => "SNMP Queries", "authLevelRequired" => 2),
-        array("name" => "SQL", "link" => "tests_sql.php", "descr" => "Database Queries", "authLevelRequired" => 2),
+        array("name" => "SQL", "link" => "index/settings/sql", "descr" => "Database Queries", "authLevelRequired" => 2),
         array("name" => "Users", "link" => "index/settings/users", "descr" => "User Management", "authLevelRequired" => 3),
         array("name" => "Legacy Device Admin", "link" => "devices.php", "descr" => "", "authLevelRequired" => 0, "display" => false),
         array("name" => "Legacy Group Admin", "link" => "groups.php", "descr" => "", "authLevelRequired" => 0, "display" => false),
