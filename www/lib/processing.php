@@ -815,10 +815,9 @@ function delete_view_item($item_id) {
 }
 
 function is_view_item_extreme($object_id, $object_type, $item_id, $which) {
-    $query = getDatabase()->prepare('SELECT id, pos FROM view WHERE object_id = :object_id AND object_type = :object_type ORDER BY pos :which');
+    $query = getDatabase()->prepare('SELECT id, pos FROM view WHERE object_id = :object_id AND object_type = :object_type ORDER BY pos '.getDatabase()->quoteIdent($which));
     $query->bindValue(':object_id', $object_id);
     $query->bindValue(':object_type', $object_type);
-    $query->bindValue(':which', $which);
     $query->execute();
 
     $row = $query->fetch(PDO::FETCH_ASSOC);
