@@ -34,9 +34,8 @@ class ScriptTest
     const DATA_TYPE_ERRORCODE   = 1;
     const DATA_TYPE_STANDARDOUT = 2;
     public static $dataTypeNames = array(
-        0 => array(),
-        1 => array('id' => 1, 'name' => 'Error Code'),
-        2 => array('id' => 2, 'name' => 'Standard Out')
+        0 => array('id' => 1, 'name' => 'Error Code'),
+        1 => array('id' => 2, 'name' => 'Standard Out')
     );
     private $fromDatabase = false;
 
@@ -58,15 +57,19 @@ class ScriptTest
                 if (!empty($this->id)) {
                     $this->fromDatabase = true;
                 }
-                $this->setDataTypeName();
+                $this->data_type_name = self::getDataTypeName($this->data_type);
             }
         }
         return $this;
     }
 
-    private function setDataTypeName()
+    public static function getDataTypeName($datatype)
     {
-        $this->data_type_name = self::$dataTypeNames[$this->data_type]['name'];
+        foreach (self::$dataTypeNames as $type) {
+            if ($type['id'] == $datatype) {
+                return $type['name'];
+            }
+        }
     }
 
     private function load($id)
@@ -85,7 +88,7 @@ class ScriptTest
 
         $this->fromDatabase = true;
 
-        $this->setDataTypeName();
+        $this->data_type_name = self::getDataTypeName($this->data_type);
     }
 
     public static function delete($id)

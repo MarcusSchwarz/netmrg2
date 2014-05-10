@@ -73,7 +73,7 @@ class SettingsController
     private function mapScriptsDatatypes(&$scripts)
     {
         foreach ($scripts as $idx => $script) {
-            $scripts[$idx]['data_type_name'] = ScriptTest::$dataTypeNames[intval($script['data_type'])]['name'];
+            $scripts[$idx]['data_type_name'] = ScriptTest::getDataTypeName($script['data_type']);
         }
     }
 
