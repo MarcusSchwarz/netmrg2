@@ -28,6 +28,7 @@ use Netmrg\Exception\ForbiddenException;
 use Netmrg\Helper;
 use Netmrg\ScriptTest;
 use Netmrg\SQLTest;
+use Netmrg\SNMPTest;
 use Netmrg\User;
 
 class SettingsController
@@ -69,6 +70,22 @@ class SettingsController
         $this->mapScriptsDatatypes($scripts);
         $this->load('settings/scripts');
         $this->render(array('scripts' => $scripts, 'sumscripts' => count($scripts)));
+    }
+
+    public function snmpAction()
+    {
+        $this->minPermission(Auth::RIGHT_READWRITE);
+        $this->add('menu', 'settingssnmp');
+
+
+        $snmp = getDatabase()
+                ->query(
+                'SELECT id, name, oid FROM tests_snmp ORDER BY name'
+            )
+                ->fetchAll(\PDO::FETCH_ASSOC);
+
+        $this->load('settings/snmp');
+        $this->render(array('snmp' => $snmp, 'sumsnmp' => count($snmp)));
     }
 
     private function mapScriptsDatatypes(&$scripts)
@@ -192,7 +209,7 @@ class SettingsController
         ));
         if (!$this->hasErrors()) {
             $test->save();
-            $this->success->append('The Script Test '.$_POST['name'].' has been created');
+            $this->success->append('The Script Test '.$_POST['name'].' has been modified');
             $this->redirect('/settings/scripts');
         } else {
             $this->formSave($test);
@@ -246,10 +263,10 @@ class SettingsController
         }
 
         $test = new ScriptTest(array(
-            'name'         => $_POST['name'],
-            'dev_type' => $_POST['device'],
-            'cmd'     => $_POST['command'],
-            'data_type'         => $_POST['datatype']
+            'name'      => $_POST['name'],
+            'dev_type'  => $_POST['device'],
+            'cmd'       => $_POST['command'],
+            'data_type' => $_POST['datatype']
         ));
         if (!$this->hasErrors()) {
             $test->save();
@@ -258,6 +275,195 @@ class SettingsController
         } else {
             $this->formSave($test);
             $this->redirect('/settings/scripts/add');
+        }
+    }
+
+    public function snmp_deleteAction()
+    {
+        $this->minPermission(Auth::RIGHT_READWRITE);
+        $this->testForPresence(
+             array(
+                 'post' => array('csrftoken')
+             )
+        );
+
+        if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
+            throw new ForbiddenException();
+        }
+
+        $deleteIds = array();
+        if (isset($_GET['id'])) {
+            $deleteIds[] = $_GET['id'];
+        } elseif (isset($_POST['delids'])) {
+            $deleteIds = explode(',', $_POST['delids']);
+        }
+
+        foreach ($deleteIds as $id) {
+            SNMPTest::delete($id);
+        }
+        $this->redirect('/settings/snmp');
+    }
+
+    public function snmp_addAction()
+    {
+        $this->minPermission(Auth::RIGHT_READWRITE);
+        $this->add('menu', 'settingssnmp');
+
+        $test = ($this->hasSavedForm('SNMPTest')) ? $this->formGet() : new SNMPTest();
+        $this->load('settings/addsnmp');
+        $this->render(
+             array(
+                 'devices' => Helper::getDevices($test->dev_type),
+                 'types'   => Helper::getSNMPTypes($test->type),
+                 'snmp'    => $test
+             )
+        );
+    }
+
+    public function snmp_editAction()
+    {
+        $this->minPermission(Auth::RIGHT_READWRITE);
+        $this->add('menu', 'settingssnmp');
+        $this->testForPresence(array('get' => array('id')));
+
+        $test = new SNMPTest(intval($_GET['id']));
+        $this->load('settings/editsnmp');
+        $this->render(
+             array(
+                 'devices' => Helper::getDevices($test->dev_type),
+                 'types'   => Helper::getSNMPTypes($test->type),
+                 'snmp'    => $test
+             )
+        );
+    }
+
+    public function snmp_patchAction()
+    {
+        $this->minPermission(Auth::RIGHT_READWRITE);
+        $this->testForPresence(
+             array(
+                 'post' => array(
+                     'id',
+                     'csrftoken',
+                     'name',
+                     'oid',
+                     'dev_type',
+                     'type',
+                     'subitem'
+                 )
+             )
+        );
+        if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
+            throw new ForbiddenException();
+        }
+        if (empty($_POST['id']) || empty($_POST['name']) || empty($_POST['oid']) || empty($_POST['dev_type'])) {
+            // cannot test "type" or "subitem"; empty(0) == true
+            $this->errors->append('Empty fields are not allowed!');
+        }
+
+        if (mb_strlen($_POST['oid'] > 250)) {
+            $this->errors->append(
+                         'The OID must not be longer than 250 characters, detected: ',
+                             mb_strlen($_POST['oid'])
+            );
+        }
+
+        if (mb_strlen($_POST['name'] > 200)) {
+            $this->errors->append(
+                         'The name must not be longer than 200 characters, detected: ',
+                             mb_strlen($_POST['name'])
+            );
+        }
+
+        if ($_POST['dev_type'] != intval($_POST['dev_type'])) {
+            // this should never happen...
+            throw new BadRequestException;
+        }
+
+        if ($_POST['type'] != intval($_POST['type'])) {
+            // this should never happen...
+            throw new BadRequestException;
+        }
+
+        $test = new SNMPTest(array(
+            'id'       => $_POST['id'],
+            'name'     => $_POST['name'],
+            'dev_type' => $_POST['dev_type'],
+            'oid'      => $_POST['oid'],
+            'subitem'  => $_POST['subitem'],
+            'type'     => $_POST['type']
+        ));
+        if (!$this->hasErrors()) {
+            $test->save();
+            $this->success->append('The SNMP Test '.$_POST['name'].' has been modified');
+            $this->redirect('/settings/snmp');
+        } else {
+            $this->formSave($test);
+            $this->redirect('/settings/snmp/edit?id='.intval($_POST['id']));
+        }
+    }
+
+    public function snmp_createAction()
+    {
+        $this->minPermission(Auth::RIGHT_READWRITE);
+        $this->testForPresence(
+             array(
+                 'post' => array(
+                     'csrftoken',
+                     'name',
+                     'oid',
+                     'dev_type',
+                     'type',
+                     'subitem'
+                 )
+             )
+        );
+        if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
+            throw new ForbiddenException();
+        }
+        if (empty($_POST['name']) || empty($_POST['oid']) || empty($_POST['dev_type'])) {
+            // cannot test "type" or "subitem"; empty(0) == true
+            $this->errors->append('Empty fields are not allowed!');
+        }
+
+        if (mb_strlen($_POST['oid'] > 250)) {
+            $this->errors->append(
+                         'The OID must not be longer than 250 characters, detected: ',
+                             mb_strlen($_POST['oid'])
+            );
+        }
+
+        if (mb_strlen($_POST['name'] > 200)) {
+            $this->errors->append(
+                         'The name must not be longer than 200 characters, detected: ',
+                             mb_strlen($_POST['name'])
+            );
+        }
+
+        if ($_POST['dev_type'] != intval($_POST['dev_type'])) {
+            // this should never happen...
+            throw new BadRequestException;
+        }
+
+        if ($_POST['type'] != intval($_POST['type'])) {
+            // this should never happen...
+            throw new BadRequestException;
+        }
+
+        $test = new SNMPTest(array(
+            'name'     => $_POST['name'],
+            'dev_type' => $_POST['dev_type'],
+            'oid'      => $_POST['oid'],
+            'subitem'  => $_POST['subitem'],
+            'type'     => $_POST['type']
+        ));
+        if (!$this->hasErrors()) {
+            $test->save();
+            $this->success->append('The SNMP Test '.$_POST['name'].' has been created');
+            $this->redirect('/settings/snmp');
+        } else {
+            $this->formSave($test);
+            $this->redirect('/settings/snmp/add');
         }
     }
 
@@ -383,7 +589,7 @@ class SettingsController
         ));
         if (!$this->hasErrors()) {
             $test->save();
-            $this->success->append('The SQL Test '.$_POST['name'].' has been created');
+            $this->success->append('The SQL Test '.$_POST['name'].' has been modified');
             $this->redirect('/settings/sql');
         } else {
             $this->formSave($test);
@@ -543,7 +749,7 @@ class SettingsController
                      'slideshow' => isset($_POST['slideshow']) ? true : false
                  )
             );
-            $this->success->append('The user '.$_POST['prettyname'].' has been updated');
+            $this->success->append('The user '.$_POST['prettyname'].' has been modified');
         }
 
         $this->redirect('/settings/users');

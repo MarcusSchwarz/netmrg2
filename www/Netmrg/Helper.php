@@ -30,7 +30,7 @@ class Helper
         $groups = getDatabase()
                   ->query(
                   'SELECT id, name FROM dev_types ORDER BY name, id'
-        )
+            )
                   ->fetchAll(
                   \PDO::FETCH_ASSOC
             );
@@ -41,6 +41,11 @@ class Helper
     public static function getDataTypes($preselectedItem = null)
     {
         return self::preselectItemForForm($preselectedItem, ScriptTest::$dataTypeNames, 'id');
+    }
+
+    public static function getSNMPTypes($preselectedItem = null)
+    {
+        return self::preselectItemForForm($preselectedItem, SNMPTest::$availableTypes, 'id');
     }
 
     // from Auth.php
