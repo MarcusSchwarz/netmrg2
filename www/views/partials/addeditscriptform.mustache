@@ -1,0 +1,42 @@
+<h1 class="page-header">{{actiontext}}</h1>
+<form class="form-horizontal" role="form" method="post" action="{{#route}}{{actionroute}}{{/route}}">
+    <div class="form-group">
+        <label for="name" class="col-sm-2 control-label">Name</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="name" id="name" placeholder="Name" value="{{script.name}}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="command" class="col-sm-2 control-label">Command</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="command" id="host" placeholder="Command" value="{{script.cmd}}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="datatype" class="col-sm-2 control-label">Data Type</label>
+        <div class="col-sm-10">
+            <select name="datatype" class="form-control" id="datatype">
+                {{#datatypes}}
+                    <option value="{{id}}" {{selected}}>{{name}}</option>
+                {{/datatypes}}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="device" class="col-sm-2 control-label">For use with this device</label>
+        <div class="col-sm-10">
+            <select name="device" class="form-control" id="device">
+                {{#devices}}
+                    <option value="{{id}}" {{selected}}>{{name}}</option>
+                {{/devices}}
+            </select>
+        </div>
+    </div>
+    <input type="hidden" name="csrftoken" value="{{csrftoken}}">
+    <input type="hidden" name="id" value="{{script.id}}">
+    <button class="btn btn-lg btn-primary btn-block" type="submit">{{actiontext}}</button>
+</form>
+<p class="text-center">
+    <a href="#" onclick="history.back();return false;">Abort, go back</a>
+</p>
+

@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
  * @author Marcus Schwarz <msspamfang@gmx.de>
  */
 
@@ -26,15 +27,21 @@ class Helper
 
     public static function getDevices($preselectedItem = null)
     {
-        $groups = getDatabase()->query(
-            'SELECT id, name FROM dev_types ORDER BY name, id'
-        )->fetchAll(
-            \PDO::FETCH_ASSOC
-        );
+        $groups = getDatabase()
+                  ->query(
+                  'SELECT id, name FROM dev_types ORDER BY name, id'
+        )
+                  ->fetchAll(
+                  \PDO::FETCH_ASSOC
+            );
 
         return self::preselectItemForForm($preselectedItem, $groups, 'id');
     }
 
+    public static function getDataTypes($preselectedItem = null)
+    {
+        return self::preselectItemForForm($preselectedItem, ScriptTest::$dataTypeNames, 'id');
+    }
 
     // from Auth.php
     private static function preselectItemForForm($preselectedItem, $elements, $matchId)
