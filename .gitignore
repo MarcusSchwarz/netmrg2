@@ -25,6 +25,7 @@
 #project specific
 *config.php
 *netmrg.xml
+*inf00.php
 
 autom4te.cache/
 
