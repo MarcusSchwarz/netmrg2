@@ -23,6 +23,7 @@ namespace Netmrg\Controller;
 use Netmrg\Auth;
 use Netmrg\BaseController;
 use Netmrg\Configuration;
+use Netmrg\Exception\BadRequestException;
 use Netmrg\Exception\ForbiddenException;
 use Netmrg\Helper;
 use Netmrg\ScriptTest;
@@ -62,7 +63,7 @@ class SettingsController
         $scripts = getDatabase()
                    ->query(
                    'SELECT id, name, cmd, data_type FROM tests_script ORDER BY name'
-        )
+            )
                    ->fetchAll(\PDO::FETCH_ASSOC);
 
         $this->mapScriptsDatatypes($scripts);
@@ -98,19 +99,25 @@ class SettingsController
         }
 
         foreach ($deleteIds as $id) {
-            SQLTest::delete($id);
+            ScriptTest::delete($id);
         }
-        $this->redirect('/settings/sql');
+        $this->redirect('/settings/scripts');
     }
 
     public function scripts_addAction()
     {
         $this->minPermission(Auth::RIGHT_READWRITE);
-        $this->add('menu', 'settingssql');
+        $this->add('menu', 'settingsscripts');
 
-        $test = ($this->hasSavedForm('SQLTest')) ? $this->formGet() : new SQLTest();
-        $this->load('settings/addsql');
-        $this->render(array('devices' => Helper::getDevices($test->sub_dev_type), 'sql' => $test));
+        $test = ($this->hasSavedForm('ScriptTest')) ? $this->formGet() : new ScriptTest();
+        $this->load('settings/addscript');
+        $this->render(
+             array(
+                 'datatypes' => Helper::getDataTypes($test->data_type),
+                 'devices'   => Helper::getDevices($test->dev_type),
+                 'script'    => $test
+             )
+        );
     }
 
     public function scripts_editAction()
@@ -139,61 +146,57 @@ class SettingsController
                      'id',
                      'csrftoken',
                      'name',
-                     'host',
-                     'user',
-                     'password',
-                     'query',
-                     'device',
-                     'columnnumber',
-                     'timeout'
+                     'command',
+                     'datatype',
+                     'device'
                  )
              )
         );
         if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
             throw new ForbiddenException();
         }
-        if (empty($_POST['id']) || empty($_POST['name']) || empty($_POST['host']) || empty($_POST['user']) || empty($_POST['password']) || empty($_POST['query']) || empty($_POST['device']) || empty($_POST['columnnumber']) || empty($_POST['timeout'])) {
+        if (empty($_POST['id']) || empty($_POST['name']) || empty($_POST['command']) || empty($_POST['datatype']) || empty($_POST['device'])) {
             $this->errors->append('Empty fields are not allowed!');
         }
 
-        if (mb_strlen($_POST['query'] > 255)) {
+        if (mb_strlen($_POST['command'] > 200)) {
             $this->errors->append(
-                         'The SQL query must not be longer than 255 characters, detected: ',
-                             mb_strlen($_POST['query'])
+                         'The command must not be longer than 200 characters, detected: ',
+                             mb_strlen($_POST['command'])
             );
         }
 
-        if (!is_numeric($_POST['columnnumber'])) {
-            $this->errors->append('Column Number must be a positive int');
-        } else {
-            $_POST['columnnumber'] = abs($_POST['columnnumber']);
-        }
-        if (!is_numeric($_POST['timeout'])) {
-            $this->errors->append('Timeout must be a positive int');
-        } else {
-            $_POST['timeout'] = abs($_POST['timeout']);
+        if (mb_strlen($_POST['name'] > 200)) {
+            $this->errors->append(
+                         'The name must not be longer than 200 characters, detected: ',
+                             mb_strlen($_POST['name'])
+            );
         }
 
-        // more tests omitted....
+        if ($_POST['datatype'] != intval($_POST['datatype'])) {
+            // this should never happen...
+            throw new BadRequestException;
+        }
 
-        $test = new SQLTest(array(
-            'id'           => $_POST['id'],
-            'name'         => $_POST['name'],
-            'sub_dev_type' => $_POST['device'],
-            'password'     => $_POST['password'],
-            'host'         => $_POST['host'],
-            'user'         => $_POST['user'],
-            'query'        => $_POST['query'],
-            'column_num'   => $_POST['columnnumber'],
-            'timeout'      => $_POST['timeout']
+        if ($_POST['device'] != intval($_POST['device'])) {
+            // this should never happen...
+            throw new BadRequestException;
+        }
+
+        $test = new ScriptTest(array(
+            'id'        => $_POST['id'],
+            'name'      => $_POST['name'],
+            'cmd'       => $_POST['command'],
+            'data_type' => $_POST['datatype'],
+            'dev_type'  => $_POST['device']
         ));
         if (!$this->hasErrors()) {
             $test->save();
-            $this->success->append('The SQL Test '.$_POST['name'].' has been created');
-            $this->redirect('/settings/sql');
+            $this->success->append('The Script Test '.$_POST['name'].' has been created');
+            $this->redirect('/settings/scripts');
         } else {
             $this->formSave($test);
-            $this->redirect('/settings/sql/edit?id='.intval($_POST['id']));
+            $this->redirect('/settings/scripts/edit?id='.intval($_POST['id']));
         }
     }
 
@@ -205,60 +208,56 @@ class SettingsController
                  'post' => array(
                      'csrftoken',
                      'name',
-                     'host',
-                     'user',
-                     'password',
-                     'query',
+                     'command',
+                     'datatype',
                      'device',
-                     'columnnumber',
-                     'timeout'
                  )
              )
         );
         if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
             throw new ForbiddenException();
         }
-        if (empty($_POST['name']) || empty($_POST['host']) || empty($_POST['user']) || empty($_POST['password']) || empty($_POST['query']) || empty($_POST['device']) || empty($_POST['columnnumber']) || empty($_POST['timeout'])) {
+        if (empty($_POST['name']) || empty($_POST['command']) || empty($_POST['datatype']) || empty($_POST['device'])) {
             $this->errors->append('Empty fields are not allowed!');
         }
 
-        if (mb_strlen($_POST['query'] > 255)) {
+        if (mb_strlen($_POST['command'] > 200)) {
             $this->errors->append(
-                         'The SQL query must not be longer than 255 characters, detected: ',
-                             mb_strlen($_POST['query'])
+                         'The command must not be longer than 200 characters, detected: ',
+                             mb_strlen($_POST['command'])
             );
         }
 
-        if (!is_numeric($_POST['columnnumber'])) {
-            $this->errors->append('Column Number must be a positive int');
-        } else {
-            $_POST['columnnumber'] = abs($_POST['columnnumber']);
-        }
-        if (!is_numeric($_POST['timeout'])) {
-            $this->errors->append('Timeout must be a positive int');
-        } else {
-            $_POST['timeout'] = abs($_POST['timeout']);
+        if (mb_strlen($_POST['name'] > 200)) {
+            $this->errors->append(
+                         'The name must not be longer than 200 characters, detected: ',
+                             mb_strlen($_POST['name'])
+            );
         }
 
-        // more tests omitted....
+        if ($_POST['datatype'] != intval($_POST['datatype'])) {
+            // this should never happen...
+            throw new BadRequestException;
+        }
 
-        $test = new SQLTest(array(
+        if ($_POST['device'] != intval($_POST['device'])) {
+            // this should never happen...
+            throw new BadRequestException;
+        }
+
+        $test = new ScriptTest(array(
             'name'         => $_POST['name'],
-            'sub_dev_type' => $_POST['device'],
-            'password'     => $_POST['password'],
-            'host'         => $_POST['host'],
-            'user'         => $_POST['user'],
-            'query'        => $_POST['query'],
-            'column_num'   => $_POST['columnnumber'],
-            'timeout'      => $_POST['timeout']
+            'dev_type' => $_POST['device'],
+            'cmd'     => $_POST['command'],
+            'data_type'         => $_POST['datatype']
         ));
         if (!$this->hasErrors()) {
             $test->save();
-            $this->success->append('The SQL Test '.$_POST['name'].' has been created');
-            $this->redirect('/settings/sql');
+            $this->success->append('The Script Test '.$_POST['name'].' has been created');
+            $this->redirect('/settings/scripts');
         } else {
             $this->formSave($test);
-            $this->redirect('/settings/sql/add');
+            $this->redirect('/settings/scripts/add');
         }
     }
 
@@ -271,7 +270,7 @@ class SettingsController
         $sql = getDatabase()
                ->query(
                'SELECT id, name, host, user, IF(LENGTH(query) > 75, CONCAT(SUBSTRING(query, 1, 70), "..."), query) AS query, query AS fullquery FROM tests_sql ORDER BY name'
-        )
+            )
                ->fetchAll(\PDO::FETCH_ASSOC);
 
         $this->load('settings/sql');
@@ -466,7 +465,7 @@ class SettingsController
         $users = getDatabase()
                  ->query(
                  'SELECT id, user, fullname, IF(disabled = 0, permit, '.Auth::RIGHT_DISABLED.') AS permit FROM user ORDER BY user'
-        )
+            )
                  ->fetchAll(\PDO::FETCH_ASSOC);
 
         $users = $this->mapPermissions($users);

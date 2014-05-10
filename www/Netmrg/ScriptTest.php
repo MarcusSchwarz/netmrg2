@@ -100,18 +100,19 @@ class ScriptTest
     {
         if (!$this->fromDatabase) {
             $s = getDatabase()->prepare(
-                 'INSERT INTO tests_script (name, cmd, data_type) VALUES (:name, :cmd, :data_type)'
+                 'INSERT INTO tests_script (name, cmd, data_type, dev_type) VALUES (:name, :cmd, :data_type, :dev_type)'
             );
         } else {
             // update
             $s = getDatabase()->prepare(
-                 'UPDATE tests_script SET name = :name, cmd = :cmd, data_type = :data_type WHERE id = :id'
+                 'UPDATE tests_script SET name = :name, cmd = :cmd, data_type = :data_type, dev_type = :dev_type WHERE id = :id'
             );
             $s->bindParam(':id', $this->id);
         }
         $s->bindParam(':name', $this->name);
         $s->bindParam(':cmd', $this->cmd);
         $s->bindParam(':data_type', $this->data_type);
+        $s->bindParam(':dev_type', $this->dev_type);
         $s->execute();
     }
 } 
