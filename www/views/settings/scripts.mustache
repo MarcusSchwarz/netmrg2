@@ -29,7 +29,7 @@
                 </td>
                 <td class="text-right nowrap">
                     <a href="{{#route}}/settings/scripts/edit?id={{id}}{{/route}}" style="margin-right:10px;"><span class="glyphicon glyphicon-pencil" title="edit scripts"></span></a>
-                    <a href="{{#route}}/settings/scripts/delete?id={{id}}{{/route}}" data-csrftoken="{{csrftoken}}" data-confirmButton="Yes, delete" data-cancelButton="no" data-text="Do you really want to delete <strong>{{fullquery}}</strong>?" data-okButtonClass="btn-danger" class="confirm"><span class="glyphicon glyphicon-remove alert-danger" title="delete script"></span></a>
+                    <a href="{{#route}}/settings/scripts/delete?id={{id}}{{/route}}" data-csrftoken="{{csrftoken}}" data-confirmButton="Yes, delete" data-cancelButton="no" data-text="Do you really want to delete <strong>{{name}}</strong>?" data-okButtonClass="btn-danger" class="confirm"><span class="glyphicon glyphicon-remove alert-danger" title="delete script"></span></a>
                 </td>
             </tr>
         {{/scripts}}
@@ -49,6 +49,7 @@
 
     $("#batchdelete").confirm({
         title: 'Confirmation',
+        confirmButtonClass: 'btn-danger',
         confirm: function() {
             var delids = $('.netmrg-check-scripts').map(
                     function(k, v) {
