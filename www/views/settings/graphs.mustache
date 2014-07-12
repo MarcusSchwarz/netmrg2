@@ -1,0 +1,91 @@
+{{>settingsheader}}
+            <h1 class="page-header">Settings - {{graphtype}} Graphs</h1>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th class="nowrap">[<span id="selectall" class="glyphicon glyphicon-asterisk" title="select all"></span>] [<span id="selectnothing" class="glyphicon glyphicon-unchecked" title="select nothing"></span>] [<span id="selectinvert" class="glyphicon glyphicon-minus" title="invert selection"></span>]</th>
+                <th>Name</th>
+                <th>Command</th>
+                <th class="text-right"><a href="{{#route}}/settings/graphs/add?type={{graphtype}}{{/route}}">add</a></th>
+            </tr>
+        </thead>
+        <tbody>
+        {{#graphs}}
+            <tr>
+                <td>
+                    <input class="netmrg-check-scripts" type="checkbox" name="checkboxes[]" value="{{id}}" data-csrftoken="{{csrftoken}}">
+                </td>
+                <td>
+                    <a href="{{#route}}/settings/graphitem?id={{id}}&type={{graphtype}}{{/route}}">{{name}}</a>
+                </td>
+                <td>
+                    <a href="{{#route}}/viewgraph/{{id}}{{/route}}" style="margin-right:10px;"><span id="view" class="glyphicon glyphicon-picture" title="view"></span></a>
+                    <a href="{{#route}}/settings/graphs/duplicate?id={{id}}&type={{graphtype}}{{/route}}" style="margin-right:10px;"><span id="duplicate" class="glyphicon glyphicon-tags" title="duplicate"></span></a>
+                    <a href="{{#route}}/settings/graphs/apply?id={{id}}{{/route}}"><span id="applyto" class="glyphicon glyphicon-retweet" title="apply to"></span></a>
+                </td>
+                <td class="text-right nowrap">
+                    <a href="{{#route}}/settings/graphs/edit?id={{id}}&type={{graphtype}}{{/route}}" style="margin-right:10px;"><span class="glyphicon glyphicon-pencil" title="edit scripts"></span></a>
+                    <a href="{{#route}}/settings/graphs/delete?id={{id}}&type={{graphtype}}{{/route}}" data-csrftoken="{{csrftoken}}" data-confirmButton="Yes, delete" data-cancelButton="no" data-text="Do you really want to delete <strong>{{name}}</strong>?" data-okButtonClass="btn-danger" class="confirm"><span class="glyphicon glyphicon-remove alert-danger" title="delete {{graphtype}} Graph"></span></a>
+                </td>
+            </tr>
+        {{/graphs}}
+        </tbody>
+    </table>
+    {{sumgraphs}} {{graphtype}} Graphs
+    <hr style="border-bottom: 1px solid #EEE;">
+    <a id="batchdelete" href="{{#route}}/settings/graphs/delete?type={{graphtype}}{{/route}}">Batch delete selected {{graphtype}} graphs</a>
+</div>
+
+<script>
+    $(".confirm").confirm({
+        title: 'Confirmation',
+        confirmButtonClass: 'btn-danger',
+        post: true
+    });
+
+    $("#batchdelete").confirm({
+        title: 'Confirmation',
+        confirm: function() {
+            var delids = $('.netmrg-check-scripts').map(
+                    function(k, v) {
+                        if($(v).prop('checked')) {
+                            return $(v).prop('value');
+                        }
+                    }
+            );
+            if(delids.length < 1) {
+                alert('nothing selected');
+                return false;
+            }
+            var form = $('<form method="post" class="hide" action="{{#route}}/settings/templategraphs/delete?type={{graphtype}}{{/route}}"></form>');
+            var z = $('.netmrg-check-scripts').first().data('csrftoken');
+            if (z) {
+                var csrf = $('<input type="hidden" name="csrftoken" value="' + z + '">');
+                form.append(csrf);
+            }
+            var ids = $('<input type="hidden" name="delids" value="' + delids.get().join(',') + '">');
+            form.append(ids);
+            $("body").append(form);
+
+            form.submit();
+            return false;
+        }
+    });
+
+
+    $(function() {
+        $('#selectall').click(function() {
+            $('.netmrg-check-scripts').prop('checked', true);
+        });
+        $('#selectnothing').click(function() {
+            $('.netmrg-check-scripts').prop('checked', false);
+        });
+        $('#selectinvert').click(function() {
+            $('.netmrg-check-scripts').click();
+        });
+    });
+</script>
+
+{{>settingsfooter}}
