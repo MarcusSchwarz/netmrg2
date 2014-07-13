@@ -378,7 +378,7 @@ class SettingsController
         $scripts = getDatabase()
                    ->query(
                    'SELECT id, name, cmd, data_type FROM tests_script ORDER BY name'
-        )
+            )
                    ->fetchAll(\PDO::FETCH_ASSOC);
 
         $this->mapScriptsDatatypes($scripts);
