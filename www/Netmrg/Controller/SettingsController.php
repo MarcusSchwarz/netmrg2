@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
  * @author Marcus Schwarz <msspamfang@gmx.de>
  */
 
@@ -22,11 +23,13 @@ namespace Netmrg\Controller;
 use Netmrg\Auth;
 use Netmrg\BaseController;
 use Netmrg\Configuration;
+use Netmrg\Exception\BadRequestException;
 use Netmrg\Exception\ForbiddenException;
 use Netmrg\Graphs;
 use Netmrg\Helper;
 use Netmrg\ScriptTest;
 use Netmrg\SQLTest;
+use Netmrg\SNMPTest;
 use Netmrg\User;
 
 class SettingsController
@@ -373,14 +376,30 @@ class SettingsController
 
 
         $scripts = getDatabase()
-            ->query(
-                'SELECT id, name, cmd, data_type FROM tests_script ORDER BY name'
-            )
-            ->fetchAll(\PDO::FETCH_ASSOC);
+                   ->query(
+                   'SELECT id, name, cmd, data_type FROM tests_script ORDER BY name'
+        )
+                   ->fetchAll(\PDO::FETCH_ASSOC);
 
         $this->mapScriptsDatatypes($scripts);
         $this->load('settings/scripts');
         $this->render(array('scripts' => $scripts, 'sumscripts' => count($scripts)));
+    }
+
+    public function snmpAction()
+    {
+        $this->minPermission(Auth::RIGHT_READWRITE);
+        $this->add('menu', 'settingssnmp');
+
+
+        $snmp = getDatabase()
+                ->query(
+                'SELECT id, name, oid FROM tests_snmp ORDER BY name'
+            )
+                ->fetchAll(\PDO::FETCH_ASSOC);
+
+        $this->load('settings/snmp');
+        $this->render(array('snmp' => $snmp, 'sumsnmp' => count($snmp)));
     }
 
     private function mapScriptsDatatypes(&$scripts)
@@ -411,19 +430,25 @@ class SettingsController
         }
 
         foreach ($deleteIds as $id) {
-            SQLTest::delete($id);
+            ScriptTest::delete($id);
         }
-        $this->redirect('/settings/sql');
+        $this->redirect('/settings/scripts');
     }
 
     public function scripts_addAction()
     {
         $this->minPermission(Auth::RIGHT_READWRITE);
-        $this->add('menu', 'settingssql');
+        $this->add('menu', 'settingsscripts');
 
-        $test = ($this->hasSavedForm('SQLTest')) ? $this->formGet() : new SQLTest();
-        $this->load('settings/addsql');
-        $this->render(array('devices' => Helper::getDevices($test->sub_dev_type), 'sql' => $test));
+        $test = ($this->hasSavedForm('ScriptTest')) ? $this->formGet() : new ScriptTest();
+        $this->load('settings/addscript');
+        $this->render(
+             array(
+                 'datatypes' => Helper::getDataTypes($test->data_type),
+                 'devices'   => Helper::getDevices($test->dev_type),
+                 'script'    => $test
+             )
+        );
     }
 
     public function scripts_editAction()
@@ -447,66 +472,62 @@ class SettingsController
     {
         $this->minPermission(Auth::RIGHT_READWRITE);
         $this->testForPresence(
-            array(
-                'post' => array(
-                    'id',
-                    'csrftoken',
-                    'name',
-                    'host',
-                    'user',
-                    'password',
-                    'query',
-                    'device',
-                    'columnnumber',
-                    'timeout'
-                )
-            )
+             array(
+                 'post' => array(
+                     'id',
+                     'csrftoken',
+                     'name',
+                     'command',
+                     'datatype',
+                     'device'
+                 )
+             )
         );
         if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
             throw new ForbiddenException();
         }
-        if (empty($_POST['id']) || empty($_POST['name']) || empty($_POST['host']) || empty($_POST['user']) || empty($_POST['password']) || empty($_POST['query']) || empty($_POST['device']) || empty($_POST['columnnumber']) || empty($_POST['timeout'])) {
+        if (empty($_POST['id']) || empty($_POST['name']) || empty($_POST['command']) || empty($_POST['datatype']) || empty($_POST['device'])) {
             $this->errors->append('Empty fields are not allowed!');
         }
 
-        if (mb_strlen($_POST['query'] > 255)) {
+        if (mb_strlen($_POST['command'] > 200)) {
             $this->errors->append(
-                'The SQL query must not be longer than 255 characters, detected: ',
-                mb_strlen($_POST['query'])
+                         'The command must not be longer than 200 characters, detected: ',
+                             mb_strlen($_POST['command'])
             );
         }
 
-        if (!is_numeric($_POST['columnnumber'])) {
-            $this->errors->append('Column Number must be a positive int');
-        } else {
-            $_POST['columnnumber'] = abs($_POST['columnnumber']);
-        }
-        if (!is_numeric($_POST['timeout'])) {
-            $this->errors->append('Timeout must be a positive int');
-        } else {
-            $_POST['timeout'] = abs($_POST['timeout']);
+        if (mb_strlen($_POST['name'] > 200)) {
+            $this->errors->append(
+                         'The name must not be longer than 200 characters, detected: ',
+                             mb_strlen($_POST['name'])
+            );
         }
 
-        // more tests omitted....
+        if ($_POST['datatype'] != intval($_POST['datatype'])) {
+            // this should never happen...
+            throw new BadRequestException;
+        }
 
-        $test = new SQLTest(array(
-            'id' => $_POST['id'],
-            'name' => $_POST['name'],
-            'sub_dev_type' => $_POST['device'],
-            'password' => $_POST['password'],
-            'host' => $_POST['host'],
-            'user' => $_POST['user'],
-            'query' => $_POST['query'],
-            'column_num' => $_POST['columnnumber'],
-            'timeout' => $_POST['timeout']
+        if ($_POST['device'] != intval($_POST['device'])) {
+            // this should never happen...
+            throw new BadRequestException;
+        }
+
+        $test = new ScriptTest(array(
+            'id'        => $_POST['id'],
+            'name'      => $_POST['name'],
+            'cmd'       => $_POST['command'],
+            'data_type' => $_POST['datatype'],
+            'dev_type'  => $_POST['device']
         ));
         if (!$this->hasErrors()) {
             $test->save();
-            $this->success->append('The SQL Test ' . $_POST['name'] . ' has been created');
-            $this->redirect('/settings/sql');
+            $this->success->append('The Script Test '.$_POST['name'].' has been modified');
+            $this->redirect('/settings/scripts');
         } else {
             $this->formSave($test);
-            $this->redirect('/settings/sql/edit?id=' . intval($_POST['id']));
+            $this->redirect('/settings/scripts/edit?id='.intval($_POST['id']));
         }
     }
 
@@ -514,64 +535,249 @@ class SettingsController
     {
         $this->minPermission(Auth::RIGHT_READWRITE);
         $this->testForPresence(
-            array(
-                'post' => array(
-                    'csrftoken',
-                    'name',
-                    'host',
-                    'user',
-                    'password',
-                    'query',
-                    'device',
-                    'columnnumber',
-                    'timeout'
-                )
-            )
+             array(
+                 'post' => array(
+                     'csrftoken',
+                     'name',
+                     'command',
+                     'datatype',
+                     'device',
+                 )
+             )
         );
         if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
             throw new ForbiddenException();
         }
-        if (empty($_POST['name']) || empty($_POST['host']) || empty($_POST['user']) || empty($_POST['password']) || empty($_POST['query']) || empty($_POST['device']) || empty($_POST['columnnumber']) || empty($_POST['timeout'])) {
+        if (empty($_POST['name']) || empty($_POST['command']) || empty($_POST['datatype']) || empty($_POST['device'])) {
             $this->errors->append('Empty fields are not allowed!');
         }
 
-        if (mb_strlen($_POST['query'] > 255)) {
+        if (mb_strlen($_POST['command'] > 200)) {
             $this->errors->append(
-                'The SQL query must not be longer than 255 characters, detected: ',
-                mb_strlen($_POST['query'])
+                         'The command must not be longer than 200 characters, detected: ',
+                             mb_strlen($_POST['command'])
             );
         }
 
-        if (!is_numeric($_POST['columnnumber'])) {
-            $this->errors->append('Column Number must be a positive int');
-        } else {
-            $_POST['columnnumber'] = abs($_POST['columnnumber']);
-        }
-        if (!is_numeric($_POST['timeout'])) {
-            $this->errors->append('Timeout must be a positive int');
-        } else {
-            $_POST['timeout'] = abs($_POST['timeout']);
+        if (mb_strlen($_POST['name'] > 200)) {
+            $this->errors->append(
+                         'The name must not be longer than 200 characters, detected: ',
+                             mb_strlen($_POST['name'])
+            );
         }
 
-        // more tests omitted....
+        if ($_POST['datatype'] != intval($_POST['datatype'])) {
+            // this should never happen...
+            throw new BadRequestException;
+        }
 
-        $test = new SQLTest(array(
-            'name' => $_POST['name'],
-            'sub_dev_type' => $_POST['device'],
-            'password' => $_POST['password'],
-            'host' => $_POST['host'],
-            'user' => $_POST['user'],
-            'query' => $_POST['query'],
-            'column_num' => $_POST['columnnumber'],
-            'timeout' => $_POST['timeout']
+        if ($_POST['device'] != intval($_POST['device'])) {
+            // this should never happen...
+            throw new BadRequestException;
+        }
+
+        $test = new ScriptTest(array(
+            'name'      => $_POST['name'],
+            'dev_type'  => $_POST['device'],
+            'cmd'       => $_POST['command'],
+            'data_type' => $_POST['datatype']
         ));
         if (!$this->hasErrors()) {
             $test->save();
-            $this->success->append('The SQL Test ' . $_POST['name'] . ' has been created');
-            $this->redirect('/settings/sql');
+            $this->success->append('The Script Test '.$_POST['name'].' has been created');
+            $this->redirect('/settings/scripts');
         } else {
             $this->formSave($test);
-            $this->redirect('/settings/sql/add');
+            $this->redirect('/settings/scripts/add');
+        }
+    }
+
+    public function snmp_deleteAction()
+    {
+        $this->minPermission(Auth::RIGHT_READWRITE);
+        $this->testForPresence(
+             array(
+                 'post' => array('csrftoken')
+             )
+        );
+
+        if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
+            throw new ForbiddenException();
+        }
+
+        $deleteIds = array();
+        if (isset($_GET['id'])) {
+            $deleteIds[] = $_GET['id'];
+        } elseif (isset($_POST['delids'])) {
+            $deleteIds = explode(',', $_POST['delids']);
+        }
+
+        foreach ($deleteIds as $id) {
+            SNMPTest::delete($id);
+        }
+        $this->redirect('/settings/snmp');
+    }
+
+    public function snmp_addAction()
+    {
+        $this->minPermission(Auth::RIGHT_READWRITE);
+        $this->add('menu', 'settingssnmp');
+
+        $test = ($this->hasSavedForm('SNMPTest')) ? $this->formGet() : new SNMPTest();
+        $this->load('settings/addsnmp');
+        $this->render(
+             array(
+                 'devices' => Helper::getDevices($test->dev_type),
+                 'types'   => Helper::getSNMPTypes($test->type),
+                 'snmp'    => $test
+             )
+        );
+    }
+
+    public function snmp_editAction()
+    {
+        $this->minPermission(Auth::RIGHT_READWRITE);
+        $this->add('menu', 'settingssnmp');
+        $this->testForPresence(array('get' => array('id')));
+
+        $test = new SNMPTest(intval($_GET['id']));
+        $this->load('settings/editsnmp');
+        $this->render(
+             array(
+                 'devices' => Helper::getDevices($test->dev_type),
+                 'types'   => Helper::getSNMPTypes($test->type),
+                 'snmp'    => $test
+             )
+        );
+    }
+
+    public function snmp_patchAction()
+    {
+        $this->minPermission(Auth::RIGHT_READWRITE);
+        $this->testForPresence(
+             array(
+                 'post' => array(
+                     'id',
+                     'csrftoken',
+                     'name',
+                     'oid',
+                     'dev_type',
+                     'type',
+                     'subitem'
+                 )
+             )
+        );
+        if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
+            throw new ForbiddenException();
+        }
+        if (empty($_POST['id']) || empty($_POST['name']) || empty($_POST['oid']) || empty($_POST['dev_type'])) {
+            // cannot test "type" or "subitem"; empty(0) == true
+            $this->errors->append('Empty fields are not allowed!');
+        }
+
+        if (mb_strlen($_POST['oid'] > 250)) {
+            $this->errors->append(
+                         'The OID must not be longer than 250 characters, detected: ',
+                             mb_strlen($_POST['oid'])
+            );
+        }
+
+        if (mb_strlen($_POST['name'] > 200)) {
+            $this->errors->append(
+                         'The name must not be longer than 200 characters, detected: ',
+                             mb_strlen($_POST['name'])
+            );
+        }
+
+        if ($_POST['dev_type'] != intval($_POST['dev_type'])) {
+            // this should never happen...
+            throw new BadRequestException;
+        }
+
+        if ($_POST['type'] != intval($_POST['type'])) {
+            // this should never happen...
+            throw new BadRequestException;
+        }
+
+        $test = new SNMPTest(array(
+            'id'       => $_POST['id'],
+            'name'     => $_POST['name'],
+            'dev_type' => $_POST['dev_type'],
+            'oid'      => $_POST['oid'],
+            'subitem'  => $_POST['subitem'],
+            'type'     => $_POST['type']
+        ));
+        if (!$this->hasErrors()) {
+            $test->save();
+            $this->success->append('The SNMP Test '.$_POST['name'].' has been modified');
+            $this->redirect('/settings/snmp');
+        } else {
+            $this->formSave($test);
+            $this->redirect('/settings/snmp/edit?id='.intval($_POST['id']));
+        }
+    }
+
+    public function snmp_createAction()
+    {
+        $this->minPermission(Auth::RIGHT_READWRITE);
+        $this->testForPresence(
+             array(
+                 'post' => array(
+                     'csrftoken',
+                     'name',
+                     'oid',
+                     'dev_type',
+                     'type',
+                     'subitem'
+                 )
+             )
+        );
+        if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
+            throw new ForbiddenException();
+        }
+        if (empty($_POST['name']) || empty($_POST['oid']) || empty($_POST['dev_type'])) {
+            // cannot test "type" or "subitem"; empty(0) == true
+            $this->errors->append('Empty fields are not allowed!');
+        }
+
+        if (mb_strlen($_POST['oid'] > 250)) {
+            $this->errors->append(
+                         'The OID must not be longer than 250 characters, detected: ',
+                             mb_strlen($_POST['oid'])
+            );
+        }
+
+        if (mb_strlen($_POST['name'] > 200)) {
+            $this->errors->append(
+                         'The name must not be longer than 200 characters, detected: ',
+                             mb_strlen($_POST['name'])
+            );
+        }
+
+        if ($_POST['dev_type'] != intval($_POST['dev_type'])) {
+            // this should never happen...
+            throw new BadRequestException;
+        }
+
+        if ($_POST['type'] != intval($_POST['type'])) {
+            // this should never happen...
+            throw new BadRequestException;
+        }
+
+        $test = new SNMPTest(array(
+            'name'     => $_POST['name'],
+            'dev_type' => $_POST['dev_type'],
+            'oid'      => $_POST['oid'],
+            'subitem'  => $_POST['subitem'],
+            'type'     => $_POST['type']
+        ));
+        if (!$this->hasErrors()) {
+            $test->save();
+            $this->success->append('The SNMP Test '.$_POST['name'].' has been created');
+            $this->redirect('/settings/snmp');
+        } else {
+            $this->formSave($test);
+            $this->redirect('/settings/snmp/add');
         }
     }
 
@@ -582,10 +788,10 @@ class SettingsController
 
 
         $sql = getDatabase()
-            ->query(
-                'SELECT id, name, host, user, IF(LENGTH(query) > 75, CONCAT(SUBSTRING(query, 1, 70), "..."), query) AS query, query AS fullquery FROM tests_sql ORDER BY name'
+               ->query(
+               'SELECT id, name, host, user, IF(LENGTH(query) > 75, CONCAT(SUBSTRING(query, 1, 70), "..."), query) AS query, query AS fullquery FROM tests_sql ORDER BY name'
             )
-            ->fetchAll(\PDO::FETCH_ASSOC);
+               ->fetchAll(\PDO::FETCH_ASSOC);
 
         $this->load('settings/sql');
         $this->render(array('sql' => $sql, 'sumsql' => count($sql)));
@@ -642,20 +848,20 @@ class SettingsController
     {
         $this->minPermission(Auth::RIGHT_READWRITE);
         $this->testForPresence(
-            array(
-                'post' => array(
-                    'id',
-                    'csrftoken',
-                    'name',
-                    'host',
-                    'user',
-                    'password',
-                    'query',
-                    'device',
-                    'columnnumber',
-                    'timeout'
-                )
-            )
+             array(
+                 'post' => array(
+                     'id',
+                     'csrftoken',
+                     'name',
+                     'host',
+                     'user',
+                     'password',
+                     'query',
+                     'device',
+                     'columnnumber',
+                     'timeout'
+                 )
+             )
         );
         if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
             throw new ForbiddenException();
@@ -666,8 +872,8 @@ class SettingsController
 
         if (mb_strlen($_POST['query'] > 255)) {
             $this->errors->append(
-                'The SQL query must not be longer than 255 characters, detected: ',
-                mb_strlen($_POST['query'])
+                         'The SQL query must not be longer than 255 characters, detected: ',
+                             mb_strlen($_POST['query'])
             );
         }
 
@@ -685,23 +891,23 @@ class SettingsController
         // more tests omitted....
 
         $test = new SQLTest(array(
-            'id' => $_POST['id'],
-            'name' => $_POST['name'],
+            'id'           => $_POST['id'],
+            'name'         => $_POST['name'],
             'sub_dev_type' => $_POST['device'],
-            'password' => $_POST['password'],
-            'host' => $_POST['host'],
-            'user' => $_POST['user'],
-            'query' => $_POST['query'],
-            'column_num' => $_POST['columnnumber'],
-            'timeout' => $_POST['timeout']
+            'password'     => $_POST['password'],
+            'host'         => $_POST['host'],
+            'user'         => $_POST['user'],
+            'query'        => $_POST['query'],
+            'column_num'   => $_POST['columnnumber'],
+            'timeout'      => $_POST['timeout']
         ));
         if (!$this->hasErrors()) {
             $test->save();
-            $this->success->append('The SQL Test ' . $_POST['name'] . ' has been created');
+            $this->success->append('The SQL Test '.$_POST['name'].' has been modified');
             $this->redirect('/settings/sql');
         } else {
             $this->formSave($test);
-            $this->redirect('/settings/sql/edit?id=' . intval($_POST['id']));
+            $this->redirect('/settings/sql/edit?id='.intval($_POST['id']));
         }
     }
 
@@ -709,19 +915,19 @@ class SettingsController
     {
         $this->minPermission(Auth::RIGHT_READWRITE);
         $this->testForPresence(
-            array(
-                'post' => array(
-                    'csrftoken',
-                    'name',
-                    'host',
-                    'user',
-                    'password',
-                    'query',
-                    'device',
-                    'columnnumber',
-                    'timeout'
-                )
-            )
+             array(
+                 'post' => array(
+                     'csrftoken',
+                     'name',
+                     'host',
+                     'user',
+                     'password',
+                     'query',
+                     'device',
+                     'columnnumber',
+                     'timeout'
+                 )
+             )
         );
         if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
             throw new ForbiddenException();
@@ -732,8 +938,8 @@ class SettingsController
 
         if (mb_strlen($_POST['query'] > 255)) {
             $this->errors->append(
-                'The SQL query must not be longer than 255 characters, detected: ',
-                mb_strlen($_POST['query'])
+                         'The SQL query must not be longer than 255 characters, detected: ',
+                             mb_strlen($_POST['query'])
             );
         }
 
@@ -751,18 +957,18 @@ class SettingsController
         // more tests omitted....
 
         $test = new SQLTest(array(
-            'name' => $_POST['name'],
+            'name'         => $_POST['name'],
             'sub_dev_type' => $_POST['device'],
-            'password' => $_POST['password'],
-            'host' => $_POST['host'],
-            'user' => $_POST['user'],
-            'query' => $_POST['query'],
-            'column_num' => $_POST['columnnumber'],
-            'timeout' => $_POST['timeout']
+            'password'     => $_POST['password'],
+            'host'         => $_POST['host'],
+            'user'         => $_POST['user'],
+            'query'        => $_POST['query'],
+            'column_num'   => $_POST['columnnumber'],
+            'timeout'      => $_POST['timeout']
         ));
         if (!$this->hasErrors()) {
             $test->save();
-            $this->success->append('The SQL Test ' . $_POST['name'] . ' has been created');
+            $this->success->append('The SQL Test '.$_POST['name'].' has been created');
             $this->redirect('/settings/sql');
         } else {
             $this->formSave($test);
@@ -777,10 +983,10 @@ class SettingsController
 
 
         $users = getDatabase()
-            ->query(
-                'SELECT id, user, fullname, IF(disabled = 0, permit, ' . Auth::RIGHT_DISABLED . ') AS permit FROM user ORDER BY user'
+                 ->query(
+                 'SELECT id, user, fullname, IF(disabled = 0, permit, '.Auth::RIGHT_DISABLED.') AS permit FROM user ORDER BY user'
             )
-            ->fetchAll(\PDO::FETCH_ASSOC);
+                 ->fetchAll(\PDO::FETCH_ASSOC);
 
         $users = $this->mapPermissions($users);
 
@@ -793,7 +999,7 @@ class SettingsController
         $tmp = array();
         foreach ($users as $key => $val) {
             $val['permit'] = $GLOBALS['PERMIT_TYPES'][$val['permit']];
-            $tmp[$key] = $val;
+            $tmp[$key]     = $val;
         }
 
         return $tmp;
@@ -811,9 +1017,9 @@ class SettingsController
 
         $values = array(
             'permittypes' => Auth::getPermissionTypes($user->permit),
-            'groups' => Auth::getGroups($user->group_id),
-            'user' => $user,
-            'slideshow' => ($user->slideshow) ? 'checked="checked"' : ''
+            'groups'      => Auth::getGroups($user->group_id),
+            'user'        => $user,
+            'slideshow'   => ($user->slideshow) ? 'checked="checked"' : ''
         );
 
         $this->render($values);
@@ -823,18 +1029,18 @@ class SettingsController
     {
         $this->minPermission(Auth::RIGHT_ADMIN);
         $this->testForPresence(
-            array(
-                'post' => array(
-                    'csrftoken',
-                    'username',
-                    'prettyname',
-                    'password',
-                    'password2',
-                    'permit',
-                    'group',
-                    'userid'
-                )
-            )
+             array(
+                 'post' => array(
+                     'csrftoken',
+                     'username',
+                     'prettyname',
+                     'password',
+                     'password2',
+                     'permit',
+                     'group',
+                     'userid'
+                 )
+             )
         );
         if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
             throw new ForbiddenException();
@@ -848,16 +1054,16 @@ class SettingsController
         if (!$this->hasErrors()) {
             $user = new User($_POST['userid']);
             $user->patch(
-                array(
-                    'user' => $_POST['username'],
-                    'fullname' => $_POST['prettyname'],
-                    'password' => $_POST['password'],
-                    'permit' => $_POST['permit'],
-                    'group_id' => $_POST['group'],
-                    'slideshow' => isset($_POST['slideshow']) ? true : false
-                )
+                 array(
+                     'user'      => $_POST['username'],
+                     'fullname'  => $_POST['prettyname'],
+                     'password'  => $_POST['password'],
+                     'permit'    => $_POST['permit'],
+                     'group_id'  => $_POST['group'],
+                     'slideshow' => isset($_POST['slideshow']) ? true : false
+                 )
             );
-            $this->success->append('The user ' . $_POST['prettyname'] . ' has been updated');
+            $this->success->append('The user '.$_POST['prettyname'].' has been modified');
         }
 
         $this->redirect('/settings/users');
@@ -867,18 +1073,18 @@ class SettingsController
     {
         $this->minPermission(Auth::RIGHT_ADMIN);
         $this->testForPresence(
-            array(
-                'post' => array(
-                    'csrftoken',
-                    'username',
-                    'prettyname',
-                    'password',
-                    'password2',
-                    'permit',
-                    'group',
-                    'userid'
-                )
-            )
+             array(
+                 'post' => array(
+                     'csrftoken',
+                     'username',
+                     'prettyname',
+                     'password',
+                     'password2',
+                     'permit',
+                     'group',
+                     'userid'
+                 )
+             )
         );
         if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
             throw new ForbiddenException();
@@ -893,23 +1099,23 @@ class SettingsController
         }
         if ($this->auth->userExists(trim($_POST['username']))) {
             $this->errors->append(
-                'There already exists an user with the name ' . $_POST['username']
+                         'There already exists an user with the name '.$_POST['username']
             );
         }
 
         if (!$this->hasErrors()) {
             $user = new User();
             $user->create(
-                array(
-                    'user' => $_POST['username'],
-                    'fullname' => $_POST['prettyname'],
-                    'password' => $_POST['password'],
-                    'permit' => $_POST['permit'],
-                    'group_id' => $_POST['group'],
-                    'slideshow' => isset($_POST['slideshow']) ? true : false
-                )
+                 array(
+                     'user'      => $_POST['username'],
+                     'fullname'  => $_POST['prettyname'],
+                     'password'  => $_POST['password'],
+                     'permit'    => $_POST['permit'],
+                     'group_id'  => $_POST['group'],
+                     'slideshow' => isset($_POST['slideshow']) ? true : false
+                 )
             );
-            $this->success->append('The user ' . $_POST['prettyname'] . ' has been created');
+            $this->success->append('The user '.$_POST['prettyname'].' has been created');
         }
 
         $this->redirect('/settings/users');
@@ -923,7 +1129,7 @@ class SettingsController
 
         $this->load('settings/adduser');
         $this->render(
-            array('permittypes' => Auth::getPermissionTypes(), 'groups' => Auth::getGroups())
+             array('permittypes' => Auth::getPermissionTypes(), 'groups' => Auth::getGroups())
         );
     }
 
@@ -931,9 +1137,9 @@ class SettingsController
     {
         $this->minPermission(Auth::RIGHT_ADMIN);
         $this->testForPresence(
-            array(
-                'post' => array('csrftoken')
-            )
+             array(
+                 'post' => array('csrftoken')
+             )
         );
 
         if (!$this->isValidCsrfToken($_POST['csrftoken'])) {
