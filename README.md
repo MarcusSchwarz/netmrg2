@@ -24,8 +24,3 @@ This code is (almost) completely untested and work in progress. Personally I don
 Any help with the project is highly appreciated :)
 
 Do not install this over an existing installation without backup!
-
-Nothing happens here?
----------------------
-Have a look at the "namespacing" branch. At the moment I am rewriting the www-code
-https://github.com/MarcusSchwarz/netmrg2/tree/namespacing
