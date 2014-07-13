@@ -1,5 +1,5 @@
 {{>settingsheader}}
-            <h1 class="page-header">Settings - Scripts</h1>
+            <h1 class="page-header">Settings - SNMP</h1>
 
 <div class="table-responsive">
     <table class="table table-striped table-hover">
@@ -7,37 +7,33 @@
             <tr>
                 <th class="nowrap">[<span id="selectall" class="glyphicon glyphicon-asterisk" title="select all"></span>] [<span id="selectnothing" class="glyphicon glyphicon-unchecked" title="select nothing"></span>] [<span id="selectinvert" class="glyphicon glyphicon-minus" title="invert selection"></span>]</th>
                 <th>Name</th>
-                <th>Command</th>
-                <th>Datatype</th>
-                <th class="text-right"><a href="{{#route}}/settings/scripts/add{{/route}}">add</a></th>
+                <th>OID</th>
+                <th class="text-right"><a href="{{#route}}/settings/snmp/add{{/route}}">add</a></th>
             </tr>
         </thead>
         <tbody>
-        {{#scripts}}
+        {{#snmp}}
             <tr>
                 <td>
-                    <input class="netmrg-check-scripts" type="checkbox" name="checkboxes[]" value="{{id}}" data-csrftoken="{{csrftoken}}">
+                    <input class="netmrg-check-snmp" type="checkbox" name="checkboxes[]" value="{{id}}" data-csrftoken="{{csrftoken}}">
                 </td>
                 <td>
                     {{name}}
                 </td>
                 <td>
-                    {{cmd}}
-                </td>
-                <td>
-                    {{data_type_name}}
+                    {{oid}}
                 </td>
                 <td class="text-right nowrap">
-                    <a href="{{#route}}/settings/scripts/edit?id={{id}}{{/route}}" style="margin-right:10px;"><span class="glyphicon glyphicon-pencil" title="edit scripts"></span></a>
-                    <a href="{{#route}}/settings/scripts/delete?id={{id}}{{/route}}" data-csrftoken="{{csrftoken}}" data-confirmButton="Yes, delete" data-cancelButton="no" data-text="Do you really want to delete <strong>{{name}}</strong>?" data-okButtonClass="btn-danger" class="confirm"><span class="glyphicon glyphicon-remove alert-danger" title="delete script"></span></a>
+                    <a href="{{#route}}/settings/snmp/edit?id={{id}}{{/route}}" style="margin-right:10px;"><span class="glyphicon glyphicon-pencil" title="edit snmp"></span></a>
+                    <a href="{{#route}}/settings/snmp/delete?id={{id}}{{/route}}" data-csrftoken="{{csrftoken}}" data-confirmButton="Yes, delete" data-cancelButton="no" data-text="Do you really want to delete <strong>{{name}}</strong>?" data-okButtonClass="btn-danger" class="confirm"><span class="glyphicon glyphicon-remove alert-danger" title="delete snmp"></span></a>
                 </td>
             </tr>
-        {{/scripts}}
+        {{/snmp}}
         </tbody>
     </table>
-    {{sumscripts}} script tests
+    {{sumsnmp}} SNMP Tests
     <hr style="border-bottom: 1px solid #EEE;">
-    <a id="batchdelete" href="{{#route}}/settings/scripts/delete{{/route}}">Batch delete selected script tests</a>
+    <a id="batchdelete" href="{{#route}}/settings/snmp/delete{{/route}}">Batch delete selected SNMP Tests</a>
 </div>
 
 <script>
@@ -51,7 +47,7 @@
         title: 'Confirmation',
         confirmButtonClass: 'btn-danger',
         confirm: function() {
-            var delids = $('.netmrg-check-scripts').map(
+            var delids = $('.netmrg-check-snmp').map(
                     function(k, v) {
                         if($(v).prop('checked')) {
                             return $(v).prop('value');
@@ -62,8 +58,8 @@
                 alert('nothing selected');
                 return false;
             }
-            var form = $('<form method="post" class="hide" action="{{#route}}/settings/scripts/delete{{/route}}"></form>');
-            var z = $('.netmrg-check-scripts').first().data('csrftoken');
+            var form = $('<form method="post" class="hide" action="{{#route}}/settings/snmp/delete{{/route}}"></form>');
+            var z = $('.netmrg-check-snmp').first().data('csrftoken');
             if (z) {
                 var csrf = $('<input type="hidden" name="csrftoken" value="' + z + '">');
                 form.append(csrf);
@@ -80,13 +76,13 @@
 
     $(function() {
         $('#selectall').click(function() {
-            $('.netmrg-check-scripts').prop('checked', true);
+            $('.netmrg-check-snmp').prop('checked', true);
         });
         $('#selectnothing').click(function() {
-            $('.netmrg-check-scripts').prop('checked', false);
+            $('.netmrg-check-snmp').prop('checked', false);
         });
         $('#selectinvert').click(function() {
-            $('.netmrg-check-scripts').click();
+            $('.netmrg-check-snmp').click();
         });
     });
 </script>

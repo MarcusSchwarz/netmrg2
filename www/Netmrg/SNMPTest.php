@@ -22,21 +22,20 @@ namespace Netmrg;
 
 use Netmrg\Exception\BadRequestException;
 
-class ScriptTest
+class SNMPTest
 {
     public $id = 0;
     public $name = '';
-    public $cmd = '';
-    public $data_type = '';
-    public $data_type_name = '';
-    public $dev_type = '';
-
-    const DATA_TYPE_ERRORCODE   = 1;
-    const DATA_TYPE_STANDARDOUT = 2;
-    public static $dataTypeNames = array(
-        0 => array('id' => 1, 'name' => 'Error Code'),
-        1 => array('id' => 2, 'name' => 'Standard Out')
+    public $oid = '';
+    public $dev_type = 0;
+    public $type = 0;
+    public $subitem = 0;
+    public static $availableTypes = array(
+        0 => array('id' => 0, 'name' => 'Direct (Get)'),
+        1 => array('id' => 1, 'name' => 'Nth Item (Walk)'),
+        2 => array('id' => 2, 'name' => 'Count of Items (Walk)')
     );
+
     private $fromDatabase = false;
 
     /**
@@ -48,71 +47,62 @@ class ScriptTest
             if (is_numeric($values)) {
                 $this->load($values);
             } elseif (is_array($values)) {
-                $this->id        = $values['id'];
-                $this->name      = $values['name'];
-                $this->cmd       = $values['cmd'];
-                $this->data_type = intval($values['data_type']);
-                $this->dev_type  = $values['dev_type'];
+                $this->id       = $values['id'];
+                $this->name     = $values['name'];
+                $this->oid      = $values['oid'];
+                $this->dev_type = $values['dev_type'];
+                $this->type     = $values['type'];
+                $this->subitem  = $values['subitem'];
 
                 if (!empty($this->id)) {
                     $this->fromDatabase = true;
                 }
-                $this->data_type_name = self::getDataTypeName($this->data_type);
             }
         }
         return $this;
     }
 
-    public static function getDataTypeName($datatype)
-    {
-        foreach (self::$dataTypeNames as $type) {
-            if ($type['id'] == $datatype) {
-                return $type['name'];
-            }
-        }
-    }
-
     private function load($id)
     {
-        $s = getDatabase()->query('SELECT * FROM tests_script WHERE id = '.intval($id));
+        $s = getDatabase()->query('SELECT * FROM tests_snmp WHERE id = '.intval($id));
 
         if (empty($s)) {
             throw new BadRequestException;
         }
-        $t               = $s->fetch(\PDO::FETCH_OBJ);
-        $this->id        = $t->id;
-        $this->name      = $t->name;
-        $this->cmd       = $t->cmd;
-        $this->data_type = intval($t->data_type);
-        $this->dev_type  = intval($t->dev_type);
+        $t              = $s->fetch(\PDO::FETCH_OBJ);
+        $this->id       = $t->id;
+        $this->name     = $t->name;
+        $this->oid      = $t->oid;
+        $this->dev_type = $t->dev_type;
+        $this->type     = $t->type;
+        $this->subitem  = $t->subitem;
 
         $this->fromDatabase = true;
-
-        $this->data_type_name = self::getDataTypeName($this->data_type);
     }
 
     public static function delete($id)
     {
-        getDatabase()->exec('DELETE FROM tests_script WHERE id = '.intval($id));
+        getDatabase()->exec('DELETE FROM tests_snmp WHERE id = '.intval($id));
     }
 
     public function save()
     {
         if (!$this->fromDatabase) {
             $s = getDatabase()->prepare(
-                 'INSERT INTO tests_script (name, cmd, data_type, dev_type) VALUES (:name, :cmd, :data_type, :dev_type)'
+                 'INSERT INTO tests_snmp (name, oid, dev_type, type, subitem) VALUES (:name, :oid, :dev_type, :type, :subitem)'
             );
         } else {
             // update
             $s = getDatabase()->prepare(
-                 'UPDATE tests_script SET name = :name, cmd = :cmd, data_type = :data_type, dev_type = :dev_type WHERE id = :id'
+                 'UPDATE tests_snmp SET name = :name, oid = :oid, dev_type = :dev_type, type = :type, subitem = :subitem WHERE id = :id'
             );
             $s->bindParam(':id', $this->id);
         }
         $s->bindParam(':name', $this->name);
-        $s->bindParam(':cmd', $this->cmd);
-        $s->bindParam(':data_type', $this->data_type);
+        $s->bindParam(':oid', $this->oid);
         $s->bindParam(':dev_type', $this->dev_type);
+        $s->bindParam(':type', $this->type);
+        $s->bindParam(':subitem', $this->subitem);
         $s->execute();
     }
 } 
